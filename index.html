@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centro de Control - GeoPortal RVE Zonal 7</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+    <style>
+        body { margin: 0; padding: 0; background-color: #111827; color: #ffffff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        
+        header { background-color: #1F2937; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #374151; height: 60px; box-sizing: border-box; z-index: 2000; }
+        h1 { margin: 0; font-size: 1.2rem; color: #FBBF24; text-transform: uppercase; letter-spacing: 1px; }
+        .nav-tabs { display: flex; gap: 10px; }
+        .tab-btn { background-color: #374151; color: #D1D5DB; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: all 0.3s; }
+        .tab-btn.active, .tab-btn:hover { background-color: #3B82F6; color: #FFFFFF; }
+
+        .view-container { display: none; flex-grow: 1; height: calc(100vh - 60px); overflow-y: auto; }
+        .view-container.active { display: flex; flex-direction: column; }
+
+        #geoportal-view.active { display: flex; flex-direction: row; }
+        #sidebar { width: 460px; background-color: #1F2937; padding: 25px; box-shadow: 2px 0 10px rgba(0,0,0,0.6); overflow-y: auto; z-index: 1000; box-sizing: border-box; height: 100%; }
+        #sidebar::-webkit-scrollbar, .view-container::-webkit-scrollbar { width: 6px; }
+        #sidebar::-webkit-scrollbar-track, .view-container::-webkit-scrollbar-track { background: #1F2937; }
+        #sidebar::-webkit-scrollbar-thumb, .view-container::-webkit-scrollbar-thumb { background: #4B5563; border-radius: 4px; }
+        #map { flex-grow: 1; height: 100%; }
+
+        h2 { font-size: 1.3rem; border-bottom: 2px solid #374151; padding-bottom: 12px; color: #FBBF24; margin-top: 0; text-transform: uppercase; letter-spacing: 1px;}
+        .capa-label { display: block; margin-bottom: 10px; cursor: pointer; font-size: 1rem; }
+        
+        .summary-card { background-color: #27303F; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); margin-bottom: 25px; border-left: 5px solid #EF4444; }
+        .summary-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #374151; padding-bottom: 15px; margin-bottom: 15px; }
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 0.95rem; }
+        .stat-item { display: flex; justify-content: space-between; align-items: center; background: #1F2937; padding: 10px 15px; border-radius: 6px; }
+        .stat-label-container { display: flex; align-items: center; color: #D1D5DB; }
+        .dot-indicator { font-size: 1.5rem; line-height: 0; margin-right: 10px; }
+
+        .leaflet-popup-content-wrapper, .leaflet-popup-tip { background-color: #1F2937 !important; color: #ffffff !important; box-shadow: 0 4px 15px rgba(0,0,0,0.6) !important; }
+        .leaflet-popup-content { margin: 18px 20px !important; line-height: 1.6 !important; }
+        .leaflet-container a.leaflet-popup-close-button { color: #9CA3AF !important; padding: 8px !important; }
+        
+        .btn-reset-zoom { background-color: #3B82F6; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 15px; transition: background-color 0.3s;}
+        .btn-reset-zoom:hover { background-color: #2563EB; }
+
+        #cronograma-view { padding: 30px; box-sizing: border-box; background-color: #111827; }
+        
+        .planificacion-banner { background: #1F2937; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.4); margin-bottom: 25px; border: 1px solid #374151; }
+        .planificacion-grid { display: grid; grid-template-columns: 1fr 3fr; gap: 20px; }
+        @media (max-width: 1000px) { .planificacion-grid { grid-template-columns: 1fr; } }
+        
+        .plan-box-left { background: #27303F; border-radius: 10px; padding: 20px; border-top: 4px solid #10B981; display: flex; justify-content: space-around; align-items: center; text-align: center; }
+        .plan-box-right { background: #27303F; border-radius: 10px; padding: 15px 10px; border-top: 4px solid #3B82F6; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; align-items: center; text-align: center; }
+        
+        .plan-icon-container { height: 45px; display: flex; align-items: center; justify-content: center; margin-bottom: 5px; }
+        .custom-machinery-icon { max-height: 44px; max-width: 65px; object-fit: contain; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.6)); }
+
+        .plan-item-val { font-size: 1.1rem; font-weight: bold; color: #FBBF24; margin-top: 4px; }
+        .plan-item-lbl { font-size: 0.65rem; color: #9CA3AF; text-transform: uppercase; line-height: 1.2; letter-spacing: 0.5px; }
+
+        .frentes-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px; }
+        .frente-card { background: #1F2937; border-radius: 10px; padding: 18px; border: 1px solid #374151; box-shadow: 0 4px 6px rgba(0,0,0,0.3); position: relative; }
+        .frente-badge { position: absolute; top: -12px; left: 20px; background: #10B981; color: #fff; font-size: 0.75rem; font-weight: bold; padding: 3px 12px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .frente-content { margin-top: 8px; display: flex; flex-direction: column; gap: 8px; font-size: 0.85rem; color: #D1D5DB; }
+        .frente-item { display: flex; align-items: center; gap: 10px; background: #27303F; padding: 8px 12px; border-radius: 6px; }
+        .frente-icon-img { height: 26px; max-width: 35px; object-fit: contain; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5)); }
+
+        .panel { background-color: #1F2937; border-radius: 12px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); margin-bottom: 25px; }
+        .panel h3 { margin-top: 0; border-bottom: 1px solid #374151; padding-bottom: 12px; color: #9CA3AF; font-size: 1.1rem; text-transform: uppercase; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.85rem; }
+        th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid #374151; }
+        th { background-color: #111827; color: #FBBF24; text-transform: uppercase; font-size: 0.75rem; }
+        tr:hover { background-color: #27303F; }
+
+        .progress-bar-container { background-color: #374151; border-radius: 6px; height: 16px; width: 100%; position: relative; overflow: hidden; margin-top: 5px; }
+        .progress-bar-fill-alc { background-color: #3B82F6; height: 100%; width: 0%; transition: width 0.6s ease-in-out; }
+        .progress-bar-fill-abs { background-color: #10B981; height: 100%; width: 0%; transition: width 0.6s ease-in-out; }
+        .progress-text { position: absolute; width: 100%; text-align: center; font-size: 0.7rem; color: #FFFFFF; font-weight: bold; top: 0; line-height: 16px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
+
+        /* Estilo para el indicador de sincronización en la nube */
+        .sync-status { display: flex; align-items: center; justify-content: space-between; background: #27303F; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #4B5563; }
+        .status-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; background: rgba(16, 185, 129, 0.2); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.4); }
+        .status-dot { width: 8px; height: 8px; background-color: #10B981; border-radius: 50%; box-shadow: 0 0 8px #10B981; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>MIT — Zonal 7 | Control Vial y Limpieza de Alcantarillas</h1>
+        <div class="nav-tabs">
+            <button class="tab-btn active" id="btn-cronograma" onclick="switchTab('cronograma')">📋 Cronograma, Rutas y Seguimiento</button>
+            <button class="tab-btn" id="btn-geoportal" onclick="switchTab('geoportal')">🗺️ GeoPortal y Mapa QGIS</button>
+        </div>
+    </header>
+
+    <div id="cronograma-view" class="view-container active">
+        <div style="max-width: 1400px; margin: 0 auto; width: 100%; padding: 20px 0;">
+            
+            <div class="planificacion-banner">
+                <div style="font-size: 0.9rem; color: #10B981; font-weight: bold; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px;">⚙️ Parámetros Generales de Planificación y Proyecto</div>
+                <div class="planificacion-grid">
+                    <div class="plan-box-left">
+                        <div><div class="plan-icon-container" style="font-size: 1.8rem;">💰</div><div class="plan-item-lbl">Inversión</div><div class="plan-item-val" style="color: #34D399;">$36,483.40</div></div>
+                        <div style="border-left: 1px solid #374151; height: 45px;"></div>
+                        <div><div class="plan-icon-container" style="font-size: 1.8rem;">⏳</div><div class="plan-item-lbl">Plazo</div><div class="plan-item-val" style="color: #60A5FA;">3.5 Meses</div></div>
+                    </div>
+                    <div class="plan-box-right">
+                        <div><div class="plan-icon-container" style="font-size: 1.8rem;">⏱️</div><div class="plan-item-lbl">Horas Globales</div><div class="plan-item-val">1,273 h</div></div>
+                        <div><div class="plan-icon-container"><img src="icono-retro.png" alt="Retro" class="custom-machinery-icon" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"><span style="display:none; font-size:1.5rem;">🚜</span></div><div class="plan-item-lbl">Retroexcavadora</div><div class="plan-item-val">793 h</div></div>
+                        <div><div class="plan-icon-container"><img src="icono-excavadora.png" alt="Excavadora" class="custom-machinery-icon" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"><span style="display:none; font-size:1.5rem;">🏗️</span></div><div class="plan-item-lbl">Excavadora</div><div class="plan-item-val">177 h</div></div>
+                        <div><div class="plan-icon-container"><img src="icono-volquete.png" alt="Volquetes" class="custom-machinery-icon" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"><span style="display:none; font-size:1.5rem;">🚛</span></div><div class="plan-item-lbl">Volquetes</div><div class="plan-item-val">303 h</div></div>
+                        <div><div class="plan-icon-container" style="font-size: 2.1rem; line-height: 1;">👷‍♂️</div><div class="plan-item-lbl">Microempresas</div><div class="plan-item-val" style="color: #38BDF8; font-size: 0.85rem;">En Campo</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="frentes-container">
+                <div class="frente-card"><div class="frente-badge">Frente 1</div><div class="frente-content"><div class="frente-item"><img src="icono-retro.png" class="frente-icon-img" alt="Retro" onerror="this.style.display='none';"><strong>Retroexcavadora</strong></div><div class="frente-item"><img src="icono-volquete.png" class="frente-icon-img" alt="Volquete" onerror="this.style.display='none';"><strong>Volquete</strong></div><div class="frente-item"><span style="font-size: 1.3rem;">👷‍♂️</span><strong>Microempresa</strong></div></div></div>
+                <div class="frente-card"><div class="frente-badge" style="background: #3B82F6;">Frente 2</div><div class="frente-content"><div class="frente-item"><img src="icono-retro.png" class="frente-icon-img" alt="Retro" onerror="this.style.display='none';"><strong>Retroexcavadora</strong></div><div class="frente-item"><img src="icono-volquete.png" class="frente-icon-img" alt="Volquete" onerror="this.style.display='none';"><strong>Volquete</strong></div><div class="frente-item"><span style="font-size: 1.3rem;">👷‍♂️</span><strong>Microempresa</strong></div></div></div>
+                <div class="frente-card"><div class="frente-badge" style="background: #F59E0B;">Frente 3</div><div class="frente-content"><div class="frente-item"><img src="icono-excavadora.png" class="frente-icon-img" alt="Excavadora" onerror="this.style.display='none';"><strong>Excavadora</strong></div><div class="frente-item"><img src="icono-volquete.png" class="frente-icon-img" alt="Volquete" onerror="this.style.display='none';"><strong>Volquete</strong></div><div class="frente-item"><span style="font-size: 1.3rem;">👷‍♂️</span><strong>Microempresa</strong></div></div></div>
+            </div>
+
+            <div class="panel">
+                <h3>📋 Asignación Oficial de Microempresas, Rutas y Rendimiento Diario</h3>
+                
+                <!-- Indicador visual de servidor en la nube -->
+                <div class="sync-status">
+                    <div>
+                        <div style="font-size: 0.95rem; font-weight: bold; color: #F3F4F6;">Monitorización en Tiempo Real</div>
+                        <div style="font-size: 0.8rem; color: #9CA3AF;">Los datos se leen automáticamente del archivo matriz alojado en el servidor web.</div>
+                    </div>
+                    <div class="status-badge" id="conexion-estado">
+                        <div class="status-dot"></div> Conectado a Servidor
+                    </div>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Microempresa</th>
+                                <th>Tramo - Ruta</th>
+                                <th style="text-align: center;">Alc. Obstruidas</th>
+                                <th style="text-align: center;">Alc. Limpias</th>
+                                <th style="width: 180px;">Avance Alcantarillas</th>
+                                <th style="text-align: center;">Rendimiento Abscisas (Km)</th>
+                                <th style="width: 180px;">Avance por Abscisas</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-rendimiento-body">
+                            <tr><td colspan="7" style="text-align: center; color: #9CA3AF; padding: 20px;">Sincronizando datos con el servidor...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- VISTA 2: GEOPORTAL (MAPA QGIS) -->
+    <div id="geoportal-view" class="view-container">
+        <div id="sidebar">
+            <h2>📊 Resumen de Alcantarillas</h2>
+            <div class="summary-card">
+                <div class="summary-header">
+                    <div>
+                        <p style="margin: 0; font-size: 0.9rem; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.5px;">Obstruidas Críticamente</p>
+                        <div id="kpi-total" style="font-size: 3.5rem; color: #EF4444; font-weight: bold; line-height: 1.1;">186</div>
+                    </div>
+                    <div style="font-size: 3.5rem; opacity: 0.9;">🚧</div>
+                </div>
+                
+                <div class="stat-grid">
+                    <div class="stat-item"><div class="stat-label-container"><span class="dot-indicator" style="color:#FF0000;">●</span><span>Inmediata:</span></div><strong id="val-inmediata" style="color: #fff; font-size: 1.15rem;">0</strong></div>
+                    <div class="stat-item"><div class="stat-label-container"><span class="dot-indicator" style="color:#FFFF00;">●</span><span>Alta:</span></div><strong id="val-alta" style="color: #fff; font-size: 1.15rem;">0</strong></div>
+                    <div class="stat-item" style="grid-column: span 2;"><div class="stat-label-container"><span class="dot-indicator" style="color:#FF7F00;">●</span><span>Alta / Inmediata:</span></div><strong id="val-altainm" style="color: #fff; font-size: 1.15rem;">0</strong></div>
+                    <div class="stat-item"><div class="stat-label-container"><span class="dot-indicator" style="color:#008000;">●</span><span>Media:</span></div><strong id="val-media" style="color: #fff; font-size: 1.15rem;">0</strong></div>
+                    <div class="stat-item"><div class="stat-label-container"><span class="dot-indicator" style="color:#00FF00;">●</span><span>Prioritaria:</span></div><strong id="val-prioritaria" style="color: #fff; font-size: 1.15rem;">0</strong></div>
+                </div>
+            </div>
+
+            <h3 style="font-size: 1.05rem; color: #D1D5DB; margin-top: 25px; text-transform: uppercase;"><span style="color: #EC4899;">📍</span> POR TRAMO ESTATAL</h3>
+            <p style="font-size: 0.8rem; color: #9CA3AF; margin-top: -5px; margin-bottom: 10px;"><i>Haz clic en una barra para enfocar el tramo</i></p>
+            
+            <div style="background-color: #1a2234; padding: 20px 15px; border-radius: 8px;">
+                <canvas id="graficoTramos" height="200"></canvas>
+            </div>
+            
+            <button class="btn-reset-zoom" onclick="resetMapa()">🌍 Restaurar Vista Zonal 7</button>
+
+            <h3 style="font-size: 1.05rem; color: #D1D5DB; margin-top: 35px; text-transform: uppercase;">🗺️ Capas del Mapa QGIS</h3>
+            <div style="background-color: #27303F; padding: 20px; border-radius: 8px;">
+                <label class="capa-label"><input type="checkbox" id="chk-rutas" checked style="accent-color: #2563EB; width: 16px; height: 16px;"> <span style="color: #60A5FA; margin-left: 8px; font-weight: bold;">—</span> Red Vial Estatal</label>
+                <hr style="border: 0; border-top: 1px solid #4B5563; margin: 15px 0;">
+                <label class="capa-label"><input type="checkbox" id="chk-inmediata" checked style="accent-color: #FF0000; width: 16px; height: 16px;"> <span style="color: #FF0000; margin-left: 8px;">●</span> Inmediata</label>
+                <label class="capa-label"><input type="checkbox" id="chk-alta" checked style="accent-color: #FFFF00; width: 16px; height: 16px;"> <span style="color: #FFFF00; margin-left: 8px;">●</span> Alta</label>
+                <label class="capa-label"><input type="checkbox" id="chk-altainmediata" checked style="accent-color: #FF7F00; width: 16px; height: 16px;"> <span style="color: #FF7F00; margin-left: 8px;">●</span> Alta / Inm.</label>
+                <label class="capa-label"><input type="checkbox" id="chk-media" checked style="accent-color: #008000; width: 16px; height: 16px;"> <span style="color: #008000; margin-left: 8px;">●</span> Media</label>
+                <label class="capa-label"><input type="checkbox" id="chk-prioritaria" checked style="accent-color: #00FF00; width: 16px; height: 16px;"> <span style="color: #00FF00; margin-left: 8px;">●</span> Prioritaria</label>
+                <hr style="border: 0; border-top: 1px solid #4B5563; margin: 15px 0;">
+                <label class="capa-label"><input type="checkbox" id="chk-limpias" checked style="accent-color: #8B4513; width: 16px; height: 16px;"> <span style="color: #8B4513; margin-left: 8px;">●</span> Alcantarillas de la RVE</label>
+            </div>
+        </div>
+        <div id="map"></div>
+    </div>
+
+    <!-- CONEXIÓN DE DATOS ESPACIALES -->
+    <script src="alcantarillas.js"></script>
+    <script src="rutasRVE.js"></script>
+
+    <!-- SCRIPT DE CARGA AUTOMÁTICA EN SERVIDOR Y MATEMÁTICAS -->
+    <script>
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.view-container').forEach(view => view.classList.remove('active'));
+            if (tabName === 'geoportal') {
+                document.getElementById('geoportal-view').classList.add('active');
+                document.getElementById('btn-geoportal').classList.add('active');
+                map.invalidateSize(); 
+            } else {
+                document.getElementById('cronograma-view').classList.add('active');
+                document.getElementById('btn-cronograma').classList.add('active');
+            }
+        }
+
+        function normalizarTexto(texto) {
+            if (!texto) return '';
+            return String(texto).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().replace(/\s+/g, ' ');
+        }
+
+        function parseAbscisa(val) {
+            if (!val) return 0;
+            let str = String(val).replace(/\s/g, '');
+            let parts = str.split('+');
+            if (parts.length === 2) {
+                return parseFloat(parts[0]) + (parseFloat(parts[1]) / 1000);
+            }
+            return parseFloat(val) || 0;
+        }
+
+        function procesarDatosExcel(excelRows) {
+            let resumenEmpresas = {};
+
+            excelRows.forEach(row => {
+                let rowData = {};
+                for (let key in row) { rowData[key.trim().toUpperCase()] = row[key]; }
+
+                let rawEmpresa = rowData['MICROEMPRESA'] || '';
+                let empresa = String(rawEmpresa).trim();
+                let empresaKey = normalizarTexto(empresa);
+                if (!empresaKey) return;
+
+                if (!resumenEmpresas[empresaKey]) {
+                    resumenEmpresas[empresaKey] = {
+                        nombreReal: empresa,
+                        ruta: String(rowData['TRAMO_RUTA'] || 'Sin ruta').trim(),
+                        obstruidasTotal: 0,
+                        limpiadasAcumuladas: 0,
+                        kmTrabajados: 0,
+                        distanciaTotalKm: 1 // Base para evitar división por cero
+                    };
+                }
+
+                if (rowData['TRAMO_RUTA']) resumenEmpresas[empresaKey].ruta = String(rowData['TRAMO_RUTA']).trim();
+
+                let distKm = parseFloat(rowData['DISTANCIA_KM']);
+                if (distKm > 0) resumenEmpresas[empresaKey].distanciaTotalKm = distKm;
+
+                let obs = parseInt(rowData['ALCANTARILLAS_OBSTRUIDAS_TRAMO']) || 0;
+                if (obs > 0) resumenEmpresas[empresaKey].obstruidasTotal = obs;
+
+                let limpiadasDia = parseInt(rowData['ALCANTARILLAS_LIMPIADAS']) || 0;
+                resumenEmpresas[empresaKey].limpiadasAcumuladas += limpiadasDia;
+
+                let kmInicio = parseAbscisa(rowData['ABSCISA_INICIAL']);
+                let kmFin = parseAbscisa(rowData['ABSCISA_FINAL']);
+                let avanceDiario = Math.abs(kmFin - kmInicio);
+                
+                if (!isNaN(avanceDiario)) {
+                    resumenEmpresas[empresaKey].kmTrabajados += avanceDiario;
+                }
+            });
+
+            let tbody = document.getElementById('tabla-rendimiento-body');
+            tbody.innerHTML = '';
+
+            for (let key in resumenEmpresas) {
+                let info = resumenEmpresas[key];
+                
+                let porcAlc = 0;
+                if (info.obstruidasTotal > 0) {
+                    porcAlc = Math.min(100, Math.round((info.limpiadasAcumuladas / info.obstruidasTotal) * 100));
+                }
+
+                let porcAbs = 0;
+                if (info.distanciaTotalKm > 0) {
+                    porcAbs = Math.min(100, Math.round((info.kmTrabajados / info.distanciaTotalKm) * 100));
+                }
+
+                let tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${info.nombreReal}</strong></td>
+                    <td>${info.ruta}</td>
+                    <td style="text-align: center; font-size: 1.1rem; color: #F87171; font-weight: bold;">${info.obstruidasTotal}</td>
+                    <td style="text-align: center; font-size: 1.1rem; color: #60A5FA; font-weight: bold;">${info.limpiadasAcumuladas}</td>
+                    <td>
+                        <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:3px;">
+                            <span>Avance Alc:</span><strong style="color:#60A5FA;">${porcAlc}%</strong>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill-alc" style="width: ${porcAlc}%;"></div>
+                            <div class="progress-text">${porcAlc}%</div>
+                        </div>
+                    </td>
+                    <td style="text-align: center; color: #D1D5DB;">
+                        <span style="font-size:1.1rem; font-weight:bold; color: #34D399;">${info.kmTrabajados.toFixed(2)}</span> Km
+                    </td>
+                    <td>
+                        <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:3px;">
+                            <span>Avance Abs:</span><strong style="color:#10B981;">${porcAbs}%</strong>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill-abs" style="width: ${porcAbs}%;"></div>
+                            <div class="progress-text">${porcAbs}%</div>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            }
+        }
+
+        // LECTURA AUTOMÁTICA AL CARGAR LA PÁGINA WEB (El archivo debe estar en el mismo servidor)
+        window.addEventListener('DOMContentLoaded', () => {
+            fetch('Reporte_Diario.xlsx')
+                .then(response => {
+                    if (!response.ok) throw new Error("No se encontró Reporte_Diario.xlsx en el servidor");
+                    return response.arrayBuffer();
+                })
+                .then(data => {
+                    let workbook = XLSX.read(new Uint8Array(data), {type: 'array'});
+                    let firstSheet = workbook.SheetNames[0];
+                    let excelRows = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
+                    procesarDatosExcel(excelRows);
+                })
+                .catch(error => {
+                    console.error("Modo local detectado o falta de archivo Excel:", error);
+                    let badge = document.getElementById('conexion-estado');
+                    badge.style.background = 'rgba(239, 68, 68, 0.2)';
+                    badge.style.color = '#EF4444';
+                    badge.style.border = '1px solid rgba(239, 68, 68, 0.4)';
+                    badge.innerHTML = '⚠️ Modo Local / Error de Sincronización';
+                    
+                    document.getElementById('tabla-rendimiento-body').innerHTML = `<tr><td colspan="7" style="text-align: center; color: #EF4444; padding: 20px;"><b>Carga pausada por seguridad del navegador.</b><br>Sube tu proyecto a GitHub Pages o utiliza un servidor local (Live Server) para que la matriz Excel se lea de forma oculta y automática.</td></tr>`;
+                });
+        });
+
+        // Configuración QGIS Leaflet y ChartJS
+        Chart.register(ChartDataLabels);
+        const centroZonal = [-4.0, -79.2];
+        const zoomOriginal = 9;
+        var map = L.map('map').setView(centroZonal, zoomOriginal);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }).addTo(map);
+
+        function resetMapa() { map.flyTo(centroZonal, zoomOriginal, { duration: 1.5 }); }
+
+        let grupoRutas = L.layerGroup().addTo(map);
+        let grupoLimpias = L.layerGroup().addTo(map); 
+        let grupoInmediata = L.layerGroup().addTo(map);
+        let grupoAlta = L.layerGroup().addTo(map);
+        let grupoAltaInmediata = L.layerGroup().addTo(map);
+        let grupoMedia = L.layerGroup().addTo(map);
+        let grupoPrioritaria = L.layerGroup().addTo(map);
+
+        if (typeof rutasRVEData !== 'undefined') {
+            L.geoJSON(rutasRVEData, { style: function(feature) { return { color: "#2563EB", weight: 4, opacity: 1 }; } }).addTo(grupoRutas);
+        }
+
+        let criticasCount = 0;
+        let countInm = 0, countAlt = 0, countAltInm = 0, countMed = 0, countPrio = 0;
+        let conteoTramos = {};
+        let capaAlcantarillas;
+        
+        if (typeof alcantarillasData !== 'undefined') {
+            capaAlcantarillas = L.geoJSON(alcantarillasData, {
+                pointToLayer: function (feature, latlng) {
+                    if (!feature.properties) return L.circleMarker(latlng, { radius: 5, fillColor: "#cccccc", weight: 1, color: "#ffffff", opacity: 1 });
+                    
+                    let nivel = String(feature.properties['PRIORIDAD'] || '').toLowerCase().replace(/\s+/g, ''); 
+                    let tramoRaw = feature.properties['TRAMO'] || feature.properties['tramo'] || 'Desconocido';
+                    let colorPunto = '#8B4513'; let esCritica = false;
+
+                    if (nivel === 'inmediata') { colorPunto = '#FF0000'; esCritica = true; countInm++; } 
+                    else if (nivel === 'alta') { colorPunto = '#FFFF00'; esCritica = true; countAlt++; } 
+                    else if (nivel === 'alta/inmediata' || nivel === 'altainmediata') { colorPunto = '#FF7F00'; esCritica = true; countAltInm++; } 
+                    else if (nivel === 'media') { colorPunto = '#008000'; esCritica = true; countMed++; } 
+                    else if (nivel === 'prioritaria') { colorPunto = '#00FF00'; esCritica = true; countPrio++; }
+
+                    if (esCritica) {
+                        criticasCount++;
+                        if (tramoRaw && tramoRaw !== "DESCONOCIDO") conteoTramos[tramoRaw.trim().toUpperCase()] = (conteoTramos[tramoRaw.trim().toUpperCase()] || 0) + 1;
+                    }
+
+                    return L.circleMarker(latlng, { radius: 5, fillColor: colorPunto, color: "#ffffff", weight: 1, opacity: 1, fillOpacity: 0.9 });
+                },
+                onEachFeature: function (feature, layer) {
+                    if (!feature.properties) return;
+                    let nivel = String(feature.properties['PRIORIDAD'] || '').toLowerCase().replace(/\s+/g, '');
+                    if (nivel === 'inmediata') grupoInmediata.addLayer(layer);
+                    else if (nivel === 'alta') grupoAlta.addLayer(layer);
+                    else if (nivel === 'alta/inmediata' || nivel === 'altainmediata') grupoAltaInmediata.addLayer(layer);
+                    else if (nivel === 'media') grupoMedia.addLayer(layer);
+                    else if (nivel === 'prioritaria') grupoPrioritaria.addLayer(layer);
+                    else grupoLimpias.addLayer(layer);
+                }
+            });
+
+            document.getElementById('kpi-total').innerText = criticasCount;
+            document.getElementById('val-inmediata').innerText = countInm;
+            document.getElementById('val-alta').innerText = countAlt;
+            document.getElementById('val-altainm').innerText = countAltInm;
+            document.getElementById('val-media').innerText = countMed;
+            document.getElementById('val-prioritaria').innerText = countPrio;
+
+            let tramosOrdenados = Object.keys(conteoTramos).sort((a, b) => conteoTramos[b] - conteoTramos[a]);
+            let valoresOrdenados = tramosOrdenados.map(t => conteoTramos[t]);
+
+            const ctx = document.getElementById('graficoTramos').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: tramosOrdenados,
+                    datasets: [{
+                        label: 'Obstruidas', data: valoresOrdenados, backgroundColor: '#3B82F6', borderRadius: 6, barPercentage: 0.6, categoryPercentage: 1.0
+                    }]
+                },
+                options: {
+                    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+                    onClick: (event, activeElements) => {
+                        if (activeElements.length > 0 && capaAlcantarillas) {
+                            const tramoSeleccionado = tramosOrdenados[activeElements[0].index];
+                            let latlngs = [];
+                            capaAlcantarillas.eachLayer(function(layer) {
+                                if (String(layer.feature.properties['TRAMO'] || '').trim().toUpperCase() === tramoSeleccionado) latlngs.push(layer.getLatLng());
+                            });
+                            if (latlngs.length > 0) map.flyToBounds(L.latLngBounds(latlngs), { padding: [50, 50] });
+                        }
+                    },
+                    plugins: { 
+                        legend: { display: false },
+                        datalabels: { color: '#ffffff', anchor: 'start', align: 'right', offset: 8, backgroundColor: '#60A5FA', borderRadius: 4, font: { weight: 'bold', size: 12 }, padding: { left: 6, right: 6, top: 4, bottom: 4 } }
+                    },
+                    scales: { x: { display: false }, y: { ticks: { color: '#D1D5DB', font: { weight: 'bold', size: 10 } }, grid: { display: false }, border: { display: false } } }
+                }
+            });
+        }
+        
+        ['chk-rutas','chk-inmediata','chk-alta','chk-altainmediata','chk-media','chk-prioritaria','chk-limpias'].forEach((id, idx) => {
+            const grupos = [grupoRutas, grupoInmediata, grupoAlta, grupoAltaInmediata, grupoMedia, grupoPrioritaria, grupoLimpias];
+            document.getElementById(id).addEventListener('change', function(e) { e.target.checked ? map.addLayer(grupos[idx]) : map.removeLayer(grupos[idx]); });
+        });
+    </script>
+</body>
+</html>
