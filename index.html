@@ -229,19 +229,19 @@
                 </div>
             </div>
 
-            <!-- NUEVA SECCIÓN: RENDIMIENTO Y AVANCE GENERAL -->
-            <div class="panel" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px; border-left: 5px solid #10B981;">
-                <div style="flex: 1; min-width: 250px;">
-                    <h3 style="margin-top: 0; color: #10B981; border-bottom: none; padding-bottom: 0;">📈 Rendimiento y Avance General</h3>
-                    <p style="color: #9CA3AF; font-size: 0.85rem; margin-top: 5px; max-width: 500px;">Progreso total de alcantarillas limpias frente a la meta crítica de 188 alcantarillas con obstrucción en la Red Vial Estatal.</p>
-                    <div style="font-size: 3rem; font-weight: bold; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.5);" id="kpi-avance-txt">0% Completado</div>
-                    <div style="font-size: 1.1rem; color: #D1D5DB; margin-top: 5px;">Alcantarillas Limpias: <strong id="kpi-limpias-num" style="color:#60A5FA; font-size: 1.3rem;">0</strong> <span style="color: #6B7280;">/ 188</span></div>
+            <!-- NUEVA SECCIÓN: RENDIMIENTO Y AVANCE GENERAL (DISEÑO MEJORADO) -->
+            <div class="panel" style="display: flex; flex-wrap: wrap; justify-content: space-around; align-items: center; gap: 30px; border-left: 6px solid #10B981; padding: 40px 30px; background: linear-gradient(145deg, #1F2937 0%, #171F2E 100%); box-shadow: inset 0 0 20px rgba(0,0,0,0.2);">
+                <div style="flex: 1; min-width: 300px; max-width: 600px;">
+                    <h3 style="margin-top: 0; color: #10B981; border-bottom: none; padding-bottom: 0; font-size: 1.3rem; letter-spacing: 1px;">📈 RENDIMIENTO Y AVANCE GENERAL</h3>
+                    <p style="color: #9CA3AF; font-size: 0.95rem; margin-top: 10px; line-height: 1.5;">Progreso total de alcantarillas limpias frente a la meta crítica de <strong>188</strong> alcantarillas con obstrucción en la Red Vial Estatal de la Zonal 7.</p>
+                    <div style="font-size: 3.5rem; font-weight: 800; color: #ffffff; text-shadow: 0 4px 6px rgba(0,0,0,0.4); margin: 15px 0; letter-spacing: -1px;" id="kpi-avance-txt">0% Completado</div>
+                    <div style="font-size: 1.2rem; color: #D1D5DB; background: rgba(31, 41, 55, 0.8); padding: 10px 20px; border-radius: 8px; display: inline-block; border: 1px solid #374151;">Alcantarillas Limpias: <strong id="kpi-limpias-num" style="color:#60A5FA; font-size: 1.5rem; margin-left: 8px;">0</strong> <span style="color: #6B7280; font-size: 1.1rem;">/ 188</span></div>
                 </div>
-                <div style="width: 180px; height: 180px; position: relative; display: flex; justify-content: center; align-items: center;">
+                <div style="width: 280px; height: 280px; position: relative; display: flex; justify-content: center; align-items: center; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3));">
                     <canvas id="graficoAvancePie"></canvas>
-                    <div style="position: absolute; text-align: center; pointer-events: none;">
-                        <span style="display: block; font-size: 0.75rem; color: #9CA3AF;">AVANCE</span>
-                        <strong id="kpi-avance-centro" style="font-size: 1.5rem; color: #10B981;">0%</strong>
+                    <div style="position: absolute; text-align: center; pointer-events: none; margin-top: 5px;">
+                        <span style="display: block; font-size: 0.9rem; color: #9CA3AF; font-weight: bold; letter-spacing: 2px;">AVANCE</span>
+                        <strong id="kpi-avance-centro" style="font-size: 3.2rem; color: #10B981; line-height: 1; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">0%</strong>
                     </div>
                 </div>
             </div>
@@ -401,7 +401,7 @@
 
         function procesarDatosExcel(excelRows) {
             let resumenEmpresas = {};
-            let totalLimpiasGlobal = 0; // Acumulador para la gráfica de pastel
+            let totalLimpiasGlobal = 0;
 
             excelRows.forEach(row => {
                 let rowData = {};
@@ -441,7 +441,7 @@
 
                 let limpiadasDia = parseInt(rowData['ALCANTARILLAS_LIMPIADAS']) || 0;
                 resumenEmpresas[empresaKey].limpiadasAcumuladas += limpiadasDia;
-                totalLimpiasGlobal += limpiadasDia; // Sumatoria General
+                totalLimpiasGlobal += limpiadasDia;
 
                 let kmInicio = parseAbscisa(rowData['ABSCISA_INICIAL']);
                 let kmFin = parseAbscisa(rowData['ABSCISA_FINAL']);
@@ -452,7 +452,7 @@
                 }
             });
 
-            // Actualización del Gráfico de Pastel (Avance General vs 188)
+            // Actualización del Gráfico de Pastel
             let metaCriticas = 188;
             let pendientes = Math.max(0, metaCriticas - totalLimpiasGlobal);
             let porcentajeAvance = Math.min(100, Math.round((totalLimpiasGlobal / metaCriticas) * 100));
@@ -466,7 +466,6 @@
                 avancePieChart.update();
             }
 
-            // Generar filas en la tabla HTML
             let tbody = document.getElementById('tabla-rendimiento-body');
             tbody.innerHTML = '';
 
@@ -519,7 +518,7 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            // Inicialización de Gráfico Doughnut (Pastel)
+            // Inicialización de Gráfico Doughnut (Pastel modificado estéticamente)
             const ctxPie = document.getElementById('graficoAvancePie').getContext('2d');
             avancePieChart = new Chart(ctxPie, {
                 type: 'doughnut',
@@ -529,7 +528,7 @@
                         data: [0, 188],
                         backgroundColor: ['#10B981', '#374151'],
                         borderWidth: 0,
-                        cutout: '75%'
+                        cutout: '80%' // Anillo más delgado y elegante
                     }]
                 },
                 options: {
@@ -537,7 +536,7 @@
                     maintainAspectRatio: false,
                     plugins: {
                         legend: { display: false },
-                        datalabels: { display: false } // Se oculta en el pastel para mantener un diseño limpio
+                        datalabels: { display: false }
                     }
                 }
             });
