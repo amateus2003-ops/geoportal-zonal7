@@ -584,8 +584,9 @@
                 }
             });
 
-            // LECTURA AUTOMÁTICA MEDIANTE FETCH (METODO GITHUB)
-            fetch('Reporte_Diario.xlsx')
+            // LECTURA AUTOMÁTICA MEDIANTE FETCH (METODO GITHUB CON CACHE BUSTING)
+            // Se agregó '?v=' + timestamp para asegurar que SIEMPRE descargue el Excel más nuevo y no se quede pegado en versiones viejas.
+            fetch('Reporte_Diario.xlsx?v=' + new Date().getTime())
                 .then(response => {
                     if (!response.ok) throw new Error("Archivo no encontrado en el servidor");
                     return response.arrayBuffer();
