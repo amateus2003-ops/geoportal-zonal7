@@ -100,6 +100,36 @@
         .upload-btn { background-color: #3B82F6; color: white; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.9rem; transition: background 0.3s; display: inline-block; }
         .upload-btn:hover { background-color: #2563EB; }
         #excel-file { display: none; }
+
+        /* --- RESPONSIVIDAD PARA TELÉFONOS CELULARES --- */
+        @media (max-width: 850px) {
+            header { flex-direction: column; height: auto; padding: 15px; gap: 15px; text-align: center; }
+            .nav-tabs { flex-wrap: wrap; justify-content: center; }
+            .view-container { height: calc(100vh - 110px); }
+            
+            /* Reordenamiento del GeoPortal: Mapa arriba, Panel abajo */
+            #geoportal-view.active { flex-direction: column; }
+            #map { order: 1; width: 100%; height: 45vh; flex: none; }
+            #sidebar { order: 2; width: 100%; height: 55vh; flex: none; border-top: 2px solid #374151; border-right: none; }
+            
+            /* Reordenamiento del Cronograma */
+            .plan-box-left { flex-direction: column; gap: 20px; }
+            .plan-box-left > div:nth-child(2) { border-left: none; border-top: 1px solid #374151; height: 1px; width: 100%; }
+            .plan-box-right { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+            .frentes-container { grid-template-columns: 1fr; }
+            .sync-status, .upload-wrapper { flex-direction: column; gap: 15px; text-align: center; }
+            
+            /* Ajuste de Tablas para Celular */
+            .panel { padding: 15px; }
+            table { font-size: 0.75rem; }
+            th, td { padding: 8px 5px; }
+        }
+
+        @media (max-width: 480px) {
+            .plan-box-right { grid-template-columns: 1fr; }
+            .stat-grid { grid-template-columns: 1fr; }
+            .stat-item { grid-column: span 1 !important; }
+        }
     </style>
 </head>
 <body>
@@ -202,7 +232,7 @@
                 </div>
             </div>
 
-            <!-- PANEL 1: TABLA OFICIAL DINÁMICA CONECTADA AL EXCEL -->
+            <!-- PANEL: TABLA OFICIAL DINÁMICA CONECTADA AL EXCEL -->
             <div class="panel">
                 <h3>📋 Asignación Oficial de Microempresas, Rutas y Rendimiento Diario</h3>
                 
@@ -295,7 +325,9 @@
             <p style="font-size: 0.8rem; color: #9CA3AF; margin-top: -5px; margin-bottom: 10px;"><i>Haz clic en una barra para enfocar el tramo</i></p>
             
             <div style="background-color: #1a2234; padding: 20px 15px; border-radius: 8px;">
-                <canvas id="graficoTramos" height="200"></canvas>
+                <div id="graficoTramosWrapper" style="position: relative; width: 100%;">
+                    <canvas id="graficoTramos"></canvas>
+                </div>
             </div>
             
             <button class="btn-reset-zoom" onclick="resetMapa()">🌍 Restaurar Vista Zonal 7</button>
@@ -559,7 +591,7 @@
                         return L.circleMarker(latlng, { radius: 5, fillColor: "#cccccc", weight: 1, color: "#ffffff", opacity: 1, fillOpacity: 0.8 });
                     }
 
-                    // Búsqueda Robusta de Propiedades (Soporta múltiples nombres de columnas QGIS)
+                    // Búsqueda Robusta de Propiedades
                     let nivelRaw = feature.properties['PRIORIDAD'] || feature.properties['prioridad'] || feature.properties['Prioridad'] || '';
                     let nivel = String(nivelRaw).toLowerCase().replace(/\s+/g, ''); 
                     
@@ -648,12 +680,11 @@
             let tramosOrdenados = Object.keys(conteoTramos).sort((a, b) => conteoTramos[b] - conteoTramos[a]);
             let valoresOrdenados = tramosOrdenados.map(t => conteoTramos[t]);
 
-            // Ajuste dinámico de altura para que los textos nunca se corten
+            // Configuración del Contenedor Absoluto para que Chrome no corte el gráfico
             let cantidadTramos = tramosOrdenados.length;
-            let alturaIdeal = (cantidadTramos * 35) + 40; 
-            document.getElementById('graficoTramos').parentElement.style.height = alturaIdeal + 'px';
+            let alturaIdeal = Math.max(300, (cantidadTramos * 32) + 20); 
+            document.getElementById('graficoTramosWrapper').style.height = alturaIdeal + 'px';
 
-            // Configuración del Gráfico "Por Tramo Estatal" replicando tu diseño exacto
             const ctx = document.getElementById('graficoTramos').getContext('2d');
             new Chart(ctx, {
                 type: 'bar',
@@ -663,9 +694,9 @@
                         label: 'Obstruidas',
                         data: valoresOrdenados,
                         backgroundColor: '#3B82F6', 
-                        borderRadius: 6,
-                        barPercentage: 0.7,
-                        categoryPercentage: 1.0
+                        borderRadius: 4,
+                        barPercentage: 0.6,
+                        categoryPercentage: 0.8
                     }]
                 },
                 options: {
@@ -689,8 +720,7 @@
                         }
                     },
                     layout: { 
-                        // Margen izquierdo amplio para asegurar que las etiquetas se lean completas
-                        padding: { left: 10, right: 35, top: 10, bottom: 0 } 
+                        padding: { left: 0, right: 30, top: 10, bottom: 10 } 
                     },
                     plugins: { 
                         legend: { display: false },
@@ -699,24 +729,23 @@
                             anchor: 'start', 
                             align: 'right', 
                             offset: 8, 
-                            // Píldora celeste de fondo para los números dentro de la barra
                             backgroundColor: '#60A5FA', 
                             borderRadius: 4, 
-                            font: { weight: 'bold', size: 12 },
-                            padding: { left: 6, right: 6, top: 4, bottom: 4 }
+                            font: { weight: 'bold', size: 11 },
+                            padding: { left: 6, right: 6, top: 3, bottom: 3 }
                         }
                     },
                     scales: {
                         x: { 
                             display: false, 
-                            max: Math.max(...valoresOrdenados) * 1.15 
+                            max: Math.max(...valoresOrdenados) * 1.2 
                         },
                         y: { 
                             ticks: { 
                                 color: '#D1D5DB', 
-                                font: { weight: 'bold', size: 10 }, 
+                                font: { weight: 'bold', size: 9 },
                                 autoSkip: false,
-                                crossAlign: 'near'
+                                padding: 8
                             }, 
                             grid: { display: false, drawBorder: false }, 
                             border: { display: false } 
