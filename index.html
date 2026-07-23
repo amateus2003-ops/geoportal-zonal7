@@ -101,6 +101,35 @@
         .upload-btn:hover { background-color: #2563EB; }
         #excel-file { display: none; }
 
+        /* Estilos del Panel Rendimiento y Avance General */
+        .panel-avance-general {
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: space-around; 
+            align-items: center; 
+            gap: 30px; 
+            border-left: 6px solid #10B981; 
+            padding: 40px 30px; 
+            background: linear-gradient(145deg, #1F2937 0%, #171F2E 100%); 
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+        .avance-text-container {
+            flex: 1; 
+            min-width: 300px; 
+            max-width: 600px;
+        }
+        .avance-chart-container {
+            width: 280px; 
+            height: 280px; 
+            position: relative; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3));
+        }
+
         /* --- RESPONSIVIDAD PARA TELÉFONOS CELULARES --- */
         @media (max-width: 850px) {
             header { flex-direction: column; height: auto; padding: 15px; gap: 15px; text-align: center; }
@@ -120,6 +149,20 @@
             .panel { padding: 15px; }
             table { font-size: 0.75rem; }
             th, td { padding: 8px 5px; }
+
+            /* Adaptación móvil para el panel de la Dona */
+            .panel-avance-general {
+                flex-direction: column;
+                text-align: center;
+                padding: 25px 15px;
+            }
+            .avance-text-container {
+                min-width: 100%;
+            }
+            .avance-chart-container {
+                width: 240px;
+                height: 240px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -229,15 +272,15 @@
                 </div>
             </div>
 
-            <!-- NUEVA SECCIÓN: RENDIMIENTO Y AVANCE GENERAL (DISEÑO MEJORADO) -->
-            <div class="panel" style="display: flex; flex-wrap: wrap; justify-content: space-around; align-items: center; gap: 30px; border-left: 6px solid #10B981; padding: 40px 30px; background: linear-gradient(145deg, #1F2937 0%, #171F2E 100%); box-shadow: inset 0 0 20px rgba(0,0,0,0.2);">
-                <div style="flex: 1; min-width: 300px; max-width: 600px;">
+            <!-- NUEVA SECCIÓN: RENDIMIENTO Y AVANCE GENERAL CON DISEÑO RESPONSIVO -->
+            <div class="panel-avance-general">
+                <div class="avance-text-container">
                     <h3 style="margin-top: 0; color: #10B981; border-bottom: none; padding-bottom: 0; font-size: 1.3rem; letter-spacing: 1px;">📈 RENDIMIENTO Y AVANCE GENERAL</h3>
                     <p style="color: #9CA3AF; font-size: 0.95rem; margin-top: 10px; line-height: 1.5;">Progreso total de alcantarillas limpias frente a la meta crítica de <strong>188</strong> alcantarillas con obstrucción en la Red Vial Estatal de la Zonal 7.</p>
                     <div style="font-size: 3.5rem; font-weight: 800; color: #ffffff; text-shadow: 0 4px 6px rgba(0,0,0,0.4); margin: 15px 0; letter-spacing: -1px;" id="kpi-avance-txt">0% Completado</div>
                     <div style="font-size: 1.2rem; color: #D1D5DB; background: rgba(31, 41, 55, 0.8); padding: 10px 20px; border-radius: 8px; display: inline-block; border: 1px solid #374151;">Alcantarillas Limpias: <strong id="kpi-limpias-num" style="color:#60A5FA; font-size: 1.5rem; margin-left: 8px;">0</strong> <span style="color: #6B7280; font-size: 1.1rem;">/ 188</span></div>
                 </div>
-                <div style="width: 280px; height: 280px; position: relative; display: flex; justify-content: center; align-items: center; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3));">
+                <div class="avance-chart-container">
                     <canvas id="graficoAvancePie"></canvas>
                     <div style="position: absolute; text-align: center; pointer-events: none; margin-top: 5px;">
                         <span style="display: block; font-size: 0.9rem; color: #9CA3AF; font-weight: bold; letter-spacing: 2px;">AVANCE</span>
@@ -518,7 +561,7 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            // Inicialización de Gráfico Doughnut (Pastel modificado estéticamente)
+            // Inicialización de Gráfico Doughnut (Pastel modificado estéticamente y ampliado)
             const ctxPie = document.getElementById('graficoAvancePie').getContext('2d');
             avancePieChart = new Chart(ctxPie, {
                 type: 'doughnut',
