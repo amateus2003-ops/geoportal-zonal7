@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Centro de Control - GeoPortal RVE Zonal 7</title>
+    <title>Transparencia y Control - GeoPortal RVE Zonal 7</title>
     
     <!-- Librerías de Mapa, Gráficos y Lector de Excel -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -150,19 +150,9 @@
             table { font-size: 0.75rem; }
             th, td { padding: 8px 5px; }
 
-            /* Adaptación móvil para el panel de la Dona */
-            .panel-avance-general {
-                flex-direction: column;
-                text-align: center;
-                padding: 25px 15px;
-            }
-            .avance-text-container {
-                min-width: 100%;
-            }
-            .avance-chart-container {
-                width: 240px;
-                height: 240px;
-            }
+            .panel-avance-general { flex-direction: column; text-align: center; padding: 25px 15px; }
+            .avance-text-container { min-width: 100%; }
+            .avance-chart-container { width: 240px; height: 240px; }
         }
 
         @media (max-width: 480px) {
@@ -176,10 +166,10 @@
 
     <!-- BARRA SUPERIOR -->
     <header>
-        <h1>MIT — Zonal 7 | Control Vial y Limpieza de Alcantarillas</h1>
+        <h1>MIT — Zonal 7 | Transparencia y Mantenimiento Vial</h1>
         <div class="nav-tabs">
-            <button class="tab-btn active" id="btn-cronograma" onclick="switchTab('cronograma')">📋 Cronograma, Rutas y Seguimiento</button>
-            <button class="tab-btn" id="btn-geoportal" onclick="switchTab('geoportal')">🗺️ GeoPortal y Mapa QGIS</button>
+            <button class="tab-btn active" id="btn-cronograma" onclick="switchTab('cronograma')">📋 Seguimiento de Frentes de Trabajo</button>
+            <button class="tab-btn" id="btn-geoportal" onclick="switchTab('geoportal')">🗺️ Visor Geográfico Público</button>
         </div>
     </header>
 
@@ -189,7 +179,7 @@
             
             <!-- PARÁMETROS GENERALES -->
             <div class="planificacion-banner">
-                <div style="font-size: 0.9rem; color: #10B981; font-weight: bold; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px;">⚙️ Parámetros Generales de Planificación y Proyecto</div>
+                <div style="font-size: 0.9rem; color: #10B981; font-weight: bold; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px;">⚙️ Resumen de Inversión y Capacidad Operativa</div>
                 <div class="planificacion-grid">
                     <div class="plan-box-left">
                         <div>
@@ -200,7 +190,7 @@
                         <div style="border-left: 1px solid #374151; height: 45px;"></div>
                         <div>
                             <div class="plan-icon-container" style="font-size: 1.8rem;">⏳</div>
-                            <div class="plan-item-lbl">Plazo</div>
+                            <div class="plan-item-lbl">Plazo de Ejecución</div>
                             <div class="plan-item-val" style="color: #60A5FA;">3.5 Meses</div>
                         </div>
                     </div>
@@ -272,13 +262,13 @@
                 </div>
             </div>
 
-            <!-- NUEVA SECCIÓN: RENDIMIENTO Y AVANCE GENERAL CON DISEÑO RESPONSIVO -->
+            <!-- NUEVA SECCIÓN: RENDIMIENTO Y AVANCE GENERAL -->
             <div class="panel-avance-general">
                 <div class="avance-text-container">
-                    <h3 style="margin-top: 0; color: #10B981; border-bottom: none; padding-bottom: 0; font-size: 1.3rem; letter-spacing: 1px;">📈 RENDIMIENTO Y AVANCE GENERAL</h3>
-                    <p style="color: #9CA3AF; font-size: 0.95rem; margin-top: 10px; line-height: 1.5;">Progreso total de alcantarillas limpias frente a la meta crítica de <strong>188</strong> alcantarillas con obstrucción en la Red Vial Estatal de la Zonal 7.</p>
+                    <h3 style="margin-top: 0; color: #10B981; border-bottom: none; padding-bottom: 0; font-size: 1.3rem; letter-spacing: 1px;">📈 AVANCE DE MANTENIMIENTO Y PREVENCIÓN</h3>
+                    <p style="color: #9CA3AF; font-size: 0.95rem; margin-top: 10px; line-height: 1.5;">Avance integral de limpieza de obras de drenaje frente a los <strong>188</strong> puntos de atención prioritaria detectados en la Red Vial Estatal.</p>
                     <div style="font-size: 3.5rem; font-weight: 800; color: #ffffff; text-shadow: 0 4px 6px rgba(0,0,0,0.4); margin: 15px 0; letter-spacing: -1px;" id="kpi-avance-txt">0% Completado</div>
-                    <div style="font-size: 1.2rem; color: #D1D5DB; background: rgba(31, 41, 55, 0.8); padding: 10px 20px; border-radius: 8px; display: inline-block; border: 1px solid #374151;">Alcantarillas Limpias: <strong id="kpi-limpias-num" style="color:#60A5FA; font-size: 1.5rem; margin-left: 8px;">0</strong> <span style="color: #6B7280; font-size: 1.1rem;">/ 188</span></div>
+                    <div style="font-size: 1.2rem; color: #D1D5DB; background: rgba(31, 41, 55, 0.8); padding: 10px 20px; border-radius: 8px; display: inline-block; border: 1px solid #374151;">Obras de Drenaje Limpias: <strong id="kpi-limpias-num" style="color:#60A5FA; font-size: 1.5rem; margin-left: 8px;">0</strong> <span style="color: #6B7280; font-size: 1.1rem;">/ 188</span></div>
                 </div>
                 <div class="avance-chart-container">
                     <canvas id="graficoAvancePie"></canvas>
@@ -291,12 +281,12 @@
 
             <!-- PANEL 1: TABLA OFICIAL DINÁMICA CONECTADA AL EXCEL -->
             <div class="panel">
-                <h3>📋 Asignación Oficial de Microempresas, Rutas y Rendimiento Diario</h3>
+                <h3>📋 Despliegue Técnico y Progreso en Campo</h3>
                 
                 <div class="sync-status">
                     <div>
-                        <div style="font-size: 0.95rem; font-weight: bold; color: #F3F4F6;">Monitorización en Tiempo Real</div>
-                        <div style="font-size: 0.8rem; color: #9CA3AF;">Los datos se leen automáticamente de <b>Reporte_Diario.xlsx</b> alojado en GitHub.</div>
+                        <div style="font-size: 0.95rem; font-weight: bold; color: #F3F4F6;">Monitorización Pública en Tiempo Real</div>
+                        <div style="font-size: 0.8rem; color: #9CA3AF;">Los datos se actualizan diariamente desde la plataforma central del Ministerio.</div>
                     </div>
                     <div class="status-badge" id="conexion-estado">
                         <div class="status-dot"></div> Conectando a Servidor...
@@ -321,13 +311,13 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>Microempresa</th>
-                                <th>Tramo - Ruta</th>
-                                <th style="text-align: center;">Alc. Obstruidas</th>
-                                <th style="text-align: center;">Alc. Limpias</th>
-                                <th style="width: 180px;">Avance Gral. por Alc. Limpias</th>
-                                <th style="text-align: center;">Rendimiento Abscisas (Km)</th>
-                                <th style="width: 180px;">Avance por Abscisas</th>
+                                <th>Equipo de Trabajo</th>
+                                <th>Ruta o Vía Asignada</th>
+                                <th style="text-align: center;">Puntos Prioritarios</th>
+                                <th style="text-align: center;">Puntos Limpios</th>
+                                <th style="width: 180px;">Avance General</th>
+                                <th style="text-align: center;">Kilómetros Atendidos</th>
+                                <th style="width: 180px;">Progreso del Tramo</th>
                             </tr>
                         </thead>
                         <tbody id="tabla-rendimiento-body">
@@ -343,12 +333,12 @@
     <!-- VISTA 2: GEOPORTAL (MAPA QGIS) -->
     <div id="geoportal-view" class="view-container">
         <div id="sidebar">
-            <h2>📊 Resumen de Alcantarillas</h2>
+            <h2>📊 Puntos Críticos y Prevención</h2>
             
             <div class="summary-card">
                 <div class="summary-header">
                     <div>
-                        <p style="margin: 0; font-size: 0.9rem; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.5px;">Obstruidas Críticamente</p>
+                        <p style="margin: 0; font-size: 0.9rem; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.5px;">Puntos de Atención Prioritaria</p>
                         <div id="kpi-total" style="font-size: 3.5rem; color: #EF4444; font-weight: bold; line-height: 1.1;">186</div>
                     </div>
                     <div style="font-size: 3.5rem; opacity: 0.9;">🚧</div>
@@ -356,19 +346,19 @@
                 
                 <div class="stat-grid">
                     <div class="stat-item">
-                        <div class="stat-label-container"><span class="dot-indicator" style="color:#FF0000;">●</span><span>Inmediata:</span></div>
+                        <div class="stat-label-container"><span class="dot-indicator" style="color:#FF0000;">●</span><span>Intervención Inmediata:</span></div>
                         <strong id="val-inmediata" style="color: #fff; font-size: 1.15rem;">0</strong>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-label-container"><span class="dot-indicator" style="color:#FFFF00;">●</span><span>Alta:</span></div>
+                        <div class="stat-label-container"><span class="dot-indicator" style="color:#FFFF00;">●</span><span>Atención Alta:</span></div>
                         <strong id="val-alta" style="color: #fff; font-size: 1.15rem;">0</strong>
                     </div>
                     <div class="stat-item" style="grid-column: span 2;">
-                        <div class="stat-label-container"><span class="dot-indicator" style="color:#FF7F00;">●</span><span>Alta / Inmediata:</span></div>
+                        <div class="stat-label-container"><span class="dot-indicator" style="color:#FF7F00;">●</span><span>Atención Alta / Inmediata:</span></div>
                         <strong id="val-altainm" style="color: #fff; font-size: 1.15rem;">0</strong>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-label-container"><span class="dot-indicator" style="color:#008000;">●</span><span>Media:</span></div>
+                        <div class="stat-label-container"><span class="dot-indicator" style="color:#008000;">●</span><span>Atención Media:</span></div>
                         <strong id="val-media" style="color: #fff; font-size: 1.15rem;">0</strong>
                     </div>
                     <div class="stat-item">
@@ -378,7 +368,7 @@
                 </div>
             </div>
 
-            <h3 style="font-size: 1.05rem; color: #D1D5DB; margin-top: 25px; text-transform: uppercase;"><span style="color: #EC4899;">📍</span> POR TRAMO ESTATAL</h3>
+            <h3 style="font-size: 1.05rem; color: #D1D5DB; margin-top: 25px; text-transform: uppercase;"><span style="color: #EC4899;">📍</span> PUNTOS PRIORITARIOS POR VÍA ESTATAL</h3>
             <p style="font-size: 0.8rem; color: #9CA3AF; margin-top: -5px; margin-bottom: 10px;"><i>Haz clic en una barra para enfocar el tramo</i></p>
             
             <div style="background-color: #1a2234; padding: 20px 15px; border-radius: 8px;">
@@ -389,17 +379,17 @@
             
             <button class="btn-reset-zoom" onclick="resetMapa()">🌍 Restaurar Vista Zonal 7</button>
 
-            <h3 style="font-size: 1.05rem; color: #D1D5DB; margin-top: 35px; text-transform: uppercase;">🗺️ Capas del Mapa QGIS</h3>
+            <h3 style="font-size: 1.05rem; color: #D1D5DB; margin-top: 35px; text-transform: uppercase;">🗺️ Control de Capas de Prevención</h3>
             <div style="background-color: #27303F; padding: 20px; border-radius: 8px;">
                 <label class="capa-label"><input type="checkbox" id="chk-rutas" checked style="accent-color: #2563EB; width: 16px; height: 16px;"> <span style="color: #60A5FA; margin-left: 8px; font-weight: bold;">—</span> Red Vial Estatal</label>
                 <hr style="border: 0; border-top: 1px solid #4B5563; margin: 15px 0;">
-                <label class="capa-label"><input type="checkbox" id="chk-inmediata" checked style="accent-color: #FF0000; width: 16px; height: 16px;"> <span style="color: #FF0000; margin-left: 8px;">●</span> Inmediata</label>
-                <label class="capa-label"><input type="checkbox" id="chk-alta" checked style="accent-color: #FFFF00; width: 16px; height: 16px;"> <span style="color: #FFFF00; margin-left: 8px;">●</span> Alta</label>
-                <label class="capa-label"><input type="checkbox" id="chk-altainmediata" checked style="accent-color: #FF7F00; width: 16px; height: 16px;"> <span style="color: #FF7F00; margin-left: 8px;">●</span> Alta / Inmediata</label>
-                <label class="capa-label"><input type="checkbox" id="chk-media" checked style="accent-color: #008000; width: 16px; height: 16px;"> <span style="color: #008000; margin-left: 8px;">●</span> Media</label>
+                <label class="capa-label"><input type="checkbox" id="chk-inmediata" checked style="accent-color: #FF0000; width: 16px; height: 16px;"> <span style="color: #FF0000; margin-left: 8px;">●</span> Intervención Inmediata</label>
+                <label class="capa-label"><input type="checkbox" id="chk-alta" checked style="accent-color: #FFFF00; width: 16px; height: 16px;"> <span style="color: #FFFF00; margin-left: 8px;">●</span> Atención Alta</label>
+                <label class="capa-label"><input type="checkbox" id="chk-altainmediata" checked style="accent-color: #FF7F00; width: 16px; height: 16px;"> <span style="color: #FF7F00; margin-left: 8px;">●</span> Atención Alta / Inmediata</label>
+                <label class="capa-label"><input type="checkbox" id="chk-media" checked style="accent-color: #008000; width: 16px; height: 16px;"> <span style="color: #008000; margin-left: 8px;">●</span> Atención Media</label>
                 <label class="capa-label"><input type="checkbox" id="chk-prioritaria" checked style="accent-color: #00FF00; width: 16px; height: 16px;"> <span style="color: #00FF00; margin-left: 8px;">●</span> Prioritaria</label>
                 <hr style="border: 0; border-top: 1px solid #4B5563; margin: 15px 0;">
-                <label class="capa-label"><input type="checkbox" id="chk-limpias" checked style="accent-color: #8B4513; width: 16px; height: 16px;"> <span style="color: #8B4513; margin-left: 8px;">●</span> Alcantarillas de la RVE</label>
+                <label class="capa-label"><input type="checkbox" id="chk-limpias" checked style="accent-color: #8B4513; width: 16px; height: 16px;"> <span style="color: #8B4513; margin-left: 8px;">●</span> Obras de Drenaje Limpias (Historial)</label>
             </div>
         </div>
         <div id="map"></div>
@@ -545,7 +535,7 @@
                     </td>
                     <td>
                         <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:3px;">
-                            <span>Avance:</span><strong style="color:#10B981;">${porcAbs}%</strong>
+                            <span>Progreso:</span><strong style="color:#10B981;">${porcAbs}%</strong>
                         </div>
                         <div class="progress-bar-container">
                             <div class="progress-bar-fill-abs" style="width: ${porcAbs}%;"></div>
@@ -561,7 +551,6 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            // Inicialización de Gráfico Doughnut (Pastel modificado estéticamente y ampliado)
             const ctxPie = document.getElementById('graficoAvancePie').getContext('2d');
             avancePieChart = new Chart(ctxPie, {
                 type: 'doughnut',
@@ -571,7 +560,7 @@
                         data: [0, 188],
                         backgroundColor: ['#10B981', '#374151'],
                         borderWidth: 0,
-                        cutout: '80%' // Anillo más delgado y elegante
+                        cutout: '80%' 
                     }]
                 },
                 options: {
@@ -584,8 +573,7 @@
                 }
             });
 
-            // LECTURA AUTOMÁTICA MEDIANTE FETCH (METODO GITHUB CON CACHE BUSTING)
-            // Se agregó '?v=' + timestamp para asegurar que SIEMPRE descargue el Excel más nuevo y no se quede pegado en versiones viejas.
+            // LECTURA AUTOMÁTICA MEDIANTE FETCH CON CACHE BUSTING
             fetch('Reporte_Diario.xlsx?v=' + new Date().getTime())
                 .then(response => {
                     if (!response.ok) throw new Error("Archivo no encontrado en el servidor");
@@ -605,7 +593,7 @@
                     badge.style.border = '1px solid rgba(16, 185, 129, 0.4)';
                 })
                 .catch(error => {
-                    console.warn("Modo servidor falló. Activando modo de respaldo local:", error);
+                    console.warn("Modo servidor falló:", error);
                     let badge = document.getElementById('conexion-estado');
                     badge.innerHTML = '⚠️ Modo Local Activo';
                     badge.style.background = 'rgba(245, 158, 11, 0.2)';
@@ -617,7 +605,6 @@
                 });
         });
 
-        // Evento de Carga Manual (Como Respaldo)
         document.getElementById('excel-file').addEventListener('change', function(e) {
             let files = e.target.files;
             if (files.length === 0) return;
@@ -684,7 +671,9 @@
                         return L.circleMarker(latlng, { radius: 5, fillColor: "#cccccc", weight: 1, color: "#ffffff", opacity: 1, fillOpacity: 0.8 });
                     }
 
-                    // Búsqueda Robusta de Propiedades
+                    // EXTRACCIÓN DEL ID ÚNICO DEL SHAPEFILE (QGIS) PARA ENLAZAR LAS FOTOS CORRECTAMENTE
+                    let idUnico = feature.properties['OBJECTID'] || feature.properties['FID'] || feature.properties['ID'] || feature.properties['id'] || feature.properties['NUMERO'] || feature.properties['numero'] || 'S/N';
+
                     let nivelRaw = feature.properties['PRIORIDAD'] || feature.properties['prioridad'] || feature.properties['Prioridad'] || '';
                     let nivel = String(nivelRaw).toLowerCase().replace(/\s+/g, ''); 
                     
@@ -714,33 +703,51 @@
                         radius: 5, fillColor: colorPunto, color: "#ffffff", weight: 1, opacity: 1, fillOpacity: 0.9
                     });
                     
-                    // Condicional para Popups: Solo mostrar Código y Tramo para alcantarillas "Limpias" (Cafés)
                     let popupContent = '';
+                    
                     if (!esCritica) {
+                        // ALCANTARILLAS CAFÉ (LIMPIAS): Popup minimalista, SIN fotos.
                         popupContent = `
                             <div style="font-family: 'Segoe UI', Tahoma, sans-serif; min-width: 220px;">
                                 <h4 style="margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 1px solid #374151; color: #F59E0B; font-size: 1.15rem; font-weight: bold;">
                                     ${tramoRaw}
                                 </h4>
+                                <div style="margin-bottom: 8px; font-size: 0.95rem;">
+                                    <b style="color: #ffffff;">ID Único:</b> <span style="color: #9CA3AF;">${idUnico}</span>
+                                </div>
                                 <div style="margin-bottom: 8px; font-size: 0.95rem;">
                                     <b style="color: #ffffff;">Código:</b> <span style="color: #9CA3AF;">${codigoD}</span>
                                 </div>
                             </div>
                         `;
                     } else {
+                        // ALCANTARILLAS CRÍTICAS (188): Popup completo CON galería de fotos basada en el ID ÚNICO.
                         popupContent = `
-                            <div style="font-family: 'Segoe UI', Tahoma, sans-serif; min-width: 220px;">
+                            <div style="font-family: 'Segoe UI', Tahoma, sans-serif; min-width: 280px;">
                                 <h4 style="margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 1px solid #374151; color: #F59E0B; font-size: 1.15rem; font-weight: bold;">
                                     ${tramoRaw}
                                 </h4>
                                 <div style="margin-bottom: 8px; font-size: 0.95rem;">
+                                    <b style="color: #ffffff;">ID Único:</b> <span style="color: #9CA3AF;">${idUnico}</span>
+                                </div>
+                                <div style="margin-bottom: 8px; font-size: 0.95rem;">
                                     <b style="color: #ffffff;">Código:</b> <span style="color: #9CA3AF;">${codigoD}</span>
                                 </div>
                                 <div style="margin-bottom: 8px; font-size: 0.95rem;">
-                                    <b style="color: #ffffff;">Estado:</b> <span style="color: #9CA3AF;">${estadoFisico}</span>
+                                    <b style="color: #ffffff;">Diagnóstico Inicial:</b> <span style="color: #9CA3AF;">${estadoFisico}</span>
                                 </div>
-                                <div style="font-size: 0.95rem;">
-                                    <b style="color: #ffffff;">Prioridad:</b> <span style="color: #9CA3AF;">${nivelRaw || 'N/A'}</span>
+                                <div style="font-size: 0.95rem; margin-bottom: 12px;">
+                                    <b style="color: #ffffff;">Nivel de Atención:</b> <span style="color: #9CA3AF; font-weight:bold;">${nivelRaw || 'N/A'}</span>
+                                </div>
+                                <div style="display:flex; gap:10px; margin-top:15px;">
+                                    <div style="flex:1; text-align:center;">
+                                        <div style="font-size:0.75rem; color:#EF4444; font-weight:bold; margin-bottom:5px;">ANTES</div>
+                                        <img src="fotos/antes_${idUnico}.jpg" style="width:100%; min-height:80px; background-color:#374151; border-radius:6px; object-fit:cover;" onerror="this.style.display='none';" alt="Evidencia Antes">
+                                    </div>
+                                    <div style="flex:1; text-align:center;">
+                                        <div style="font-size:0.75rem; color:#10B981; font-weight:bold; margin-bottom:5px;">DESPUÉS</div>
+                                        <img src="fotos/despues_${idUnico}.jpg" style="width:100%; min-height:80px; background-color:#374151; border-radius:6px; object-fit:cover;" onerror="this.style.display='none';" alt="Evidencia Después">
+                                    </div>
                                 </div>
                             </div>
                         `;
@@ -773,7 +780,6 @@
             let tramosOrdenados = Object.keys(conteoTramos).sort((a, b) => conteoTramos[b] - conteoTramos[a]);
             let valoresOrdenados = tramosOrdenados.map(t => conteoTramos[t]);
 
-            // Configuración del Contenedor Absoluto para que Chrome no corte el gráfico
             let cantidadTramos = tramosOrdenados.length;
             let alturaIdeal = Math.max(300, (cantidadTramos * 32) + 20); 
             document.getElementById('graficoTramosWrapper').style.height = alturaIdeal + 'px';
@@ -784,7 +790,7 @@
                 data: {
                     labels: tramosOrdenados,
                     datasets: [{
-                        label: 'Obstruidas',
+                        label: 'Puntos Prioritarios',
                         data: valoresOrdenados,
                         backgroundColor: '#3B82F6', 
                         borderRadius: 4,
