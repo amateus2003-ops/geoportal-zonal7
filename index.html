@@ -95,7 +95,7 @@
         .status-dot { width: 8px; height: 8px; background-color: #10B981; border-radius: 50%; box-shadow: 0 0 8px #10B981; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
-        /* Botón de Carga de Excel Directo (Respaldo Local) */
+        /* Botón de Carga de Excel Directo */
         .upload-wrapper { display: flex; justify-content: space-between; align-items: center; background: #27303F; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; border: 1px dashed #4B5563; }
         .upload-btn { background-color: #3B82F6; color: white; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.9rem; transition: background 0.3s; display: inline-block; }
         .upload-btn:hover { background-color: #2563EB; }
@@ -262,7 +262,7 @@
                 </div>
             </div>
 
-            <!-- NUEVA SECCIÓN: RENDIMIENTO Y AVANCE GENERAL -->
+            <!-- SECCIÓN: RENDIMIENTO Y AVANCE GENERAL -->
             <div class="panel-avance-general">
                 <div class="avance-text-container">
                     <h3 style="margin-top: 0; color: #10B981; border-bottom: none; padding-bottom: 0; font-size: 1.3rem; letter-spacing: 1px;">📈 AVANCE DE MANTENIMIENTO Y PREVENCIÓN</h3>
@@ -275,6 +275,28 @@
                     <div style="position: absolute; text-align: center; pointer-events: none; margin-top: 5px;">
                         <span style="display: block; font-size: 0.9rem; color: #9CA3AF; font-weight: bold; letter-spacing: 2px;">AVANCE</span>
                         <strong id="kpi-avance-centro" style="font-size: 3.2rem; color: #10B981; line-height: 1; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">0%</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NUEVA SECCIÓN: BENEFICIOS DEL MANTENIMIENTO -->
+            <div class="panel" style="border-left: 6px solid #3B82F6; padding: 30px;">
+                <h3 style="color: #60A5FA; margin-top: 0; font-size: 1.2rem; text-align: center; border-bottom: none; margin-bottom: 25px;">🌟 BENEFICIOS DEL MANTENIMIENTO PREVENTIVO</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                    <div style="background: #27303F; padding: 20px; border-radius: 8px; text-align: center; border-top: 3px solid #60A5FA; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+                        <div style="font-size: 2.5rem; margin-bottom: 12px;">🌊</div>
+                        <strong style="color: #F3F4F6; font-size: 1rem; text-transform: uppercase;">Correcto funcionamiento hidráulico</strong>
+                        <p style="color: #9CA3AF; font-size: 0.85rem; margin-top: 8px; line-height: 1.4;">De cunetas y drenajes transversales.</p>
+                    </div>
+                    <div style="background: #27303F; padding: 20px; border-radius: 8px; text-align: center; border-top: 3px solid #F59E0B; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+                        <div style="font-size: 2.5rem; margin-bottom: 12px;">🛣️</div>
+                        <strong style="color: #F3F4F6; font-size: 1rem; text-transform: uppercase;">Previene socavones, grietas y fisuras</strong>
+                        <p style="color: #9CA3AF; font-size: 0.85rem; margin-top: 8px; line-height: 1.4;">Manteniendo la estabilidad del asfalto en la vía.</p>
+                    </div>
+                    <div style="background: #27303F; padding: 20px; border-radius: 8px; text-align: center; border-top: 3px solid #10B981; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+                        <div style="font-size: 2.5rem; margin-bottom: 12px;">⏳</div>
+                        <strong style="color: #F3F4F6; font-size: 1rem; text-transform: uppercase;">Mayor vida útil de las carreteras</strong>
+                        <p style="color: #9CA3AF; font-size: 0.85rem; margin-top: 8px; line-height: 1.4;">Optimizando y protegiendo la inversión estatal.</p>
                     </div>
                 </div>
             </div>
@@ -315,13 +337,14 @@
                                 <th>Ruta o Vía Asignada</th>
                                 <th style="text-align: center;">Puntos Prioritarios</th>
                                 <th style="text-align: center;">Puntos Limpios</th>
-                                <th style="width: 180px;">Avance General</th>
+                                <th style="width: 140px;">Avance General</th>
                                 <th style="text-align: center;">Kilómetros Atendidos</th>
-                                <th style="width: 180px;">Progreso del Tramo</th>
+                                <th style="width: 140px;">Progreso del Tramo</th>
+                                <th style="text-align: center; width: 130px; background-color: #1F2937;">Rend. Diario<br><span style="font-size:0.65rem; color:#9CA3AF;">(Promedio)</span></th>
                             </tr>
                         </thead>
                         <tbody id="tabla-rendimiento-body">
-                            <tr><td colspan="7" style="text-align: center; color: #9CA3AF; padding: 20px;">Esperando carga de datos...</td></tr>
+                            <tr><td colspan="8" style="text-align: center; color: #9CA3AF; padding: 20px;">Esperando carga de datos...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -389,7 +412,7 @@
                 <label class="capa-label"><input type="checkbox" id="chk-media" checked style="accent-color: #008000; width: 16px; height: 16px;"> <span style="color: #008000; margin-left: 8px;">●</span> Atención Media</label>
                 <label class="capa-label"><input type="checkbox" id="chk-prioritaria" checked style="accent-color: #00FF00; width: 16px; height: 16px;"> <span style="color: #00FF00; margin-left: 8px;">●</span> Prioritaria</label>
                 <hr style="border: 0; border-top: 1px solid #4B5563; margin: 15px 0;">
-                <label class="capa-label"><input type="checkbox" id="chk-limpias" checked style="accent-color: #8B4513; width: 16px; height: 16px;"> <span style="color: #8B4513; margin-left: 8px;">●</span> Obras de Drenaje Limpias (Historial)</label>
+                <label class="capa-label"><input type="checkbox" id="chk-limpias" checked style="accent-color: #8B4513; width: 16px; height: 16px;"> <span style="color: #8B4513; margin-left: 8px;">●</span> Alcantarillas de la RVE</label>
             </div>
         </div>
         <div id="map"></div>
@@ -454,8 +477,13 @@
                         obstruidasTotal: 0,
                         limpiadasAcumuladas: 0,
                         kmTrabajados: 0,
-                        distanciaTotalKm: 1 // Base para evitar división por cero
+                        distanciaTotalKm: 1, 
+                        fechasUnicas: new Set() // Nuevo: Registro de días trabajados
                     };
+                }
+
+                if (rowData['FECHA']) {
+                    resumenEmpresas[empresaKey].fechasUnicas.add(String(rowData['FECHA']).trim());
                 }
 
                 if (rowData['TRAMO_RUTA']) {
@@ -515,6 +543,11 @@
                     porcAbs = Math.min(100, Math.round((info.kmTrabajados / info.distanciaTotalKm) * 100));
                 }
 
+                // Cálculo del Promedio Diario
+                let totalDias = info.fechasUnicas.size > 0 ? info.fechasUnicas.size : 1;
+                let promAlcDiario = (info.limpiadasAcumuladas / totalDias).toFixed(1);
+                let promKmDiario = (info.kmTrabajados / totalDias).toFixed(2);
+
                 let tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td><strong>${info.nombreReal}</strong></td>
@@ -542,11 +575,15 @@
                             <div class="progress-text">${porcAbs}%</div>
                         </div>
                     </td>
+                    <td style="text-align: center; font-size: 0.85rem; background: rgba(39, 48, 63, 0.4); border-radius: 0 6px 6px 0;">
+                        <div style="color: #60A5FA; font-weight: bold; margin-bottom: 4px;">${promAlcDiario} <span style="font-size: 0.65rem; color: #9CA3AF;">Alc/día</span></div>
+                        <div style="color: #34D399; font-weight: bold;">${promKmDiario} <span style="font-size: 0.65rem; color: #9CA3AF;">Km/día</span></div>
+                    </td>
                 `;
                 tbody.appendChild(tr);
             }
             if(Object.keys(resumenEmpresas).length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #9CA3AF; padding: 20px;">No se encontraron datos válidos en el archivo Excel.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #9CA3AF; padding: 20px;">No se encontraron datos válidos en el archivo Excel.</td></tr>`;
             }
         }
 
@@ -600,7 +637,7 @@
                     badge.style.color = '#F59E0B';
                     badge.style.border = '1px solid rgba(245, 158, 11, 0.4)';
                     
-                    document.getElementById('tabla-rendimiento-body').innerHTML = `<tr><td colspan="7" style="text-align: center; color: #F59E0B; padding: 20px;"><b>No se detectó el archivo en el servidor.</b><br>Por favor, usa el botón de "Carga Local" abajo para leer el archivo desde tu computadora.</td></tr>`;
+                    document.getElementById('tabla-rendimiento-body').innerHTML = `<tr><td colspan="8" style="text-align: center; color: #F59E0B; padding: 20px;"><b>No se detectó el archivo en el servidor.</b><br>Por favor, usa el botón de "Carga Local" abajo para leer el archivo desde tu computadora.</td></tr>`;
                     document.getElementById('manual-upload-container').style.display = 'flex';
                 });
         });
@@ -671,7 +708,6 @@
                         return L.circleMarker(latlng, { radius: 5, fillColor: "#cccccc", weight: 1, color: "#ffffff", opacity: 1, fillOpacity: 0.8 });
                     }
 
-                    // EXTRACCIÓN DEL ID ÚNICO DEL SHAPEFILE (QGIS) PARA ENLAZAR LAS FOTOS CORRECTAMENTE
                     let idUnico = feature.properties['OBJECTID'] || feature.properties['FID'] || feature.properties['ID'] || feature.properties['id'] || feature.properties['NUMERO'] || feature.properties['numero'] || 'S/N';
 
                     let nivelRaw = feature.properties['PRIORIDAD'] || feature.properties['prioridad'] || feature.properties['Prioridad'] || '';
@@ -706,7 +742,6 @@
                     let popupContent = '';
                     
                     if (!esCritica) {
-                        // ALCANTARILLAS CAFÉ (LIMPIAS): Popup minimalista, SIN fotos.
                         popupContent = `
                             <div style="font-family: 'Segoe UI', Tahoma, sans-serif; min-width: 220px;">
                                 <h4 style="margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 1px solid #374151; color: #F59E0B; font-size: 1.15rem; font-weight: bold;">
@@ -721,7 +756,6 @@
                             </div>
                         `;
                     } else {
-                        // ALCANTARILLAS CRÍTICAS (188): Popup completo CON galería de fotos basada en el ID ÚNICO.
                         popupContent = `
                             <div style="font-family: 'Segoe UI', Tahoma, sans-serif; min-width: 280px;">
                                 <h4 style="margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 1px solid #374151; color: #F59E0B; font-size: 1.15rem; font-weight: bold;">
@@ -742,11 +776,11 @@
                                 <div style="display:flex; gap:10px; margin-top:15px;">
                                     <div style="flex:1; text-align:center;">
                                         <div style="font-size:0.75rem; color:#EF4444; font-weight:bold; margin-bottom:5px;">ANTES</div>
-                                        <img src="fotos/${idUnico}antes.jpg" style="width:100%; min-height:80px; background-color:#374151; border-radius:6px; object-fit:cover;" onerror="this.style.display='none';" alt="Evidencia Antes">
+                                        <img src="fotos/antes_${idUnico}.jpg" style="width:100%; min-height:80px; background-color:#374151; border-radius:6px; object-fit:cover;" onerror="this.style.display='none';" alt="Evidencia Antes">
                                     </div>
                                     <div style="flex:1; text-align:center;">
                                         <div style="font-size:0.75rem; color:#10B981; font-weight:bold; margin-bottom:5px;">DESPUÉS</div>
-                                        <img src="fotos/${idUnico}despues.jpg" style="width:100%; min-height:80px; background-color:#374151; border-radius:6px; object-fit:cover;" onerror="this.style.display='none';" alt="Evidencia Después">
+                                        <img src="fotos/despues_${idUnico}.jpg" style="width:100%; min-height:80px; background-color:#374151; border-radius:6px; object-fit:cover;" onerror="this.style.display='none';" alt="Evidencia Después">
                                     </div>
                                 </div>
                             </div>
