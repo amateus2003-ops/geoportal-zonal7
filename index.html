@@ -35,11 +35,13 @@
         #sidebar::-webkit-scrollbar-track, .view-container::-webkit-scrollbar-track { background: #1F2937; }
         #sidebar::-webkit-scrollbar-thumb, .view-container::-webkit-scrollbar-thumb { background: #4B5563; border-radius: 4px; }
         
+        #sidebar h3 { font-size: 1.05rem; color: #D1D5DB; margin-top: 0; text-transform: uppercase; line-height: 1.4; margin-bottom: 15px; padding-right: 10px; }
+
         /* ENVOLTORIO DEL MAPA */
         #map-wrapper { position: relative; flex-grow: 1; height: 100%; display: flex; flex-direction: column; }
         #map { flex-grow: 1; width: 100%; height: 100%; z-index: 1; }
 
-        /* ENCABEZADO FLOTANTE CORREGIDO PARA EVITAR DESBORDAMIENTO */
+        /* ENCABEZADO FLOTANTE */
         .map-header-overlay {
             position: absolute;
             top: 20px;
@@ -66,6 +68,18 @@
 
         .capa-label { display: block; margin-bottom: 12px; cursor: pointer; font-size: 0.9rem; }
         
+        /* AURA AZUL PARA PUNTOS ATENDIDOS */
+        .aura-azul {
+            width: 12px;
+            height: 12px;
+            background-color: #00FFFF;
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 15px 6px rgba(0, 255, 255, 0.8);
+            margin-top: -6px;
+            margin-left: -6px;
+        }
+
         /* POPUPS DEL MAPA */
         .leaflet-popup-content-wrapper, .leaflet-popup-tip { background-color: #1F2937 !important; color: #ffffff !important; box-shadow: 0 4px 15px rgba(0,0,0,0.8) !important; }
         .leaflet-popup-content { margin: 20px 25px !important; line-height: 1.6 !important; width: 440px !important; }
@@ -90,7 +104,6 @@
         .plan-item-val { font-size: 1.1rem; font-weight: bold; color: #FBBF24; margin-top: 4px; }
         .plan-item-lbl { font-size: 0.65rem; color: #9CA3AF; text-transform: uppercase; line-height: 1.2; letter-spacing: 0.5px; }
 
-        /* Frentes de Trabajo */
         .frentes-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px; }
         .frente-card { background: #1F2937; border-radius: 10px; padding: 18px; border: 1px solid #374151; box-shadow: 0 4px 6px rgba(0,0,0,0.3); position: relative; }
         .frente-badge { position: absolute; top: -12px; left: 20px; background: #10B981; color: #fff; font-size: 0.75rem; font-weight: bold; padding: 3px 12px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -106,25 +119,21 @@
         th { background-color: #111827; color: #FBBF24; text-transform: uppercase; font-size: 0.75rem; }
         tr:hover { background-color: #27303F; }
 
-        /* Barras de Progreso Dinámicas */
         .progress-bar-container { background-color: #374151; border-radius: 6px; height: 16px; width: 100%; position: relative; overflow: hidden; margin-top: 5px; }
         .progress-bar-fill-alc { background-color: #3B82F6; height: 100%; width: 0%; transition: width 0.6s ease-in-out; }
         .progress-bar-fill-abs { background-color: #10B981; height: 100%; width: 0%; transition: width 0.6s ease-in-out; }
         .progress-text { position: absolute; width: 100%; text-align: center; font-size: 0.7rem; color: #FFFFFF; font-weight: bold; top: 0; line-height: 16px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
 
-        /* Indicador de sincronización */
         .sync-status { display: flex; align-items: center; justify-content: space-between; background: #27303F; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #4B5563; }
         .status-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; background: rgba(16, 185, 129, 0.2); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.4); }
         .status-dot { width: 8px; height: 8px; background-color: #10B981; border-radius: 50%; box-shadow: 0 0 8px #10B981; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
-        /* Botón de Carga de Excel Directo */
         .upload-wrapper { display: flex; justify-content: space-between; align-items: center; background: #27303F; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; border: 1px dashed #4B5563; }
         .upload-btn { background-color: #3B82F6; color: white; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.9rem; transition: background 0.3s; display: inline-block; }
         .upload-btn:hover { background-color: #2563EB; }
         #excel-file { display: none; }
 
-        /* Panel Rendimiento */
         .panel-avance-general {
             display: flex; flex-wrap: wrap; justify-content: space-around; align-items: center; gap: 30px; 
             border-left: 6px solid #10B981; padding: 40px 30px; background: linear-gradient(145deg, #1F2937 0%, #171F2E 100%); 
@@ -133,7 +142,6 @@
         .avance-text-container { flex: 1; min-width: 300px; max-width: 600px; }
         .avance-chart-container { width: 280px; height: 280px; position: relative; display: flex; justify-content: center; align-items: center; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3)); }
 
-        /* RESPONSIVIDAD ADAPTATIVA */
         @media (max-width: 1250px) {
             .map-header-overlay { flex-wrap: wrap; gap: 10px; }
             .overlay-total { border-right: none; padding-right: 0; margin: 0 auto; }
@@ -156,7 +164,6 @@
 </head>
 <body>
 
-    <!-- BARRA SUPERIOR -->
     <header>
         <h1>MIT — Zonal 7 | Transparencia y Mantenimiento Vial</h1>
         <div class="nav-tabs">
@@ -165,11 +172,9 @@
         </div>
     </header>
 
-    <!-- VISTA 1: CRONOGRAMA, FRENTES Y SEGUIMIENTO -->
     <div id="cronograma-view" class="view-container active">
         <div style="max-width: 1400px; margin: 0 auto; width: 100%; padding: 20px 0;">
             
-            <!-- PARÁMETROS GENERALES -->
             <div class="planificacion-banner">
                 <div style="font-size: 0.9rem; color: #10B981; font-weight: bold; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px;">⚙️ Resumen de Inversión y Capacidad Operativa</div>
                 <div class="planificacion-grid">
@@ -226,7 +231,6 @@
                 </div>
             </div>
 
-            <!-- SECCIÓN DE LOS TRES FRENTES -->
             <div class="frentes-container">
                 <div class="frente-card">
                     <div class="frente-badge">Frente 1</div>
@@ -254,7 +258,6 @@
                 </div>
             </div>
 
-            <!-- SECCIÓN: RENDIMIENTO Y AVANCE GENERAL -->
             <div class="panel-avance-general">
                 <div class="avance-text-container">
                     <h3 style="margin-top: 0; color: #10B981; border-bottom: none; padding-bottom: 0; font-size: 1.3rem; letter-spacing: 1px;">📈 AVANCE DE MANTENIMIENTO Y PREVENCIÓN</h3>
@@ -271,7 +274,6 @@
                 </div>
             </div>
 
-            <!-- SECCIÓN: BENEFICIOS DEL MANTENIMIENTO -->
             <div class="panel" style="border-left: 6px solid #3B82F6; padding: 30px;">
                 <h3 style="color: #60A5FA; margin-top: 0; font-size: 1.2rem; text-align: center; border-bottom: none; margin-bottom: 25px;">🌟 BENEFICIOS DEL MANTENIMIENTO PREVENTIVO</h3>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
@@ -293,7 +295,6 @@
                 </div>
             </div>
 
-            <!-- PANEL 1: TABLA OFICIAL DINÁMICA CONECTADA AL EXCEL -->
             <div class="panel">
                 <h3>📋 Despliegue Técnico y Progreso en Campo</h3>
                 
@@ -345,26 +346,27 @@
         </div>
     </div>
 
-    <!-- VISTA 2: GEOPORTAL (MAPA QGIS) -->
     <div id="geoportal-view" class="view-container">
         
-        <!-- BARRA LATERAL REORDENADA -->
         <div id="sidebar">
-            <h3 style="font-size: 1.05rem; color: #D1D5DB; margin-top: 0; text-transform: uppercase;">🗺️ Control de Capas de Prevención</h3>
+            <h3>🗺️ Control de Capas de Prevención</h3>
             <div style="background-color: #27303F; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
                 <label class="capa-label"><input type="checkbox" id="chk-rutas" checked style="accent-color: #2563EB; width: 16px; height: 16px;"> <span style="color: #60A5FA; margin-left: 8px; font-weight: bold;">—</span> Red Vial Estatal</label>
                 <hr style="border: 0; border-top: 1px solid #4B5563; margin: 15px 0;">
+                
+                <!-- CHECKLIST DIVIDIDO: PENDIENTES VS ATENDIDAS -->
+                <div style="font-size: 0.8rem; color: #9CA3AF; margin-bottom: 12px; font-weight: bold; border-bottom: 1px solid #4B5563; padding-bottom: 5px;">⏳ ALCANTARILLAS PENDIENTES</div>
                 <label class="capa-label"><input type="checkbox" id="chk-inmediata" checked style="accent-color: #FF0000; width: 16px; height: 16px;"> <span style="color: #FF0000; margin-left: 8px;">●</span> Intervención Inmediata</label>
                 <label class="capa-label"><input type="checkbox" id="chk-alta" checked style="accent-color: #FFFF00; width: 16px; height: 16px;"> <span style="color: #FFFF00; margin-left: 8px;">●</span> Atención Alta</label>
-                <label class="capa-label"><input type="checkbox" id="chk-altainmediata" checked style="accent-color: #FF7F00; width: 16px; height: 16px;"> <span style="color: #FF7F00; margin-left: 8px;">●</span> Atención Alta / Inmediata</label>
+                <label class="capa-label"><input type="checkbox" id="chk-altainmediata" checked style="accent-color: #FF7F00; width: 16px; height: 16px;"> <span style="color: #FF7F00; margin-left: 8px;">●</span> Alta / Inmediata</label>
                 <label class="capa-label"><input type="checkbox" id="chk-prioritaria" checked style="accent-color: #00FF00; width: 16px; height: 16px;"> <span style="color: #00FF00; margin-left: 8px;">●</span> Prioritaria</label>
                 <label class="capa-label"><input type="checkbox" id="chk-media" checked style="accent-color: #008000; width: 16px; height: 16px;"> <span style="color: #008000; margin-left: 8px;">●</span> Atención Media</label>
-                <hr style="border: 0; border-top: 1px solid #4B5563; margin: 15px 0;">
-                <label class="capa-label"><input type="checkbox" id="chk-limpias" checked style="accent-color: #8B4513; width: 16px; height: 16px;"> <span style="color: #8B4513; margin-left: 8px;">●</span> Alcantarillas de la RVE</label>
+                
+                <div style="font-size: 0.8rem; color: #10B981; margin-bottom: 12px; margin-top: 20px; font-weight: bold; border-bottom: 1px solid #4B5563; padding-bottom: 5px;">✅ ALCANTARILLAS RESUELTAS</div>
+                <label class="capa-label"><input type="checkbox" id="chk-atendidas" checked style="accent-color: #00FFFF; width: 16px; height: 16px;"> <span style="color: #00FFFF; margin-left: 8px; text-shadow: 0 0 5px #00FFFF;">●</span> Alcantarillas Atendidas</label>
             </div>
 
-            <!-- GRÁFICA DE TRAMOS -->
-            <h3 style="font-size: 1.05rem; color: #D1D5DB; text-transform: uppercase;"><span style="color: #EC4899;">📍</span> PUNTOS PRIORITARIOS POR VÍA ESTATAL</h3>
+            <h3 style="margin-bottom: 10px;"><span style="color: #EC4899;">📍</span> PUNTOS PRIORITARIOS POR VÍA ESTATAL</h3>
             <p style="font-size: 0.8rem; color: #9CA3AF; margin-top: -5px; margin-bottom: 10px;"><i>Haz clic en una barra para enfocar el tramo</i></p>
             
             <div style="background-color: #1a2234; padding: 20px 15px; border-radius: 8px; flex-grow: 1;">
@@ -376,10 +378,8 @@
             <button class="btn-reset-zoom" onclick="resetMapa()">🌍 Restaurar Vista Zonal 7</button>
         </div>
 
-        <!-- CONTENEDOR DEL MAPA Y EL NUEVO ENCABEZADO FLOTANTE -->
         <div id="map-wrapper">
             
-            <!-- ENCABEZADO FLOTANTE: PUNTOS CRÍTICOS Y PREVENCIÓN -->
             <div class="map-header-overlay">
                 <div class="overlay-total">
                     <div>
@@ -413,20 +413,18 @@
                 </div>
             </div>
 
-            <!-- MAPA LEAFLET -->
             <div id="map"></div>
         </div>
     </div>
 
-    <!-- CONEXIÓN DE DATOS ESPACIALES -->
     <script src="alcantarillas.js"></script>
     <script src="rutasRVE.js"></script>
 
-    <!-- SCRIPT DE LECTURA DINÁMICA DE EXCEL Y TOPOGRAFÍA -->
     <script>
-        // MOTOR JAVASCRIPT PARA EL SELECTOR DE FOTOGRAFÍAS
+        // MEMORIA MAESTRA DE ALCANTARILLAS LIMPIAS
+        let setAlcantarillasAtendidas = new Set();
+
         window.cambiarFoto = function(tipo, id, valor) {
-            // CORRECCIÓN EXACTA A LA NOMENCLATURA SIN GUIONES (1820antes2.jpg)
             let sufijo = valor === '1' ? '' : valor;
             let imgElement = document.getElementById('img-' + tipo + '-' + id);
             if(imgElement) {
@@ -471,11 +469,25 @@
         function procesarDatosExcel(excelRows) {
             let resumenEmpresas = {};
             let totalLimpiasGlobal = 0;
+            setAlcantarillasAtendidas.clear(); // Reseteo de memoria
 
             excelRows.forEach(row => {
                 let rowData = {};
                 for (let key in row) {
                     rowData[key.trim().toUpperCase()] = row[key];
+                }
+
+                // NUEVO: EXTRACCIÓN DE CÓDIGOS DE ALCANTARILLAS ATENDIDAS
+                let estadoCelda = String(rowData['ESTADO'] || '').trim().toUpperCase();
+                if (estadoCelda === 'LIMPIO') {
+                    let codigosStr = String(rowData['CODIGO_ALCANTARILLA'] || '');
+                    let codigosArray = codigosStr.split(',');
+                    codigosArray.forEach(codigo => {
+                        let codLimpio = codigo.trim();
+                        if (codLimpio !== '') {
+                            setAlcantarillasAtendidas.add(codLimpio);
+                        }
+                    });
                 }
 
                 let rawEmpresa = rowData['MICROEMPRESA'] || '';
@@ -596,6 +608,9 @@
             if(Object.keys(resumenEmpresas).length === 0) {
                 tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #9CA3AF; padding: 20px;">No se encontraron datos válidos en el archivo Excel.</td></tr>`;
             }
+
+            // UNA VEZ EXTRAIDOS LOS DATOS, RENDERIZAMOS LOS PUNTOS EN EL MAPA
+            actualizarMapaGeografico();
         }
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -649,6 +664,9 @@
                     
                     document.getElementById('tabla-rendimiento-body').innerHTML = `<tr><td colspan="8" style="text-align: center; color: #F59E0B; padding: 20px;"><b>No se detectó el archivo en el servidor.</b><br>Por favor, usa el botón de "Carga Local" abajo para leer el archivo desde tu computadora.</td></tr>`;
                     document.getElementById('manual-upload-container').style.display = 'flex';
+                    
+                    // Si falla el excel, pintamos el mapa vacío de cruces para no dejar la pantalla en negro
+                    actualizarMapaGeografico();
                 });
         });
 
@@ -678,7 +696,6 @@
             reader.readAsArrayBuffer(f);
         });
 
-        // Inicialización de Leaflet y Gráficos
         Chart.register(ChartDataLabels);
         const centroZonal = [-4.0, -79.2];
         const zoomOriginal = 9;
@@ -695,12 +712,12 @@
         }
 
         let grupoRutas = L.layerGroup().addTo(map);
-        let grupoLimpias = L.layerGroup().addTo(map); 
         let grupoInmediata = L.layerGroup().addTo(map);
         let grupoAlta = L.layerGroup().addTo(map);
         let grupoAltaInmediata = L.layerGroup().addTo(map);
         let grupoMedia = L.layerGroup().addTo(map);
         let grupoPrioritaria = L.layerGroup().addTo(map);
+        let grupoAtendidas = L.layerGroup().addTo(map); // NUEVO GRUPO PARA CHECKLIST
 
         if (typeof rutasRVEData !== 'undefined') {
             L.geoJSON(rutasRVEData, {
@@ -708,214 +725,237 @@
             }).addTo(grupoRutas);
         }
 
-        let criticasCount = 0;
-        let countInm = 0, countAlt = 0, countAltInm = 0, countMed = 0, countPrio = 0;
-        let conteoTramos = {};
         let capaAlcantarillas;
-        
-        if (typeof alcantarillasData !== 'undefined') {
-            capaAlcantarillas = L.geoJSON(alcantarillasData, {
-                pointToLayer: function (feature, latlng) {
-                    if (!feature.properties) {
-                        return L.circleMarker(latlng, { radius: 5, fillColor: "#cccccc", weight: 1, color: "#ffffff", opacity: 1, fillOpacity: 0.8 });
-                    }
 
-                    let idUnico = feature.properties['OBJECTID'] || feature.properties['FID'] || feature.properties['ID'] || feature.properties['id'] || feature.properties['NUMERO'] || feature.properties['numero'] || 'S/N';
+        // MOTOR PRINCIPAL DE RENDERIZADO ESPACIAL
+        function actualizarMapaGeografico() {
+            grupoInmediata.clearLayers();
+            grupoAlta.clearLayers();
+            grupoAltaInmediata.clearLayers();
+            grupoMedia.clearLayers();
+            grupoPrioritaria.clearLayers();
+            grupoAtendidas.clearLayers();
 
-                    let nivelRaw = feature.properties['PRIORIDAD'] || feature.properties['prioridad'] || feature.properties['Prioridad'] || '';
-                    let nivel = String(nivelRaw).toLowerCase().replace(/\s+/g, ''); 
-                    
-                    let tramoRaw = feature.properties['TRAMO'] || feature.properties['tramo'] || feature.properties['Tramo'] || 'Desconocido';
-                    let tramo = String(tramoRaw).trim().toUpperCase(); 
-                    
-                    let codigoD = feature.properties['CÓDIGO_D_'] || feature.properties['CODIGO_D_'] || feature.properties['codigo'] || feature.properties['CODIGO'] || 'N/A';
-                    let estadoFisico = feature.properties['ESTADO DE'] || feature.properties['ESTADO_DE'] || feature.properties['estado'] || feature.properties['ESTADO'] || 'N/A';
+            if (capaAlcantarillas) {
+                map.removeLayer(capaAlcantarillas);
+            }
 
-                    let colorPunto = '#8B4513'; 
-                    let esCritica = false;
+            let criticasCount = 0;
+            let countInm = 0, countAlt = 0, countAltInm = 0, countMed = 0, countPrio = 0;
+            let conteoTramos = {};
 
-                    if (nivel === 'inmediata') { colorPunto = '#FF0000'; esCritica = true; countInm++; } 
-                    else if (nivel === 'alta') { colorPunto = '#FFFF00'; esCritica = true; countAlt++; } 
-                    else if (nivel === 'alta/inmediata' || nivel === 'altainmediata') { colorPunto = '#FF7F00'; esCritica = true; countAltInm++; } 
-                    else if (nivel === 'media') { colorPunto = '#008000'; esCritica = true; countMed++; } 
-                    else if (nivel === 'prioritaria') { colorPunto = '#00FF00'; esCritica = true; countPrio++; }
-
-                    if (esCritica) {
-                        criticasCount++;
-                        if (tramo && tramo !== "DESCONOCIDO" && tramo !== "") {
-                            conteoTramos[tramo] = (conteoTramos[tramo] || 0) + 1;
+            if (typeof alcantarillasData !== 'undefined') {
+                capaAlcantarillas = L.geoJSON(alcantarillasData, {
+                    pointToLayer: function (feature, latlng) {
+                        if (!feature.properties) {
+                            return L.circleMarker(latlng, { radius: 5, fillColor: "#cccccc", weight: 1, color: "#ffffff", opacity: 1, fillOpacity: 0.8 });
                         }
-                    }
 
-                    let marcador = L.circleMarker(latlng, {
-                        radius: 5, fillColor: colorPunto, color: "#ffffff", weight: 1, opacity: 1, fillOpacity: 0.9
-                    });
-                    
-                    let popupContent = '';
-                    
-                    if (!esCritica) {
-                        popupContent = `
-                            <div style="font-family: 'Segoe UI', Tahoma, sans-serif;">
-                                <h4 style="margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 1px solid #374151; color: #F59E0B; font-size: 1.15rem; font-weight: bold;">
-                                    ${tramoRaw}
-                                </h4>
-                                <div style="margin-bottom: 8px; font-size: 0.95rem;">
-                                    <b style="color: #ffffff;">ID Único:</b> <span style="color: #9CA3AF;">${idUnico}</span>
-                                </div>
-                                <div style="margin-bottom: 8px; font-size: 0.95rem;">
-                                    <b style="color: #ffffff;">Código:</b> <span style="color: #9CA3AF;">${codigoD}</span>
-                                </div>
-                            </div>
-                        `;
-                    } else {
-                        popupContent = `
-                            <div style="font-family: 'Segoe UI', Tahoma, sans-serif;">
-                                <h4 style="margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 1px solid #374151; color: #F59E0B; font-size: 1.25rem; font-weight: bold;">
-                                    ${tramoRaw}
-                                </h4>
-                                <div style="margin-bottom: 8px; font-size: 0.95rem;">
-                                    <b style="color: #ffffff;">ID Único:</b> <span style="color: #9CA3AF;">${idUnico}</span>
-                                </div>
-                                <div style="margin-bottom: 8px; font-size: 0.95rem;">
-                                    <b style="color: #ffffff;">Código:</b> <span style="color: #9CA3AF;">${codigoD}</span>
-                                </div>
-                                <div style="margin-bottom: 8px; font-size: 0.95rem;">
-                                    <b style="color: #ffffff;">Diagnóstico Inicial:</b> <span style="color: #9CA3AF;">${estadoFisico}</span>
-                                </div>
-                                <div style="font-size: 0.95rem; margin-bottom: 15px;">
-                                    <b style="color: #ffffff;">Nivel de Atención:</b> <span style="color: #9CA3AF; font-weight:bold;">${nivelRaw || 'N/A'}</span>
-                                </div>
-                                
-                                <div style="display:flex; gap:15px; margin-top:15px;">
-                                    <div style="flex:1; text-align:center;">
-                                        <div style="font-size:0.8rem; color:#EF4444; font-weight:bold; margin-bottom:5px;">ANTES</div>
-                                        <select onchange="cambiarFoto('antes', '${idUnico}', this.value)" style="width: 100%; margin-bottom: 10px; background: #374151; color: white; border: 1px solid #4B5563; border-radius: 4px; padding: 5px; font-size: 0.8rem; cursor: pointer;">
-                                            <option value="1">📸 Fotografía 1</option>
-                                            <option value="2">📸 Fotografía 2</option>
-                                            <option value="3">📸 Fotografía 3</option>
-                                        </select>
-                                        <div style="position: relative; width: 100%; height: 160px; background-color: #27303F; border-radius: 6px; border: 1px solid #4B5563; overflow: hidden;">
-                                            <div style="position: absolute; top:50%; left:50%; transform: translate(-50%, -50%); color: #9CA3AF; font-size: 0.8rem; z-index: 0; width: 100%;">Sin imagen disponible</div>
-                                            <img id="img-antes-${idUnico}" src="fotos/${idUnico}antes.jpg" style="position: relative; z-index: 1; width:100%; height:100%; object-fit:cover; transition: opacity 0.3s ease;" onerror="this.style.opacity='0';" onload="this.style.opacity='1';" alt="Evidencia Antes">
-                                        </div>
-                                    </div>
-                                    
-                                    <div style="flex:1; text-align:center;">
-                                        <div style="font-size:0.8rem; color:#10B981; font-weight:bold; margin-bottom:5px;">DESPUÉS</div>
-                                        <select onchange="cambiarFoto('despues', '${idUnico}', this.value)" style="width: 100%; margin-bottom: 10px; background: #374151; color: white; border: 1px solid #4B5563; border-radius: 4px; padding: 5px; font-size: 0.8rem; cursor: pointer;">
-                                            <option value="1">📸 Fotografía 1</option>
-                                            <option value="2">📸 Fotografía 2</option>
-                                            <option value="3">📸 Fotografía 3</option>
-                                        </select>
-                                        <div style="position: relative; width: 100%; height: 160px; background-color: #27303F; border-radius: 6px; border: 1px solid #4B5563; overflow: hidden;">
-                                            <div style="position: absolute; top:50%; left:50%; transform: translate(-50%, -50%); color: #9CA3AF; font-size: 0.8rem; z-index: 0; width: 100%;">Sin imagen disponible</div>
-                                            <img id="img-despues-${idUnico}" src="fotos/${idUnico}despues.jpg" style="position: relative; z-index: 1; width:100%; height:100%; object-fit:cover; transition: opacity 0.3s ease;" onerror="this.style.opacity='0';" onload="this.style.opacity='1';" alt="Evidencia Después">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    }
-                    
-                    marcador.bindPopup(popupContent, { minWidth: 460 });
-                    return marcador;
-                },
-                onEachFeature: function (feature, layer) {
-                    if (!feature.properties) return;
-                    let nivelRaw = feature.properties['PRIORIDAD'] || feature.properties['prioridad'] || feature.properties['Prioridad'] || '';
-                    let nivel = String(nivelRaw).toLowerCase().replace(/\s+/g, '');
-                    
-                    if (nivel === 'inmediata') grupoInmediata.addLayer(layer);
-                    else if (nivel === 'alta') grupoAlta.addLayer(layer);
-                    else if (nivel === 'alta/inmediata' || nivel === 'altainmediata') grupoAltaInmediata.addLayer(layer);
-                    else if (nivel === 'media') grupoMedia.addLayer(layer);
-                    else if (nivel === 'prioritaria') grupoPrioritaria.addLayer(layer);
-                    else grupoLimpias.addLayer(layer);
-                }
-            });
+                        let idUnico = feature.properties['OBJECTID'] || feature.properties['FID'] || feature.properties['ID'] || feature.properties['id'] || feature.properties['NUMERO'] || feature.properties['numero'] || 'S/N';
+                        
+                        // VERIFICAMOS EN LA MEMORIA MAESTRA SI ESTÁ ATENDIDA
+                        let esAtendida = setAlcantarillasAtendidas.has(String(idUnico));
 
-            document.getElementById('kpi-total').innerText = criticasCount;
-            document.getElementById('val-inmediata').innerText = countInm;
-            document.getElementById('val-alta').innerText = countAlt;
-            document.getElementById('val-altainm').innerText = countAltInm;
-            document.getElementById('val-media').innerText = countMed;
-            document.getElementById('val-prioritaria').innerText = countPrio;
+                        let nivelRaw = feature.properties['PRIORIDAD'] || feature.properties['prioridad'] || feature.properties['Prioridad'] || '';
+                        let nivel = String(nivelRaw).toLowerCase().replace(/\s+/g, ''); 
+                        let tramoRaw = feature.properties['TRAMO'] || feature.properties['tramo'] || feature.properties['Tramo'] || 'Desconocido';
+                        let tramo = String(tramoRaw).trim().toUpperCase(); 
+                        let codigoD = feature.properties['CÓDIGO_D_'] || feature.properties['CODIGO_D_'] || feature.properties['codigo'] || feature.properties['CODIGO'] || 'N/A';
+                        let estadoFisico = feature.properties['ESTADO DE'] || feature.properties['ESTADO_DE'] || feature.properties['estado'] || feature.properties['ESTADO'] || 'N/A';
 
-            let tramosOrdenados = Object.keys(conteoTramos).sort((a, b) => conteoTramos[b] - conteoTramos[a]);
-            let valoresOrdenados = tramosOrdenados.map(t => conteoTramos[t]);
+                        let colorPunto = '#8B4513'; 
+                        let esCritica = false;
 
-            let cantidadTramos = tramosOrdenados.length;
-            let alturaIdeal = Math.max(300, (cantidadTramos * 32) + 20); 
-            document.getElementById('graficoTramosWrapper').style.height = alturaIdeal + 'px';
+                        if (nivel === 'inmediata') { colorPunto = '#FF0000'; esCritica = true; countInm++; } 
+                        else if (nivel === 'alta') { colorPunto = '#FFFF00'; esCritica = true; countAlt++; } 
+                        else if (nivel === 'alta/inmediata' || nivel === 'altainmediata') { colorPunto = '#FF7F00'; esCritica = true; countAltInm++; } 
+                        else if (nivel === 'media') { colorPunto = '#008000'; esCritica = true; countMed++; } 
+                        else if (nivel === 'prioritaria') { colorPunto = '#00FF00'; esCritica = true; countPrio++; }
 
-            const ctx = document.getElementById('graficoTramos').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: tramosOrdenados,
-                    datasets: [{
-                        label: 'Puntos Prioritarios',
-                        data: valoresOrdenados,
-                        backgroundColor: '#3B82F6', 
-                        borderRadius: 4,
-                        barPercentage: 0.6,
-                        categoryPercentage: 0.8
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    onClick: (event, activeElements) => {
-                        if (activeElements.length > 0 && capaAlcantarillas) {
-                            const dataIndex = activeElements[0].index;
-                            const tramoSeleccionado = tramosOrdenados[dataIndex];
-                            let latlngs = [];
-                            capaAlcantarillas.eachLayer(function(layer) {
-                                if (!layer.feature || !layer.feature.properties) return;
-                                let tramoRaw = layer.feature.properties['TRAMO'] || layer.feature.properties['tramo'] || layer.feature.properties['Tramo'] || '';
-                                let tramoActual = String(tramoRaw).trim().toUpperCase();
-                                if (tramoActual === tramoSeleccionado) latlngs.push(layer.getLatLng());
-                            });
-                            if (latlngs.length > 0) {
-                                map.flyToBounds(L.latLngBounds(latlngs), { padding: [50, 50], maxZoom: 13, duration: 1.5 });
+                        if (esCritica) {
+                            criticasCount++;
+                            if (tramo && tramo !== "DESCONOCIDO" && tramo !== "") {
+                                conteoTramos[tramo] = (conteoTramos[tramo] || 0) + 1;
                             }
                         }
-                    },
-                    layout: { 
-                        padding: { left: 0, right: 30, top: 10, bottom: 10 } 
-                    },
-                    plugins: { 
-                        legend: { display: false },
-                        datalabels: { 
-                            color: '#ffffff', 
-                            anchor: 'start', 
-                            align: 'right', 
-                            offset: 8, 
-                            backgroundColor: '#60A5FA', 
-                            borderRadius: 4, 
-                            font: { weight: 'bold', size: 11 },
-                            padding: { left: 6, right: 6, top: 3, bottom: 3 }
+
+                        let marcador;
+                        
+                        // DIBUJO DEL PUNTO (AURA AZUL VS CÍRCULO NORMAL)
+                        if (esAtendida) {
+                            let iconAura = L.divIcon({
+                                className: 'custom-aura-icon',
+                                html: '<div class="aura-azul"></div>',
+                                iconSize: [12, 12],
+                                iconAnchor: [6, 6]
+                            });
+                            marcador = L.marker(latlng, {icon: iconAura});
+                        } else {
+                            marcador = L.circleMarker(latlng, { radius: 5, fillColor: colorPunto, color: "#ffffff", weight: 1, opacity: 1, fillOpacity: 0.9 });
                         }
+                        
+                        let popupContent = '';
+                        
+                        if (!esCritica) {
+                            popupContent = `
+                                <div style="font-family: 'Segoe UI', Tahoma, sans-serif;">
+                                    <h4 style="margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 1px solid #374151; color: #F59E0B; font-size: 1.15rem; font-weight: bold;">
+                                        ${tramoRaw}
+                                    </h4>
+                                    <div style="margin-bottom: 8px; font-size: 0.95rem;">
+                                        <b style="color: #ffffff;">ID Único:</b> <span style="color: #9CA3AF;">${idUnico}</span>
+                                    </div>
+                                    <div style="margin-bottom: 8px; font-size: 0.95rem;">
+                                        <b style="color: #ffffff;">Código:</b> <span style="color: #9CA3AF;">${codigoD}</span>
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            // SI ESTÁ ATENDIDA, MOSTRAR ETIQUETA VERDE DE CONFIRMACIÓN
+                            let badgeEstado = esAtendida 
+                                ? `<div style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10B981; color: #10B981; padding: 6px 10px; border-radius: 6px; font-weight: bold; text-align: center; margin-bottom: 15px; letter-spacing: 0.5px;">✅ ESTADO: LIMPIA / ATENDIDA</div>`
+                                : `<div style="font-size: 0.95rem; margin-bottom: 15px;"><b style="color: #ffffff;">Nivel de Atención:</b> <span style="color: #9CA3AF; font-weight:bold;">${nivelRaw || 'N/A'}</span></div>`;
+
+                            popupContent = `
+                                <div style="font-family: 'Segoe UI', Tahoma, sans-serif;">
+                                    <h4 style="margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 1px solid #374151; color: #F59E0B; font-size: 1.25rem; font-weight: bold;">
+                                        ${tramoRaw}
+                                    </h4>
+                                    <div style="margin-bottom: 8px; font-size: 0.95rem;">
+                                        <b style="color: #ffffff;">ID Único:</b> <span style="color: #9CA3AF;">${idUnico}</span>
+                                    </div>
+                                    <div style="margin-bottom: 8px; font-size: 0.95rem;">
+                                        <b style="color: #ffffff;">Código:</b> <span style="color: #9CA3AF;">${codigoD}</span>
+                                    </div>
+                                    <div style="margin-bottom: 8px; font-size: 0.95rem;">
+                                        <b style="color: #ffffff;">Diagnóstico Inicial:</b> <span style="color: #9CA3AF;">${estadoFisico}</span>
+                                    </div>
+                                    
+                                    ${badgeEstado}
+                                    
+                                    <div style="display:flex; gap:15px; margin-top:15px;">
+                                        <div style="flex:1; text-align:center;">
+                                            <div style="font-size:0.8rem; color:#EF4444; font-weight:bold; margin-bottom:5px;">ANTES</div>
+                                            <select onchange="cambiarFoto('antes', '${idUnico}', this.value)" style="width: 100%; margin-bottom: 10px; background: #374151; color: white; border: 1px solid #4B5563; border-radius: 4px; padding: 5px; font-size: 0.8rem; cursor: pointer;">
+                                                <option value="1">📸 Fotografía 1</option>
+                                                <option value="2">📸 Fotografía 2</option>
+                                                <option value="3">📸 Fotografía 3</option>
+                                            </select>
+                                            <div style="position: relative; width: 100%; height: 160px; background-color: #27303F; border-radius: 6px; border: 1px solid #4B5563; overflow: hidden;">
+                                                <div style="position: absolute; top:50%; left:50%; transform: translate(-50%, -50%); color: #9CA3AF; font-size: 0.8rem; z-index: 0; width: 100%;">Sin imagen disponible</div>
+                                                <img id="img-antes-${idUnico}" src="fotos/${idUnico}antes.jpg" style="position: relative; z-index: 1; width:100%; height:100%; object-fit:cover; transition: opacity 0.3s ease;" onerror="this.style.opacity='0';" onload="this.style.opacity='1';" alt="Evidencia Antes">
+                                            </div>
+                                        </div>
+                                        
+                                        <div style="flex:1; text-align:center;">
+                                            <div style="font-size:0.8rem; color:#10B981; font-weight:bold; margin-bottom:5px;">DESPUÉS</div>
+                                            <select onchange="cambiarFoto('despues', '${idUnico}', this.value)" style="width: 100%; margin-bottom: 10px; background: #374151; color: white; border: 1px solid #4B5563; border-radius: 4px; padding: 5px; font-size: 0.8rem; cursor: pointer;">
+                                                <option value="1">📸 Fotografía 1</option>
+                                                <option value="2">📸 Fotografía 2</option>
+                                                <option value="3">📸 Fotografía 3</option>
+                                            </select>
+                                            <div style="position: relative; width: 100%; height: 160px; background-color: #27303F; border-radius: 6px; border: 1px solid #4B5563; overflow: hidden;">
+                                                <div style="position: absolute; top:50%; left:50%; transform: translate(-50%, -50%); color: #9CA3AF; font-size: 0.8rem; z-index: 0; width: 100%;">Sin imagen disponible</div>
+                                                <img id="img-despues-${idUnico}" src="fotos/${idUnico}despues.jpg" style="position: relative; z-index: 1; width:100%; height:100%; object-fit:cover; transition: opacity 0.3s ease;" onerror="this.style.opacity='0';" onload="this.style.opacity='1';" alt="Evidencia Después">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                        
+                        marcador.bindPopup(popupContent, { minWidth: 460 });
+                        return marcador;
                     },
-                    scales: {
-                        x: { 
-                            display: false, 
-                            max: Math.max(...valoresOrdenados) * 1.2 
-                        },
-                        y: { 
-                            ticks: { 
-                                color: '#D1D5DB', 
-                                font: { weight: 'bold', size: 9 },
-                                autoSkip: false,
-                                padding: 8
-                            }, 
-                            grid: { display: false, drawBorder: false }, 
-                            border: { display: false } 
+                    onEachFeature: function (feature, layer) {
+                        if (!feature.properties) return;
+                        
+                        let idUnico = feature.properties['OBJECTID'] || feature.properties['FID'] || feature.properties['ID'] || feature.properties['id'] || feature.properties['NUMERO'] || feature.properties['numero'] || 'S/N';
+                        
+                        // CLASIFICACIÓN EN CAPAS (CHECKLIST)
+                        if (setAlcantarillasAtendidas.has(String(idUnico))) {
+                            grupoAtendidas.addLayer(layer); // Va directo a la capa Resueltas
+                        } else {
+                            let nivelRaw = feature.properties['PRIORIDAD'] || feature.properties['prioridad'] || feature.properties['Prioridad'] || '';
+                            let nivel = String(nivelRaw).toLowerCase().replace(/\s+/g, '');
+                            
+                            if (nivel === 'inmediata') grupoInmediata.addLayer(layer);
+                            else if (nivel === 'alta') grupoAlta.addLayer(layer);
+                            else if (nivel === 'alta/inmediata' || nivel === 'altainmediata') grupoAltaInmediata.addLayer(layer);
+                            else if (nivel === 'media') grupoMedia.addLayer(layer);
+                            else if (nivel === 'prioritaria') grupoPrioritaria.addLayer(layer);
                         }
                     }
-                }
-            });
+                }); // NO añadimos .addTo(map) directamente, lo controlan los Checkboxes
+
+                document.getElementById('kpi-total').innerText = criticasCount;
+                document.getElementById('val-inmediata').innerText = countInm;
+                document.getElementById('val-alta').innerText = countAlt;
+                document.getElementById('val-altainm').innerText = countAltInm;
+                document.getElementById('val-media').innerText = countMed;
+                document.getElementById('val-prioritaria').innerText = countPrio;
+
+                let tramosOrdenados = Object.keys(conteoTramos).sort((a, b) => conteoTramos[b] - conteoTramos[a]);
+                let valoresOrdenados = tramosOrdenados.map(t => conteoTramos[t]);
+
+                let cantidadTramos = tramosOrdenados.length;
+                let alturaIdeal = Math.max(300, (cantidadTramos * 32) + 20); 
+                document.getElementById('graficoTramosWrapper').style.height = alturaIdeal + 'px';
+
+                // REFRESCAR GRÁFICO DE BARRAS
+                let chartElement = document.getElementById('graficoTramos');
+                let chartInstance = Chart.getChart(chartElement);
+                if (chartInstance) chartInstance.destroy();
+
+                const ctx = chartElement.getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: tramosOrdenados,
+                        datasets: [{
+                            label: 'Puntos Prioritarios',
+                            data: valoresOrdenados,
+                            backgroundColor: '#3B82F6', 
+                            borderRadius: 4,
+                            barPercentage: 0.6,
+                            categoryPercentage: 0.8
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        onClick: (event, activeElements) => {
+                            if (activeElements.length > 0 && capaAlcantarillas) {
+                                const dataIndex = activeElements[0].index;
+                                const tramoSeleccionado = tramosOrdenados[dataIndex];
+                                let latlngs = [];
+                                capaAlcantarillas.eachLayer(function(layer) {
+                                    if (!layer.feature || !layer.feature.properties) return;
+                                    let tramoRaw = layer.feature.properties['TRAMO'] || layer.feature.properties['tramo'] || layer.feature.properties['Tramo'] || '';
+                                    let tramoActual = String(tramoRaw).trim().toUpperCase();
+                                    if (tramoActual === tramoSeleccionado) latlngs.push(layer.getLatLng());
+                                });
+                                if (latlngs.length > 0) {
+                                    map.flyToBounds(L.latLngBounds(latlngs), { padding: [50, 50], maxZoom: 13, duration: 1.5 });
+                                }
+                            }
+                        },
+                        layout: { padding: { left: 0, right: 30, top: 10, bottom: 10 } },
+                        plugins: { 
+                            legend: { display: false },
+                            datalabels: { 
+                                color: '#ffffff', anchor: 'start', align: 'right', offset: 8, backgroundColor: '#60A5FA', 
+                                borderRadius: 4, font: { weight: 'bold', size: 11 }, padding: { left: 6, right: 6, top: 3, bottom: 3 }
+                            }
+                        },
+                        scales: {
+                            x: { display: false, max: Math.max(...valoresOrdenados) * 1.2 },
+                            y: { ticks: { color: '#D1D5DB', font: { weight: 'bold', size: 9 }, autoSkip: false, padding: 8 }, grid: { display: false, drawBorder: false }, border: { display: false } }
+                        }
+                    }
+                });
+            }
         }
 
         const toggleCapa = (idCheck, grupoCapa) => {
@@ -930,7 +970,7 @@
         toggleCapa('chk-altainmediata', grupoAltaInmediata);
         toggleCapa('chk-media', grupoMedia);
         toggleCapa('chk-prioritaria', grupoPrioritaria);
-        toggleCapa('chk-limpias', grupoLimpias);
+        toggleCapa('chk-atendidas', grupoAtendidas); // EVENTO DEL NUEVO CHECKLIST
     </script>
 </body>
 </html>
