@@ -28,27 +28,27 @@
 
         /* --- VISTA 1: GEOPORTAL (MAPA Y SIDEBAR) --- */
         #geoportal-view.active { display: flex; flex-direction: row; }
-        #sidebar { width: 380px; background-color: #1F2937; padding: 25px; box-shadow: 2px 0 10px rgba(0,0,0,0.6); overflow-y: auto; z-index: 1000; box-sizing: border-box; height: 100%; display: flex; flex-direction: column; }
+        
+        /* BARRA LATERAL AJUSTADA PARA CHROME */
+        #sidebar { width: 360px; background-color: #1F2937; padding: 25px 20px; box-shadow: 2px 0 10px rgba(0,0,0,0.6); overflow-y: auto; z-index: 1000; box-sizing: border-box; height: 100%; display: flex; flex-direction: column; }
         #sidebar::-webkit-scrollbar, .view-container::-webkit-scrollbar { width: 6px; }
         #sidebar::-webkit-scrollbar-track, .view-container::-webkit-scrollbar-track { background: #1F2937; }
         #sidebar::-webkit-scrollbar-thumb, .view-container::-webkit-scrollbar-thumb { background: #4B5563; border-radius: 4px; }
         
-        /* ENVOLTORIO DEL MAPA Y EL OVERLAY */
+        /* ENVOLTORIO DEL MAPA */
         #map-wrapper { position: relative; flex-grow: 1; height: 100%; display: flex; flex-direction: column; }
         #map { flex-grow: 1; width: 100%; height: 100%; z-index: 1; }
 
-        /* NUEVO ENCABEZADO FLOTANTE SOBRE EL MAPA */
+        /* ENCABEZADO FLOTANTE CORREGIDO PARA EVITAR DESBORDAMIENTO */
         .map-header-overlay {
             position: absolute;
             top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 96%;
-            max-width: 1300px; 
+            left: 20px;
+            right: 20px;
             background-color: rgba(31, 41, 55, 0.95);
             border: 1px solid #4B5563;
             border-radius: 12px;
-            padding: 20px 35px;
+            padding: 15px 25px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.8);
             z-index: 2000;
             display: flex;
@@ -56,16 +56,17 @@
             align-items: center;
             backdrop-filter: blur(8px);
             border-top: 4px solid #EF4444;
+            gap: 20px;
         }
-        .overlay-total { display: flex; align-items: center; gap: 25px; border-right: 2px solid #4B5563; padding-right: 30px; }
-        .overlay-stats { display: flex; gap: 15px; flex-grow: 1; justify-content: space-around; padding-left: 20px; }
-        .overlay-stat-item { text-align: center; background: rgba(17, 24, 39, 0.6); padding: 12px 20px; border-radius: 8px; flex: 1; border: 1px solid #374151; }
-        .overlay-stat-value { font-size: 1.8rem; font-weight: bold; color: #fff; line-height: 1.2; }
-        .overlay-stat-label { font-size: 0.8rem; color: #9CA3AF; text-transform: uppercase; margin-top: 4px; display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: bold; white-space: nowrap; }
+        .overlay-total { display: flex; align-items: center; gap: 15px; border-right: 2px solid #4B5563; padding-right: 25px; min-width: max-content; }
+        .overlay-stats { display: flex; gap: 12px; flex-grow: 1; justify-content: space-around; overflow: hidden;}
+        .overlay-stat-item { text-align: center; background: rgba(17, 24, 39, 0.6); padding: 10px 15px; border-radius: 8px; flex: 1; border: 1px solid #374151; min-width: 110px; }
+        .overlay-stat-value { font-size: 1.7rem; font-weight: bold; color: #fff; line-height: 1.2; }
+        .overlay-stat-label { font-size: 0.75rem; color: #9CA3AF; text-transform: uppercase; margin-top: 4px; display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: bold; white-space: nowrap; }
 
-        .capa-label { display: block; margin-bottom: 12px; cursor: pointer; font-size: 0.95rem; }
+        .capa-label { display: block; margin-bottom: 12px; cursor: pointer; font-size: 0.9rem; }
         
-        /* AMPLIACIÓN DE POPUPS */
+        /* POPUPS DEL MAPA */
         .leaflet-popup-content-wrapper, .leaflet-popup-tip { background-color: #1F2937 !important; color: #ffffff !important; box-shadow: 0 4px 15px rgba(0,0,0,0.8) !important; }
         .leaflet-popup-content { margin: 20px 25px !important; line-height: 1.6 !important; width: 440px !important; }
         .leaflet-container a.leaflet-popup-close-button { color: #9CA3AF !important; padding: 10px !important; }
@@ -132,12 +133,11 @@
         .avance-text-container { flex: 1; min-width: 300px; max-width: 600px; }
         .avance-chart-container { width: 280px; height: 280px; position: relative; display: flex; justify-content: center; align-items: center; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3)); }
 
-        /* RESPONSIVIDAD */
-        @media (max-width: 1050px) {
-            .map-header-overlay { width: 95%; flex-direction: column; top: 10px; padding: 15px; }
-            .overlay-total { border-right: none; border-bottom: 1px solid #4B5563; padding-right: 0; padding-bottom: 15px; margin-bottom: 15px; width: 100%; justify-content: center; }
-            .overlay-stats { flex-wrap: wrap; padding-left: 0; gap: 10px; width: 100%; }
-            .leaflet-popup-content { width: 300px !important; }
+        /* RESPONSIVIDAD ADAPTATIVA */
+        @media (max-width: 1250px) {
+            .map-header-overlay { flex-wrap: wrap; gap: 10px; }
+            .overlay-total { border-right: none; padding-right: 0; margin: 0 auto; }
+            .overlay-stats { width: 100%; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 5px; }
         }
 
         @media (max-width: 850px) {
@@ -149,19 +149,8 @@
             #map-wrapper { height: 50vh; order: 1; flex: none; width: 100%; }
             #sidebar { height: 50vh; order: 2; flex: none; width: 100%; border-top: 2px solid #374151; border-right: none; }
             
-            .plan-box-left { flex-direction: column; gap: 20px; }
-            .plan-box-left > div:nth-child(2) { border-left: none; border-top: 1px solid #374151; height: 1px; width: 100%; }
-            .plan-box-right { grid-template-columns: repeat(2, 1fr); gap: 15px; }
-            .frentes-container { grid-template-columns: 1fr; }
-            .sync-status, .upload-wrapper { flex-direction: column; gap: 15px; text-align: center; }
-            
-            .panel { padding: 15px; }
-            table { font-size: 0.75rem; }
-            th, td { padding: 8px 5px; }
-
-            .panel-avance-general { flex-direction: column; text-align: center; padding: 25px 15px; }
-            .avance-text-container { min-width: 100%; }
-            .avance-chart-container { width: 240px; height: 240px; }
+            .overlay-stats { flex-wrap: wrap; }
+            .leaflet-popup-content { width: 300px !important; }
         }
     </style>
 </head>
@@ -374,7 +363,7 @@
                 <label class="capa-label"><input type="checkbox" id="chk-limpias" checked style="accent-color: #8B4513; width: 16px; height: 16px;"> <span style="color: #8B4513; margin-left: 8px;">●</span> Alcantarillas de la RVE</label>
             </div>
 
-            <!-- 2. GRÁFICA DE TRAMOS -->
+            <!-- GRÁFICA DE TRAMOS -->
             <h3 style="font-size: 1.05rem; color: #D1D5DB; text-transform: uppercase;"><span style="color: #EC4899;">📍</span> PUNTOS PRIORITARIOS POR VÍA ESTATAL</h3>
             <p style="font-size: 0.8rem; color: #9CA3AF; margin-top: -5px; margin-bottom: 10px;"><i>Haz clic en una barra para enfocar el tramo</i></p>
             
@@ -440,7 +429,6 @@
             let sufijo = valor === '1' ? '' : '_' + valor;
             let imgElement = document.getElementById('img-' + tipo + '-' + id);
             if(imgElement) {
-                // Genera un efecto de transición desvaneciendo la imagen previa
                 imgElement.style.opacity = '0'; 
                 setTimeout(() => {
                     imgElement.src = 'fotos/' + id + tipo + sufijo + '.jpg';
@@ -779,7 +767,6 @@
                             </div>
                         `;
                     } else {
-                        // AQUÍ SE INTEGRA LA LISTA DESPLEGABLE Y EL AUMENTO DE TAMAÑO DE LA IMAGEN
                         popupContent = `
                             <div style="font-family: 'Segoe UI', Tahoma, sans-serif;">
                                 <h4 style="margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 1px solid #374151; color: #F59E0B; font-size: 1.25rem; font-weight: bold;">
@@ -799,7 +786,6 @@
                                 </div>
                                 
                                 <div style="display:flex; gap:15px; margin-top:15px;">
-                                    <!-- GALERÍA ANTES -->
                                     <div style="flex:1; text-align:center;">
                                         <div style="font-size:0.8rem; color:#EF4444; font-weight:bold; margin-bottom:5px;">ANTES</div>
                                         <select onchange="cambiarFoto('antes', '${idUnico}', this.value)" style="width: 100%; margin-bottom: 10px; background: #374151; color: white; border: 1px solid #4B5563; border-radius: 4px; padding: 5px; font-size: 0.8rem; cursor: pointer;">
@@ -813,7 +799,6 @@
                                         </div>
                                     </div>
                                     
-                                    <!-- GALERÍA DESPUÉS -->
                                     <div style="flex:1; text-align:center;">
                                         <div style="font-size:0.8rem; color:#10B981; font-weight:bold; margin-bottom:5px;">DESPUÉS</div>
                                         <select onchange="cambiarFoto('despues', '${idUnico}', this.value)" style="width: 100%; margin-bottom: 10px; background: #374151; color: white; border: 1px solid #4B5563; border-radius: 4px; padding: 5px; font-size: 0.8rem; cursor: pointer;">
@@ -831,7 +816,6 @@
                         `;
                     }
                     
-                    // SE AJUSTÓ EL ANCHO MÍNIMO DEL POPUP A 460PX
                     marcador.bindPopup(popupContent, { minWidth: 460 });
                     return marcador;
                 },
