@@ -61,12 +61,6 @@
 
         .capa-label { display: block; margin-bottom: 12px; cursor: pointer; font-size: 0.9rem; }
         
-        /* AURA AZUL REDISEÑADA PARA NATIVO SVG LEAFLET */
-        .aura-azul-svg {
-            filter: drop-shadow(0px 0px 5px rgba(0, 255, 255, 0.9));
-            pointer-events: none; /* Asegura que el clic pase al punto original */
-        }
-
         .leaflet-popup-content-wrapper, .leaflet-popup-tip { background-color: #1F2937 !important; color: #ffffff !important; box-shadow: 0 4px 15px rgba(0,0,0,0.8) !important; }
         .leaflet-popup-content { margin: 20px 25px !important; line-height: 1.6 !important; width: 440px !important; }
         .leaflet-container a.leaflet-popup-close-button { color: #9CA3AF !important; padding: 10px !important; }
@@ -897,12 +891,13 @@
 
                         if (esAtendida) {
                             let marcadorAura = L.circleMarker(layer.getLatLng(), {
-                                radius: 7, 
+                                radius: 8, 
                                 color: "#00FFFF", 
-                                weight: 2, 
-                                fillOpacity: 0, 
-                                interactive: false,
-                                className: 'aura-azul-svg'
+                                weight: 3, 
+                                opacity: 0.9,
+                                fillColor: "#00FFFF", 
+                                fillOpacity: 0.35, 
+                                interactive: false 
                             });
                             grupoAtendidas.addLayer(marcadorAura);
                         }
