@@ -29,7 +29,7 @@
         /* --- VISTA 1: GEOPORTAL (MAPA Y SIDEBAR) --- */
         #geoportal-view.active { display: flex; flex-direction: row; }
         
-        /* BARRA LATERAL AJUSTADA PARA CHROME */
+        /* BARRA LATERAL */
         #sidebar { width: 360px; background-color: #1F2937; padding: 25px 20px; box-shadow: 2px 0 10px rgba(0,0,0,0.6); overflow-y: auto; z-index: 1000; box-sizing: border-box; height: 100%; display: flex; flex-direction: column; }
         #sidebar::-webkit-scrollbar, .view-container::-webkit-scrollbar { width: 6px; }
         #sidebar::-webkit-scrollbar-track, .view-container::-webkit-scrollbar-track { background: #1F2937; }
@@ -426,7 +426,8 @@
     <script>
         // MOTOR JAVASCRIPT PARA EL SELECTOR DE FOTOGRAFÍAS
         window.cambiarFoto = function(tipo, id, valor) {
-            let sufijo = valor === '1' ? '' : '_' + valor;
+            // CORRECCIÓN EXACTA A LA NOMENCLATURA SIN GUIONES (1820antes2.jpg)
+            let sufijo = valor === '1' ? '' : valor;
             let imgElement = document.getElementById('img-' + tipo + '-' + id);
             if(imgElement) {
                 imgElement.style.opacity = '0'; 
