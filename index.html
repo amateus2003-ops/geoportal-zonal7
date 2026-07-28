@@ -61,15 +61,10 @@
 
         .capa-label { display: block; margin-bottom: 12px; cursor: pointer; font-size: 0.9rem; }
         
-        /* AURA AZUL REDISEÑADA PARA SUPERPONERSE AL CÍRCULO NORMAL */
-        .aura-azul {
-            width: 100%;
-            height: 100%;
-            background-color: transparent;
-            border-radius: 50%;
-            border: 2px solid #00FFFF;
-            box-shadow: 0 0 8px 2px rgba(0, 255, 255, 0.6);
-            box-sizing: border-box;
+        /* AURA AZUL REDISEÑADA PARA NATIVO SVG LEAFLET */
+        .aura-azul-svg {
+            filter: drop-shadow(0px 0px 5px rgba(0, 255, 255, 0.9));
+            pointer-events: none; /* Asegura que el clic pase al punto original */
         }
 
         .leaflet-popup-content-wrapper, .leaflet-popup-tip { background-color: #1F2937 !important; color: #ffffff !important; box-shadow: 0 4px 15px rgba(0,0,0,0.8) !important; }
@@ -341,7 +336,6 @@
         <div id="sidebar">
             <h3>🗺️ Control de Capas de Prevención</h3>
             
-            <!-- CAJA 1: ALCANTARILLAS PENDIENTES -->
             <div style="background-color: #27303F; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
                 <label class="capa-label"><input type="checkbox" id="chk-rutas" checked style="accent-color: #2563EB; width: 16px; height: 16px;"> <span style="color: #60A5FA; margin-left: 8px; font-weight: bold;">—</span> Red Vial Estatal</label>
                 <hr style="border: 0; border-top: 1px solid #4B5563; margin: 15px 0;">
@@ -356,7 +350,6 @@
                 <label class="capa-label" style="margin-bottom: 0;"><input type="checkbox" id="chk-limpias" checked style="accent-color: #8B4513; width: 16px; height: 16px;"> <span style="color: #8B4513; margin-left: 8px;">●</span> Alcantarillas de la RVE</label>
             </div>
 
-            <!-- CAJA 2: ALCANTARILLAS ATENDIDAS -->
             <div style="background-color: #27303F; padding: 20px; border-radius: 8px; margin-bottom: 30px; border-left: 4px solid #00FFFF;">
                 <div style="font-size: 0.85rem; color: #10B981; margin-bottom: 12px; font-weight: bold; text-transform: uppercase;">✅ ALCANTARILLAS ATENDIDAS</div>
                 <div style="display: flex; align-items: center; justify-content: space-between;">
@@ -423,7 +416,6 @@
     <script src="rutasRVE.js"></script>
 
     <script>
-        // MEMORIA MAESTRA DE ALCANTARILLAS LIMPIAS
         let setAlcantarillasAtendidas = new Set();
 
         window.cambiarFoto = function(tipo, id, valor) {
@@ -780,7 +772,6 @@
                             }
                         }
 
-                        // EL MARCADOR BASE SE DIBUJA SIEMPRE PARA NO PERDER LA CLASIFICACIÓN DE PRIORIDAD
                         let marcadorBase = L.circleMarker(latlng, { radius: 5, fillColor: colorPunto, color: "#ffffff", weight: 1, opacity: 1, fillOpacity: 0.9 });
                         
                         let popupContent = '';
@@ -828,7 +819,6 @@
                                 </div>
                             `;
                         } else {
-                            // INTEGRACIÓN DE AMBOS ESTADOS (NIVEL PRIMARIO + BADGE ATENDIDA)
                             let badgeEstado = esAtendida 
                                 ? `<div style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10B981; color: #10B981; padding: 6px 10px; border-radius: 6px; font-weight: bold; text-align: center; margin-bottom: 15px; letter-spacing: 0.5px;">✅ ESTADO: LIMPIA / ATENDIDA</div>`
                                 : ``;
@@ -898,7 +888,6 @@
                         let nivelRaw = feature.properties['PRIORIDAD'] || feature.properties['prioridad'] || feature.properties['Prioridad'] || '';
                         let nivel = String(nivelRaw).toLowerCase().replace(/\s+/g, '');
                         
-                        // EL MARCADOR BASE SE AGREGA SIEMPRE A SU CAPA DE PRIORIDAD ORIGINAL
                         if (nivel === 'inmediata') grupoInmediata.addLayer(layer);
                         else if (nivel === 'alta') grupoAlta.addLayer(layer);
                         else if (nivel === 'alta/inmediata' || nivel === 'altainmediata') grupoAltaInmediata.addLayer(layer);
@@ -906,16 +895,15 @@
                         else if (nivel === 'prioritaria') grupoPrioritaria.addLayer(layer);
                         else grupoLimpias.addLayer(layer);
 
-                        // SI ESTÁ ATENDIDA, SE CREA EL AURA CIAN Y SE SUPERPONE
                         if (esAtendida) {
-                            let iconAura = L.divIcon({
-                                className: 'custom-aura-icon',
-                                html: '<div class="aura-azul"></div>',
-                                iconSize: [16, 16], // Ligeramente más grande que el círculo original
-                                iconAnchor: [8, 8]
+                            let marcadorAura = L.circleMarker(layer.getLatLng(), {
+                                radius: 7, 
+                                color: "#00FFFF", 
+                                weight: 2, 
+                                fillOpacity: 0, 
+                                interactive: false,
+                                className: 'aura-azul-svg'
                             });
-                            // interactive: false permite que los clics atraviesen el aura y abran el popup del marcador base
-                            let marcadorAura = L.marker(layer.getLatLng(), {icon: iconAura, interactive: false});
                             grupoAtendidas.addLayer(marcadorAura);
                         }
                     }
