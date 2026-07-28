@@ -16,7 +16,7 @@
         body { margin: 0; padding: 0; background-color: #111827; color: #ffffff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         
         /* Barra de Navegación Superior */
-        header { background-color: #1F2937; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #374151; height: 60px; box-sizing: border-box; z-index: 2000; }
+        header { background-color: #1F2937; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #374151; height: 60px; box-sizing: border-box; z-index: 3000; }
         h1 { margin: 0; font-size: 1.2rem; color: #FBBF24; text-transform: uppercase; letter-spacing: 1px; }
         .nav-tabs { display: flex; gap: 10px; }
         .tab-btn { background-color: #374151; color: #D1D5DB; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: all 0.3s; }
@@ -28,27 +28,49 @@
 
         /* --- VISTA 1: GEOPORTAL (MAPA Y SIDEBAR) --- */
         #geoportal-view.active { display: flex; flex-direction: row; }
-        #sidebar { width: 460px; background-color: #1F2937; padding: 25px; box-shadow: 2px 0 10px rgba(0,0,0,0.6); overflow-y: auto; z-index: 1000; box-sizing: border-box; height: 100%; }
+        #sidebar { width: 380px; background-color: #1F2937; padding: 25px; box-shadow: 2px 0 10px rgba(0,0,0,0.6); overflow-y: auto; z-index: 1000; box-sizing: border-box; height: 100%; display: flex; flex-direction: column; }
         #sidebar::-webkit-scrollbar, .view-container::-webkit-scrollbar { width: 6px; }
         #sidebar::-webkit-scrollbar-track, .view-container::-webkit-scrollbar-track { background: #1F2937; }
         #sidebar::-webkit-scrollbar-thumb, .view-container::-webkit-scrollbar-thumb { background: #4B5563; border-radius: 4px; }
-        #map { flex-grow: 1; height: 100%; }
-
-        h2 { font-size: 1.3rem; border-bottom: 2px solid #374151; padding-bottom: 12px; color: #FBBF24; margin-top: 0; text-transform: uppercase; letter-spacing: 1px;}
-        .capa-label { display: block; margin-bottom: 10px; cursor: pointer; font-size: 1rem; }
         
-        .summary-card { background-color: #27303F; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); margin-bottom: 25px; border-left: 5px solid #EF4444; }
-        .summary-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #374151; padding-bottom: 15px; margin-bottom: 15px; }
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 0.95rem; }
-        .stat-item { display: flex; justify-content: space-between; align-items: center; background: #1F2937; padding: 10px 15px; border-radius: 6px; }
-        .stat-label-container { display: flex; align-items: center; color: #D1D5DB; }
-        .dot-indicator { font-size: 1.5rem; line-height: 0; margin-right: 10px; }
+        /* ENVOLTORIO DEL MAPA Y EL OVERLAY */
+        #map-wrapper { position: relative; flex-grow: 1; height: 100%; display: flex; flex-direction: column; }
+        #map { flex-grow: 1; width: 100%; height: 100%; z-index: 1; }
 
-        .leaflet-popup-content-wrapper, .leaflet-popup-tip { background-color: #1F2937 !important; color: #ffffff !important; box-shadow: 0 4px 15px rgba(0,0,0,0.6) !important; }
-        .leaflet-popup-content { margin: 18px 20px !important; line-height: 1.6 !important; }
-        .leaflet-container a.leaflet-popup-close-button { color: #9CA3AF !important; padding: 8px !important; }
+        /* NUEVO ENCABEZADO FLOTANTE SOBRE EL MAPA */
+        .map-header-overlay {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 96%;
+            max-width: 1300px; 
+            background-color: rgba(31, 41, 55, 0.95);
+            border: 1px solid #4B5563;
+            border-radius: 12px;
+            padding: 20px 35px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+            z-index: 2000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(8px);
+            border-top: 4px solid #EF4444;
+        }
+        .overlay-total { display: flex; align-items: center; gap: 25px; border-right: 2px solid #4B5563; padding-right: 30px; }
+        .overlay-stats { display: flex; gap: 15px; flex-grow: 1; justify-content: space-around; padding-left: 20px; }
+        .overlay-stat-item { text-align: center; background: rgba(17, 24, 39, 0.6); padding: 12px 20px; border-radius: 8px; flex: 1; border: 1px solid #374151; }
+        .overlay-stat-value { font-size: 1.8rem; font-weight: bold; color: #fff; line-height: 1.2; }
+        .overlay-stat-label { font-size: 0.8rem; color: #9CA3AF; text-transform: uppercase; margin-top: 4px; display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: bold; white-space: nowrap; }
+
+        .capa-label { display: block; margin-bottom: 12px; cursor: pointer; font-size: 0.95rem; }
         
-        .btn-reset-zoom { background-color: #3B82F6; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 15px; transition: background-color 0.3s;}
+        /* AMPLIACIÓN DE POPUPS */
+        .leaflet-popup-content-wrapper, .leaflet-popup-tip { background-color: #1F2937 !important; color: #ffffff !important; box-shadow: 0 4px 15px rgba(0,0,0,0.8) !important; }
+        .leaflet-popup-content { margin: 20px 25px !important; line-height: 1.6 !important; width: 440px !important; }
+        .leaflet-container a.leaflet-popup-close-button { color: #9CA3AF !important; padding: 10px !important; }
+        
+        .btn-reset-zoom { background-color: #3B82F6; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 20px; transition: background-color 0.3s; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;}
         .btn-reset-zoom:hover { background-color: #2563EB; }
 
         /* --- VISTA 2: CRONOGRAMA Y SEGUIMIENTO --- */
@@ -83,13 +105,13 @@
         th { background-color: #111827; color: #FBBF24; text-transform: uppercase; font-size: 0.75rem; }
         tr:hover { background-color: #27303F; }
 
-        /* Barras de Progreso Dinámicas (Azul y Verde) */
+        /* Barras de Progreso Dinámicas */
         .progress-bar-container { background-color: #374151; border-radius: 6px; height: 16px; width: 100%; position: relative; overflow: hidden; margin-top: 5px; }
         .progress-bar-fill-alc { background-color: #3B82F6; height: 100%; width: 0%; transition: width 0.6s ease-in-out; }
         .progress-bar-fill-abs { background-color: #10B981; height: 100%; width: 0%; transition: width 0.6s ease-in-out; }
         .progress-text { position: absolute; width: 100%; text-align: center; font-size: 0.7rem; color: #FFFFFF; font-weight: bold; top: 0; line-height: 16px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
 
-        /* Indicador de sincronización en la nube */
+        /* Indicador de sincronización */
         .sync-status { display: flex; align-items: center; justify-content: space-between; background: #27303F; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #4B5563; }
         .status-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; background: rgba(16, 185, 129, 0.2); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.4); }
         .status-dot { width: 8px; height: 8px; background-color: #10B981; border-radius: 50%; box-shadow: 0 0 8px #10B981; animation: pulse 2s infinite; }
@@ -101,44 +123,31 @@
         .upload-btn:hover { background-color: #2563EB; }
         #excel-file { display: none; }
 
-        /* Estilos del Panel Rendimiento y Avance General */
+        /* Panel Rendimiento */
         .panel-avance-general {
-            display: flex; 
-            flex-wrap: wrap; 
-            justify-content: space-around; 
-            align-items: center; 
-            gap: 30px; 
-            border-left: 6px solid #10B981; 
-            padding: 40px 30px; 
-            background: linear-gradient(145deg, #1F2937 0%, #171F2E 100%); 
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
-            border-radius: 12px;
-            margin-bottom: 25px;
+            display: flex; flex-wrap: wrap; justify-content: space-around; align-items: center; gap: 30px; 
+            border-left: 6px solid #10B981; padding: 40px 30px; background: linear-gradient(145deg, #1F2937 0%, #171F2E 100%); 
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.2); border-radius: 12px; margin-bottom: 25px;
         }
-        .avance-text-container {
-            flex: 1; 
-            min-width: 300px; 
-            max-width: 600px;
-        }
-        .avance-chart-container {
-            width: 280px; 
-            height: 280px; 
-            position: relative; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3));
+        .avance-text-container { flex: 1; min-width: 300px; max-width: 600px; }
+        .avance-chart-container { width: 280px; height: 280px; position: relative; display: flex; justify-content: center; align-items: center; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3)); }
+
+        /* RESPONSIVIDAD */
+        @media (max-width: 1050px) {
+            .map-header-overlay { width: 95%; flex-direction: column; top: 10px; padding: 15px; }
+            .overlay-total { border-right: none; border-bottom: 1px solid #4B5563; padding-right: 0; padding-bottom: 15px; margin-bottom: 15px; width: 100%; justify-content: center; }
+            .overlay-stats { flex-wrap: wrap; padding-left: 0; gap: 10px; width: 100%; }
+            .leaflet-popup-content { width: 300px !important; }
         }
 
-        /* --- RESPONSIVIDAD PARA TELÉFONOS CELULARES --- */
         @media (max-width: 850px) {
             header { flex-direction: column; height: auto; padding: 15px; gap: 15px; text-align: center; }
             .nav-tabs { flex-wrap: wrap; justify-content: center; }
             .view-container { height: calc(100vh - 110px); }
             
             #geoportal-view.active { flex-direction: column; }
-            #map { order: 1; width: 100%; height: 45vh; flex: none; }
-            #sidebar { order: 2; width: 100%; height: 55vh; flex: none; border-top: 2px solid #374151; border-right: none; }
+            #map-wrapper { height: 50vh; order: 1; flex: none; width: 100%; }
+            #sidebar { height: 50vh; order: 2; flex: none; width: 100%; border-top: 2px solid #374151; border-right: none; }
             
             .plan-box-left { flex-direction: column; gap: 20px; }
             .plan-box-left > div:nth-child(2) { border-left: none; border-top: 1px solid #374151; height: 1px; width: 100%; }
@@ -153,12 +162,6 @@
             .panel-avance-general { flex-direction: column; text-align: center; padding: 25px 15px; }
             .avance-text-container { min-width: 100%; }
             .avance-chart-container { width: 240px; height: 240px; }
-        }
-
-        @media (max-width: 480px) {
-            .plan-box-right { grid-template-columns: 1fr; }
-            .stat-grid { grid-template-columns: 1fr; }
-            .stat-item { grid-column: span 1 !important; }
         }
     </style>
 </head>
@@ -279,7 +282,7 @@
                 </div>
             </div>
 
-            <!-- NUEVA SECCIÓN: BENEFICIOS DEL MANTENIMIENTO -->
+            <!-- SECCIÓN: BENEFICIOS DEL MANTENIMIENTO -->
             <div class="panel" style="border-left: 6px solid #3B82F6; padding: 30px;">
                 <h3 style="color: #60A5FA; margin-top: 0; font-size: 1.2rem; text-align: center; border-bottom: none; margin-bottom: 25px;">🌟 BENEFICIOS DEL MANTENIMIENTO PREVENTIVO</h3>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
@@ -355,67 +358,75 @@
 
     <!-- VISTA 2: GEOPORTAL (MAPA QGIS) -->
     <div id="geoportal-view" class="view-container">
+        
+        <!-- BARRA LATERAL REORDENADA -->
         <div id="sidebar">
-            <h2>📊 Puntos Críticos y Prevención</h2>
-            
-            <div class="summary-card">
-                <div class="summary-header">
-                    <div>
-                        <p style="margin: 0; font-size: 0.9rem; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.5px;">Puntos de Atención Prioritaria</p>
-                        <div id="kpi-total" style="font-size: 3.5rem; color: #EF4444; font-weight: bold; line-height: 1.1;">186</div>
-                    </div>
-                    <div style="font-size: 3.5rem; opacity: 0.9;">🚧</div>
-                </div>
-                
-                <div class="stat-grid">
-                    <div class="stat-item">
-                        <div class="stat-label-container"><span class="dot-indicator" style="color:#FF0000;">●</span><span>Intervención Inmediata:</span></div>
-                        <strong id="val-inmediata" style="color: #fff; font-size: 1.15rem;">0</strong>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label-container"><span class="dot-indicator" style="color:#FFFF00;">●</span><span>Atención Alta:</span></div>
-                        <strong id="val-alta" style="color: #fff; font-size: 1.15rem;">0</strong>
-                    </div>
-                    <div class="stat-item" style="grid-column: span 2;">
-                        <div class="stat-label-container"><span class="dot-indicator" style="color:#FF7F00;">●</span><span>Atención Alta / Inmediata:</span></div>
-                        <strong id="val-altainm" style="color: #fff; font-size: 1.15rem;">0</strong>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label-container"><span class="dot-indicator" style="color:#008000;">●</span><span>Atención Media:</span></div>
-                        <strong id="val-media" style="color: #fff; font-size: 1.15rem;">0</strong>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label-container"><span class="dot-indicator" style="color:#00FF00;">●</span><span>Prioritaria:</span></div>
-                        <strong id="val-prioritaria" style="color: #fff; font-size: 1.15rem;">0</strong>
-                    </div>
-                </div>
+            <h3 style="font-size: 1.05rem; color: #D1D5DB; margin-top: 0; text-transform: uppercase;">🗺️ Control de Capas de Prevención</h3>
+            <div style="background-color: #27303F; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+                <label class="capa-label"><input type="checkbox" id="chk-rutas" checked style="accent-color: #2563EB; width: 16px; height: 16px;"> <span style="color: #60A5FA; margin-left: 8px; font-weight: bold;">—</span> Red Vial Estatal</label>
+                <hr style="border: 0; border-top: 1px solid #4B5563; margin: 15px 0;">
+                <label class="capa-label"><input type="checkbox" id="chk-inmediata" checked style="accent-color: #FF0000; width: 16px; height: 16px;"> <span style="color: #FF0000; margin-left: 8px;">●</span> Intervención Inmediata</label>
+                <label class="capa-label"><input type="checkbox" id="chk-alta" checked style="accent-color: #FFFF00; width: 16px; height: 16px;"> <span style="color: #FFFF00; margin-left: 8px;">●</span> Atención Alta</label>
+                <label class="capa-label"><input type="checkbox" id="chk-altainmediata" checked style="accent-color: #FF7F00; width: 16px; height: 16px;"> <span style="color: #FF7F00; margin-left: 8px;">●</span> Atención Alta / Inmediata</label>
+                <label class="capa-label"><input type="checkbox" id="chk-prioritaria" checked style="accent-color: #00FF00; width: 16px; height: 16px;"> <span style="color: #00FF00; margin-left: 8px;">●</span> Prioritaria</label>
+                <label class="capa-label"><input type="checkbox" id="chk-media" checked style="accent-color: #008000; width: 16px; height: 16px;"> <span style="color: #008000; margin-left: 8px;">●</span> Atención Media</label>
+                <hr style="border: 0; border-top: 1px solid #4B5563; margin: 15px 0;">
+                <label class="capa-label"><input type="checkbox" id="chk-limpias" checked style="accent-color: #8B4513; width: 16px; height: 16px;"> <span style="color: #8B4513; margin-left: 8px;">●</span> Alcantarillas de la RVE</label>
             </div>
 
-            <h3 style="font-size: 1.05rem; color: #D1D5DB; margin-top: 25px; text-transform: uppercase;"><span style="color: #EC4899;">📍</span> PUNTOS PRIORITARIOS POR VÍA ESTATAL</h3>
+            <!-- 2. GRÁFICA DE TRAMOS -->
+            <h3 style="font-size: 1.05rem; color: #D1D5DB; text-transform: uppercase;"><span style="color: #EC4899;">📍</span> PUNTOS PRIORITARIOS POR VÍA ESTATAL</h3>
             <p style="font-size: 0.8rem; color: #9CA3AF; margin-top: -5px; margin-bottom: 10px;"><i>Haz clic en una barra para enfocar el tramo</i></p>
             
-            <div style="background-color: #1a2234; padding: 20px 15px; border-radius: 8px;">
+            <div style="background-color: #1a2234; padding: 20px 15px; border-radius: 8px; flex-grow: 1;">
                 <div id="graficoTramosWrapper" style="position: relative; width: 100%;">
                     <canvas id="graficoTramos"></canvas>
                 </div>
             </div>
             
             <button class="btn-reset-zoom" onclick="resetMapa()">🌍 Restaurar Vista Zonal 7</button>
-
-            <h3 style="font-size: 1.05rem; color: #D1D5DB; margin-top: 35px; text-transform: uppercase;">🗺️ Control de Capas de Prevención</h3>
-            <div style="background-color: #27303F; padding: 20px; border-radius: 8px;">
-                <label class="capa-label"><input type="checkbox" id="chk-rutas" checked style="accent-color: #2563EB; width: 16px; height: 16px;"> <span style="color: #60A5FA; margin-left: 8px; font-weight: bold;">—</span> Red Vial Estatal</label>
-                <hr style="border: 0; border-top: 1px solid #4B5563; margin: 15px 0;">
-                <label class="capa-label"><input type="checkbox" id="chk-inmediata" checked style="accent-color: #FF0000; width: 16px; height: 16px;"> <span style="color: #FF0000; margin-left: 8px;">●</span> Intervención Inmediata</label>
-                <label class="capa-label"><input type="checkbox" id="chk-alta" checked style="accent-color: #FFFF00; width: 16px; height: 16px;"> <span style="color: #FFFF00; margin-left: 8px;">●</span> Atención Alta</label>
-                <label class="capa-label"><input type="checkbox" id="chk-altainmediata" checked style="accent-color: #FF7F00; width: 16px; height: 16px;"> <span style="color: #FF7F00; margin-left: 8px;">●</span> Atención Alta / Inmediata</label>
-                <label class="capa-label"><input type="checkbox" id="chk-media" checked style="accent-color: #008000; width: 16px; height: 16px;"> <span style="color: #008000; margin-left: 8px;">●</span> Atención Media</label>
-                <label class="capa-label"><input type="checkbox" id="chk-prioritaria" checked style="accent-color: #00FF00; width: 16px; height: 16px;"> <span style="color: #00FF00; margin-left: 8px;">●</span> Prioritaria</label>
-                <hr style="border: 0; border-top: 1px solid #4B5563; margin: 15px 0;">
-                <label class="capa-label"><input type="checkbox" id="chk-limpias" checked style="accent-color: #8B4513; width: 16px; height: 16px;"> <span style="color: #8B4513; margin-left: 8px;">●</span> Alcantarillas de la RVE</label>
-            </div>
         </div>
-        <div id="map"></div>
+
+        <!-- CONTENEDOR DEL MAPA Y EL NUEVO ENCABEZADO FLOTANTE -->
+        <div id="map-wrapper">
+            
+            <!-- ENCABEZADO FLOTANTE: PUNTOS CRÍTICOS Y PREVENCIÓN -->
+            <div class="map-header-overlay">
+                <div class="overlay-total">
+                    <div>
+                        <div style="font-size: 0.75rem; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px;">Puntos de Atención Prioritaria</div>
+                        <div id="kpi-total" style="font-size: 2.8rem; color: #EF4444; font-weight: bold; line-height: 1;">186</div>
+                    </div>
+                    <div style="font-size: 4rem; opacity: 0.9; margin-left: 10px;">🚧</div>
+                </div>
+                
+                <div class="overlay-stats">
+                    <div class="overlay-stat-item">
+                        <div id="val-inmediata" class="overlay-stat-value">0</div>
+                        <div class="overlay-stat-label"><span style="color:#FF0000; font-size:1.2rem; line-height:0;">●</span> Inmediata</div>
+                    </div>
+                    <div class="overlay-stat-item">
+                        <div id="val-alta" class="overlay-stat-value">0</div>
+                        <div class="overlay-stat-label"><span style="color:#FFFF00; font-size:1.2rem; line-height:0;">●</span> Alta</div>
+                    </div>
+                    <div class="overlay-stat-item">
+                        <div id="val-altainm" class="overlay-stat-value">0</div>
+                        <div class="overlay-stat-label"><span style="color:#FF7F00; font-size:1.2rem; line-height:0;">●</span> Alta / Inmediata</div>
+                    </div>
+                    <div class="overlay-stat-item">
+                        <div id="val-prioritaria" class="overlay-stat-value">0</div>
+                        <div class="overlay-stat-label"><span style="color:#00FF00; font-size:1.2rem; line-height:0;">●</span> Prioritaria</div>
+                    </div>
+                    <div class="overlay-stat-item">
+                        <div id="val-media" class="overlay-stat-value">0</div>
+                        <div class="overlay-stat-label"><span style="color:#008000; font-size:1.2rem; line-height:0;">●</span> Media</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MAPA LEAFLET -->
+            <div id="map"></div>
+        </div>
     </div>
 
     <!-- CONEXIÓN DE DATOS ESPACIALES -->
@@ -424,6 +435,19 @@
 
     <!-- SCRIPT DE LECTURA DINÁMICA DE EXCEL Y TOPOGRAFÍA -->
     <script>
+        // MOTOR JAVASCRIPT PARA EL SELECTOR DE FOTOGRAFÍAS
+        window.cambiarFoto = function(tipo, id, valor) {
+            let sufijo = valor === '1' ? '' : '_' + valor;
+            let imgElement = document.getElementById('img-' + tipo + '-' + id);
+            if(imgElement) {
+                // Genera un efecto de transición desvaneciendo la imagen previa
+                imgElement.style.opacity = '0'; 
+                setTimeout(() => {
+                    imgElement.src = 'fotos/' + id + tipo + sufijo + '.jpg';
+                }, 150);
+            }
+        };
+
         let avancePieChart;
 
         function switchTab(tabName) {
@@ -513,7 +537,6 @@
                 }
             });
 
-            // Actualización del Gráfico de Pastel
             let metaCriticas = 188;
             let pendientes = Math.max(0, metaCriticas - totalLimpiasGlobal);
             let porcentajeAvance = Math.min(100, Math.round((totalLimpiasGlobal / metaCriticas) * 100));
@@ -543,7 +566,6 @@
                     porcAbs = Math.min(100, Math.round((info.kmTrabajados / info.distanciaTotalKm) * 100));
                 }
 
-                // Cálculo del Promedio Diario
                 let totalDias = info.fechasUnicas.size > 0 ? info.fechasUnicas.size : 1;
                 let promAlcDiario = (info.limpiadasAcumuladas / totalDias).toFixed(1);
                 let promKmDiario = (info.kmTrabajados / totalDias).toFixed(2);
@@ -610,7 +632,6 @@
                 }
             });
 
-            // LECTURA AUTOMÁTICA MEDIANTE FETCH CON CACHE BUSTING
             fetch('Reporte_Diario.xlsx?v=' + new Date().getTime())
                 .then(response => {
                     if (!response.ok) throw new Error("Archivo no encontrado en el servidor");
@@ -673,7 +694,9 @@
         const centroZonal = [-4.0, -79.2];
         const zoomOriginal = 9;
         
-        var map = L.map('map').setView(centroZonal, zoomOriginal);
+        var map = L.map('map', {zoomControl: false}).setView(centroZonal, zoomOriginal);
+        L.control.zoom({ position: 'bottomleft' }).addTo(map);
+
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; OpenStreetMap contributors', maxZoom: 19
         }).addTo(map);
@@ -743,7 +766,7 @@
                     
                     if (!esCritica) {
                         popupContent = `
-                            <div style="font-family: 'Segoe UI', Tahoma, sans-serif; min-width: 220px;">
+                            <div style="font-family: 'Segoe UI', Tahoma, sans-serif;">
                                 <h4 style="margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 1px solid #374151; color: #F59E0B; font-size: 1.15rem; font-weight: bold;">
                                     ${tramoRaw}
                                 </h4>
@@ -756,9 +779,10 @@
                             </div>
                         `;
                     } else {
+                        // AQUÍ SE INTEGRA LA LISTA DESPLEGABLE Y EL AUMENTO DE TAMAÑO DE LA IMAGEN
                         popupContent = `
-                            <div style="font-family: 'Segoe UI', Tahoma, sans-serif; min-width: 280px;">
-                                <h4 style="margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 1px solid #374151; color: #F59E0B; font-size: 1.15rem; font-weight: bold;">
+                            <div style="font-family: 'Segoe UI', Tahoma, sans-serif;">
+                                <h4 style="margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 1px solid #374151; color: #F59E0B; font-size: 1.25rem; font-weight: bold;">
                                     ${tramoRaw}
                                 </h4>
                                 <div style="margin-bottom: 8px; font-size: 0.95rem;">
@@ -770,26 +794,45 @@
                                 <div style="margin-bottom: 8px; font-size: 0.95rem;">
                                     <b style="color: #ffffff;">Diagnóstico Inicial:</b> <span style="color: #9CA3AF;">${estadoFisico}</span>
                                 </div>
-                                <div style="font-size: 0.95rem; margin-bottom: 12px;">
+                                <div style="font-size: 0.95rem; margin-bottom: 15px;">
                                     <b style="color: #ffffff;">Nivel de Atención:</b> <span style="color: #9CA3AF; font-weight:bold;">${nivelRaw || 'N/A'}</span>
                                 </div>
-                                <div style="display:flex; gap:10px; margin-top:15px;">
+                                
+                                <div style="display:flex; gap:15px; margin-top:15px;">
+                                    <!-- GALERÍA ANTES -->
                                     <div style="flex:1; text-align:center;">
-                                        <div style="font-size:0.75rem; color:#EF4444; font-weight:bold; margin-bottom:5px;">ANTES</div>
-                                        <!-- CORRECCIÓN DE NOMBRES DE ARCHIVO -->
-                                        <img src="fotos/${idUnico}antes.jpg" style="width:100%; min-height:80px; background-color:#374151; border-radius:6px; object-fit:cover;" onerror="this.style.display='none';" alt="Evidencia Antes">
+                                        <div style="font-size:0.8rem; color:#EF4444; font-weight:bold; margin-bottom:5px;">ANTES</div>
+                                        <select onchange="cambiarFoto('antes', '${idUnico}', this.value)" style="width: 100%; margin-bottom: 10px; background: #374151; color: white; border: 1px solid #4B5563; border-radius: 4px; padding: 5px; font-size: 0.8rem; cursor: pointer;">
+                                            <option value="1">📸 Fotografía 1</option>
+                                            <option value="2">📸 Fotografía 2</option>
+                                            <option value="3">📸 Fotografía 3</option>
+                                        </select>
+                                        <div style="position: relative; width: 100%; height: 160px; background-color: #27303F; border-radius: 6px; border: 1px solid #4B5563; overflow: hidden;">
+                                            <div style="position: absolute; top:50%; left:50%; transform: translate(-50%, -50%); color: #9CA3AF; font-size: 0.8rem; z-index: 0; width: 100%;">Sin imagen disponible</div>
+                                            <img id="img-antes-${idUnico}" src="fotos/${idUnico}antes.jpg" style="position: relative; z-index: 1; width:100%; height:100%; object-fit:cover; transition: opacity 0.3s ease;" onerror="this.style.opacity='0';" onload="this.style.opacity='1';" alt="Evidencia Antes">
+                                        </div>
                                     </div>
+                                    
+                                    <!-- GALERÍA DESPUÉS -->
                                     <div style="flex:1; text-align:center;">
-                                        <div style="font-size:0.75rem; color:#10B981; font-weight:bold; margin-bottom:5px;">DESPUÉS</div>
-                                        <!-- CORRECCIÓN DE NOMBRES DE ARCHIVO -->
-                                        <img src="fotos/${idUnico}despues.jpg" style="width:100%; min-height:80px; background-color:#374151; border-radius:6px; object-fit:cover;" onerror="this.style.display='none';" alt="Evidencia Después">
+                                        <div style="font-size:0.8rem; color:#10B981; font-weight:bold; margin-bottom:5px;">DESPUÉS</div>
+                                        <select onchange="cambiarFoto('despues', '${idUnico}', this.value)" style="width: 100%; margin-bottom: 10px; background: #374151; color: white; border: 1px solid #4B5563; border-radius: 4px; padding: 5px; font-size: 0.8rem; cursor: pointer;">
+                                            <option value="1">📸 Fotografía 1</option>
+                                            <option value="2">📸 Fotografía 2</option>
+                                            <option value="3">📸 Fotografía 3</option>
+                                        </select>
+                                        <div style="position: relative; width: 100%; height: 160px; background-color: #27303F; border-radius: 6px; border: 1px solid #4B5563; overflow: hidden;">
+                                            <div style="position: absolute; top:50%; left:50%; transform: translate(-50%, -50%); color: #9CA3AF; font-size: 0.8rem; z-index: 0; width: 100%;">Sin imagen disponible</div>
+                                            <img id="img-despues-${idUnico}" src="fotos/${idUnico}despues.jpg" style="position: relative; z-index: 1; width:100%; height:100%; object-fit:cover; transition: opacity 0.3s ease;" onerror="this.style.opacity='0';" onload="this.style.opacity='1';" alt="Evidencia Después">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         `;
                     }
                     
-                    marcador.bindPopup(popupContent);
+                    // SE AJUSTÓ EL ANCHO MÍNIMO DEL POPUP A 460PX
+                    marcador.bindPopup(popupContent, { minWidth: 460 });
                     return marcador;
                 },
                 onEachFeature: function (feature, layer) {
