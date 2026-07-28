@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transparencia y Control - GeoPortal RVE Zonal 7</title>
     
-    <!-- Librerías de Mapa, Gráficos y Lector de Excel -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -15,33 +14,27 @@
     <style>
         body { margin: 0; padding: 0; background-color: #111827; color: #ffffff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         
-        /* Barra de Navegación Superior */
         header { background-color: #1F2937; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #374151; height: 60px; box-sizing: border-box; z-index: 3000; }
         h1 { margin: 0; font-size: 1.2rem; color: #FBBF24; text-transform: uppercase; letter-spacing: 1px; }
         .nav-tabs { display: flex; gap: 10px; }
         .tab-btn { background-color: #374151; color: #D1D5DB; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: all 0.3s; }
         .tab-btn.active, .tab-btn:hover { background-color: #3B82F6; color: #FFFFFF; }
 
-        /* Contenedores de Vistas */
         .view-container { display: none; flex-grow: 1; height: calc(100vh - 60px); overflow-y: auto; }
         .view-container.active { display: flex; flex-direction: column; }
 
-        /* --- VISTA 1: GEOPORTAL (MAPA Y SIDEBAR) --- */
         #geoportal-view.active { display: flex; flex-direction: row; }
         
-        /* BARRA LATERAL */
         #sidebar { width: 360px; background-color: #1F2937; padding: 25px 20px; box-shadow: 2px 0 10px rgba(0,0,0,0.6); overflow-y: auto; z-index: 1000; box-sizing: border-box; height: 100%; display: flex; flex-direction: column; }
         #sidebar::-webkit-scrollbar, .view-container::-webkit-scrollbar { width: 6px; }
         #sidebar::-webkit-scrollbar-track, .view-container::-webkit-scrollbar-track { background: #1F2937; }
         #sidebar::-webkit-scrollbar-thumb, .view-container::-webkit-scrollbar-thumb { background: #4B5563; border-radius: 4px; }
         
         #sidebar h3 { font-size: 1.05rem; color: #D1D5DB; margin-top: 0; text-transform: uppercase; line-height: 1.4; margin-bottom: 15px; padding-right: 10px; }
-
-        /* ENVOLTORIO DEL MAPA */
+        
         #map-wrapper { position: relative; flex-grow: 1; height: 100%; display: flex; flex-direction: column; }
         #map { flex-grow: 1; width: 100%; height: 100%; z-index: 1; }
 
-        /* ENCABEZADO FLOTANTE */
         .map-header-overlay {
             position: absolute;
             top: 20px;
@@ -68,19 +61,17 @@
 
         .capa-label { display: block; margin-bottom: 12px; cursor: pointer; font-size: 0.9rem; }
         
-        /* AURA AZUL PARA PUNTOS ATENDIDOS */
+        /* AURA AZUL REDISEÑADA PARA SUPERPONERSE AL CÍRCULO NORMAL */
         .aura-azul {
-            width: 12px;
-            height: 12px;
-            background-color: #00FFFF;
+            width: 100%;
+            height: 100%;
+            background-color: transparent;
             border-radius: 50%;
-            border: 2px solid #ffffff;
-            box-shadow: 0 0 15px 6px rgba(0, 255, 255, 0.8);
-            margin-top: -6px;
-            margin-left: -6px;
+            border: 2px solid #00FFFF;
+            box-shadow: 0 0 8px 2px rgba(0, 255, 255, 0.6);
+            box-sizing: border-box;
         }
 
-        /* POPUPS DEL MAPA */
         .leaflet-popup-content-wrapper, .leaflet-popup-tip { background-color: #1F2937 !important; color: #ffffff !important; box-shadow: 0 4px 15px rgba(0,0,0,0.8) !important; }
         .leaflet-popup-content { margin: 20px 25px !important; line-height: 1.6 !important; width: 440px !important; }
         .leaflet-container a.leaflet-popup-close-button { color: #9CA3AF !important; padding: 10px !important; }
@@ -88,7 +79,6 @@
         .btn-reset-zoom { background-color: #3B82F6; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 20px; transition: background-color 0.3s; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;}
         .btn-reset-zoom:hover { background-color: #2563EB; }
 
-        /* --- VISTA 2: CRONOGRAMA Y SEGUIMIENTO --- */
         #cronograma-view { padding: 30px; box-sizing: border-box; background-color: #111827; }
         
         .planificacion-banner { background: #1F2937; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.4); margin-bottom: 25px; border: 1px solid #374151; }
@@ -350,20 +340,32 @@
         
         <div id="sidebar">
             <h3>🗺️ Control de Capas de Prevención</h3>
-            <div style="background-color: #27303F; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+            
+            <!-- CAJA 1: ALCANTARILLAS PENDIENTES -->
+            <div style="background-color: #27303F; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
                 <label class="capa-label"><input type="checkbox" id="chk-rutas" checked style="accent-color: #2563EB; width: 16px; height: 16px;"> <span style="color: #60A5FA; margin-left: 8px; font-weight: bold;">—</span> Red Vial Estatal</label>
                 <hr style="border: 0; border-top: 1px solid #4B5563; margin: 15px 0;">
                 
-                <!-- CHECKLIST DIVIDIDO: PENDIENTES VS ATENDIDAS -->
-                <div style="font-size: 0.8rem; color: #9CA3AF; margin-bottom: 12px; font-weight: bold; border-bottom: 1px solid #4B5563; padding-bottom: 5px;">⏳ ALCANTARILLAS PENDIENTES</div>
+                <div style="font-size: 0.8rem; color: #9CA3AF; margin-bottom: 12px; font-weight: bold; border-bottom: 1px solid #4B5563; padding-bottom: 5px; text-transform: uppercase;">⏳ Alcantarillas Pendientes</div>
                 <label class="capa-label"><input type="checkbox" id="chk-inmediata" checked style="accent-color: #FF0000; width: 16px; height: 16px;"> <span style="color: #FF0000; margin-left: 8px;">●</span> Intervención Inmediata</label>
                 <label class="capa-label"><input type="checkbox" id="chk-alta" checked style="accent-color: #FFFF00; width: 16px; height: 16px;"> <span style="color: #FFFF00; margin-left: 8px;">●</span> Atención Alta</label>
                 <label class="capa-label"><input type="checkbox" id="chk-altainmediata" checked style="accent-color: #FF7F00; width: 16px; height: 16px;"> <span style="color: #FF7F00; margin-left: 8px;">●</span> Alta / Inmediata</label>
                 <label class="capa-label"><input type="checkbox" id="chk-prioritaria" checked style="accent-color: #00FF00; width: 16px; height: 16px;"> <span style="color: #00FF00; margin-left: 8px;">●</span> Prioritaria</label>
                 <label class="capa-label"><input type="checkbox" id="chk-media" checked style="accent-color: #008000; width: 16px; height: 16px;"> <span style="color: #008000; margin-left: 8px;">●</span> Atención Media</label>
-                
-                <div style="font-size: 0.8rem; color: #10B981; margin-bottom: 12px; margin-top: 20px; font-weight: bold; border-bottom: 1px solid #4B5563; padding-bottom: 5px;">✅ ALCANTARILLAS RESUELTAS</div>
-                <label class="capa-label"><input type="checkbox" id="chk-atendidas" checked style="accent-color: #00FFFF; width: 16px; height: 16px;"> <span style="color: #00FFFF; margin-left: 8px; text-shadow: 0 0 5px #00FFFF;">●</span> Alcantarillas Atendidas</label>
+                <hr style="border: 0; border-top: 1px solid #4B5563; margin: 15px 0;">
+                <label class="capa-label" style="margin-bottom: 0;"><input type="checkbox" id="chk-limpias" checked style="accent-color: #8B4513; width: 16px; height: 16px;"> <span style="color: #8B4513; margin-left: 8px;">●</span> Alcantarillas de la RVE</label>
+            </div>
+
+            <!-- CAJA 2: ALCANTARILLAS ATENDIDAS -->
+            <div style="background-color: #27303F; padding: 20px; border-radius: 8px; margin-bottom: 30px; border-left: 4px solid #00FFFF;">
+                <div style="font-size: 0.85rem; color: #10B981; margin-bottom: 12px; font-weight: bold; text-transform: uppercase;">✅ ALCANTARILLAS ATENDIDAS</div>
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <label class="capa-label" style="margin-bottom: 0;">
+                        <input type="checkbox" id="chk-atendidas" checked style="accent-color: #00FFFF; width: 16px; height: 16px;"> 
+                        <span style="color: #00FFFF; margin-left: 8px; text-shadow: 0 0 5px #00FFFF;">●</span> Alcantarillas Atendidas
+                    </label>
+                    <div id="contador-atendidas" style="background: #00FFFF; color: #111827; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.95rem; box-shadow: 0 0 10px rgba(0,255,255,0.5);">0</div>
+                </div>
             </div>
 
             <h3 style="margin-bottom: 10px;"><span style="color: #EC4899;">📍</span> PUNTOS PRIORITARIOS POR VÍA ESTATAL</h3>
@@ -469,7 +471,7 @@
         function procesarDatosExcel(excelRows) {
             let resumenEmpresas = {};
             let totalLimpiasGlobal = 0;
-            setAlcantarillasAtendidas.clear(); // Reseteo de memoria
+            setAlcantarillasAtendidas.clear(); 
 
             excelRows.forEach(row => {
                 let rowData = {};
@@ -477,13 +479,12 @@
                     rowData[key.trim().toUpperCase()] = row[key];
                 }
 
-                // NUEVO: EXTRACCIÓN DE CÓDIGOS DE ALCANTARILLAS ATENDIDAS
                 let estadoCelda = String(rowData['ESTADO'] || '').trim().toUpperCase();
-                if (estadoCelda === 'LIMPIO') {
+                if (estadoCelda.includes('LIMPI') || estadoCelda.includes('ATENDID')) {
                     let codigosStr = String(rowData['CODIGO_ALCANTARILLA'] || '');
                     let codigosArray = codigosStr.split(',');
                     codigosArray.forEach(codigo => {
-                        let codLimpio = codigo.trim();
+                        let codLimpio = codigo.trim(); 
                         if (codLimpio !== '') {
                             setAlcantarillasAtendidas.add(codLimpio);
                         }
@@ -537,6 +538,8 @@
                     resumenEmpresas[empresaKey].kmTrabajados += avanceDiario;
                 }
             });
+
+            document.getElementById('contador-atendidas').innerText = setAlcantarillasAtendidas.size;
 
             let metaCriticas = 188;
             let pendientes = Math.max(0, metaCriticas - totalLimpiasGlobal);
@@ -609,7 +612,6 @@
                 tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #9CA3AF; padding: 20px;">No se encontraron datos válidos en el archivo Excel.</td></tr>`;
             }
 
-            // UNA VEZ EXTRAIDOS LOS DATOS, RENDERIZAMOS LOS PUNTOS EN EL MAPA
             actualizarMapaGeografico();
         }
 
@@ -665,7 +667,6 @@
                     document.getElementById('tabla-rendimiento-body').innerHTML = `<tr><td colspan="8" style="text-align: center; color: #F59E0B; padding: 20px;"><b>No se detectó el archivo en el servidor.</b><br>Por favor, usa el botón de "Carga Local" abajo para leer el archivo desde tu computadora.</td></tr>`;
                     document.getElementById('manual-upload-container').style.display = 'flex';
                     
-                    // Si falla el excel, pintamos el mapa vacío de cruces para no dejar la pantalla en negro
                     actualizarMapaGeografico();
                 });
         });
@@ -712,12 +713,13 @@
         }
 
         let grupoRutas = L.layerGroup().addTo(map);
+        let grupoLimpias = L.layerGroup().addTo(map); 
         let grupoInmediata = L.layerGroup().addTo(map);
         let grupoAlta = L.layerGroup().addTo(map);
         let grupoAltaInmediata = L.layerGroup().addTo(map);
         let grupoMedia = L.layerGroup().addTo(map);
         let grupoPrioritaria = L.layerGroup().addTo(map);
-        let grupoAtendidas = L.layerGroup().addTo(map); // NUEVO GRUPO PARA CHECKLIST
+        let grupoAtendidas = L.layerGroup().addTo(map); 
 
         if (typeof rutasRVEData !== 'undefined') {
             L.geoJSON(rutasRVEData, {
@@ -727,8 +729,8 @@
 
         let capaAlcantarillas;
 
-        // MOTOR PRINCIPAL DE RENDERIZADO ESPACIAL
         function actualizarMapaGeografico() {
+            grupoLimpias.clearLayers();
             grupoInmediata.clearLayers();
             grupoAlta.clearLayers();
             grupoAltaInmediata.clearLayers();
@@ -753,7 +755,6 @@
 
                         let idUnico = feature.properties['OBJECTID'] || feature.properties['FID'] || feature.properties['ID'] || feature.properties['id'] || feature.properties['NUMERO'] || feature.properties['numero'] || 'S/N';
                         
-                        // VERIFICAMOS EN LA MEMORIA MAESTRA SI ESTÁ ATENDIDA
                         let esAtendida = setAlcantarillasAtendidas.has(String(idUnico));
 
                         let nivelRaw = feature.properties['PRIORIDAD'] || feature.properties['prioridad'] || feature.properties['Prioridad'] || '';
@@ -779,24 +780,16 @@
                             }
                         }
 
-                        let marcador;
-                        
-                        // DIBUJO DEL PUNTO (AURA AZUL VS CÍRCULO NORMAL)
-                        if (esAtendida) {
-                            let iconAura = L.divIcon({
-                                className: 'custom-aura-icon',
-                                html: '<div class="aura-azul"></div>',
-                                iconSize: [12, 12],
-                                iconAnchor: [6, 6]
-                            });
-                            marcador = L.marker(latlng, {icon: iconAura});
-                        } else {
-                            marcador = L.circleMarker(latlng, { radius: 5, fillColor: colorPunto, color: "#ffffff", weight: 1, opacity: 1, fillOpacity: 0.9 });
-                        }
+                        // EL MARCADOR BASE SE DIBUJA SIEMPRE PARA NO PERDER LA CLASIFICACIÓN DE PRIORIDAD
+                        let marcadorBase = L.circleMarker(latlng, { radius: 5, fillColor: colorPunto, color: "#ffffff", weight: 1, opacity: 1, fillOpacity: 0.9 });
                         
                         let popupContent = '';
                         
                         if (!esCritica) {
+                            let badgeEstadoLimpias = esAtendida 
+                                ? `<div style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10B981; color: #10B981; padding: 6px 10px; border-radius: 6px; font-weight: bold; text-align: center; margin-bottom: 15px; letter-spacing: 0.5px;">✅ ESTADO: LIMPIA / ATENDIDA</div>`
+                                : '';
+
                             popupContent = `
                                 <div style="font-family: 'Segoe UI', Tahoma, sans-serif;">
                                     <h4 style="margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 1px solid #374151; color: #F59E0B; font-size: 1.15rem; font-weight: bold;">
@@ -808,13 +801,41 @@
                                     <div style="margin-bottom: 8px; font-size: 0.95rem;">
                                         <b style="color: #ffffff;">Código:</b> <span style="color: #9CA3AF;">${codigoD}</span>
                                     </div>
+                                    ${badgeEstadoLimpias}
+                                    ${esAtendida ? `
+                                    <div style="display:flex; gap:15px; margin-top:15px;">
+                                        <div style="flex:1; text-align:center;">
+                                            <div style="font-size:0.8rem; color:#EF4444; font-weight:bold; margin-bottom:5px;">ANTES</div>
+                                            <select onchange="cambiarFoto('antes', '${idUnico}', this.value)" style="width: 100%; margin-bottom: 10px; background: #374151; color: white; border: 1px solid #4B5563; border-radius: 4px; padding: 5px; font-size: 0.8rem; cursor: pointer;">
+                                                <option value="1">📸 Fotografía 1</option><option value="2">📸 Fotografía 2</option><option value="3">📸 Fotografía 3</option>
+                                            </select>
+                                            <div style="position: relative; width: 100%; height: 160px; background-color: #27303F; border-radius: 6px; border: 1px solid #4B5563; overflow: hidden;">
+                                                <div style="position: absolute; top:50%; left:50%; transform: translate(-50%, -50%); color: #9CA3AF; font-size: 0.8rem; z-index: 0; width: 100%;">Sin imagen disponible</div>
+                                                <img id="img-antes-${idUnico}" src="fotos/${idUnico}antes.jpg" style="position: relative; z-index: 1; width:100%; height:100%; object-fit:cover; transition: opacity 0.3s ease;" onerror="this.style.opacity='0';" onload="this.style.opacity='1';" alt="Evidencia Antes">
+                                            </div>
+                                        </div>
+                                        <div style="flex:1; text-align:center;">
+                                            <div style="font-size:0.8rem; color:#10B981; font-weight:bold; margin-bottom:5px;">DESPUÉS</div>
+                                            <select onchange="cambiarFoto('despues', '${idUnico}', this.value)" style="width: 100%; margin-bottom: 10px; background: #374151; color: white; border: 1px solid #4B5563; border-radius: 4px; padding: 5px; font-size: 0.8rem; cursor: pointer;">
+                                                <option value="1">📸 Fotografía 1</option><option value="2">📸 Fotografía 2</option><option value="3">📸 Fotografía 3</option>
+                                            </select>
+                                            <div style="position: relative; width: 100%; height: 160px; background-color: #27303F; border-radius: 6px; border: 1px solid #4B5563; overflow: hidden;">
+                                                <div style="position: absolute; top:50%; left:50%; transform: translate(-50%, -50%); color: #9CA3AF; font-size: 0.8rem; z-index: 0; width: 100%;">Sin imagen disponible</div>
+                                                <img id="img-despues-${idUnico}" src="fotos/${idUnico}despues.jpg" style="position: relative; z-index: 1; width:100%; height:100%; object-fit:cover; transition: opacity 0.3s ease;" onerror="this.style.opacity='0';" onload="this.style.opacity='1';" alt="Evidencia Después">
+                                            </div>
+                                        </div>
+                                    </div>` : ''}
                                 </div>
                             `;
                         } else {
-                            // SI ESTÁ ATENDIDA, MOSTRAR ETIQUETA VERDE DE CONFIRMACIÓN
+                            // INTEGRACIÓN DE AMBOS ESTADOS (NIVEL PRIMARIO + BADGE ATENDIDA)
                             let badgeEstado = esAtendida 
                                 ? `<div style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10B981; color: #10B981; padding: 6px 10px; border-radius: 6px; font-weight: bold; text-align: center; margin-bottom: 15px; letter-spacing: 0.5px;">✅ ESTADO: LIMPIA / ATENDIDA</div>`
-                                : `<div style="font-size: 0.95rem; margin-bottom: 15px;"><b style="color: #ffffff;">Nivel de Atención:</b> <span style="color: #9CA3AF; font-weight:bold;">${nivelRaw || 'N/A'}</span></div>`;
+                                : ``;
+
+                            let atencionHtml = `<div style="font-size: 0.95rem; margin-bottom: 15px;">
+                                                    <b style="color: #ffffff;">Nivel de Atención Primario:</b> <span style="color: #9CA3AF; font-weight:bold;">${nivelRaw || 'N/A'}</span>
+                                                </div>`;
 
                             popupContent = `
                                 <div style="font-family: 'Segoe UI', Tahoma, sans-serif;">
@@ -831,6 +852,7 @@
                                         <b style="color: #ffffff;">Diagnóstico Inicial:</b> <span style="color: #9CA3AF;">${estadoFisico}</span>
                                     </div>
                                     
+                                    ${atencionHtml}
                                     ${badgeEstado}
                                     
                                     <div style="display:flex; gap:15px; margin-top:15px;">
@@ -864,29 +886,40 @@
                             `;
                         }
                         
-                        marcador.bindPopup(popupContent, { minWidth: 460 });
-                        return marcador;
+                        marcadorBase.bindPopup(popupContent, { minWidth: esAtendida ? 460 : 300 });
+                        return marcadorBase;
                     },
                     onEachFeature: function (feature, layer) {
                         if (!feature.properties) return;
                         
                         let idUnico = feature.properties['OBJECTID'] || feature.properties['FID'] || feature.properties['ID'] || feature.properties['id'] || feature.properties['NUMERO'] || feature.properties['numero'] || 'S/N';
+                        let esAtendida = setAlcantarillasAtendidas.has(String(idUnico));
+
+                        let nivelRaw = feature.properties['PRIORIDAD'] || feature.properties['prioridad'] || feature.properties['Prioridad'] || '';
+                        let nivel = String(nivelRaw).toLowerCase().replace(/\s+/g, '');
                         
-                        // CLASIFICACIÓN EN CAPAS (CHECKLIST)
-                        if (setAlcantarillasAtendidas.has(String(idUnico))) {
-                            grupoAtendidas.addLayer(layer); // Va directo a la capa Resueltas
-                        } else {
-                            let nivelRaw = feature.properties['PRIORIDAD'] || feature.properties['prioridad'] || feature.properties['Prioridad'] || '';
-                            let nivel = String(nivelRaw).toLowerCase().replace(/\s+/g, '');
-                            
-                            if (nivel === 'inmediata') grupoInmediata.addLayer(layer);
-                            else if (nivel === 'alta') grupoAlta.addLayer(layer);
-                            else if (nivel === 'alta/inmediata' || nivel === 'altainmediata') grupoAltaInmediata.addLayer(layer);
-                            else if (nivel === 'media') grupoMedia.addLayer(layer);
-                            else if (nivel === 'prioritaria') grupoPrioritaria.addLayer(layer);
+                        // EL MARCADOR BASE SE AGREGA SIEMPRE A SU CAPA DE PRIORIDAD ORIGINAL
+                        if (nivel === 'inmediata') grupoInmediata.addLayer(layer);
+                        else if (nivel === 'alta') grupoAlta.addLayer(layer);
+                        else if (nivel === 'alta/inmediata' || nivel === 'altainmediata') grupoAltaInmediata.addLayer(layer);
+                        else if (nivel === 'media') grupoMedia.addLayer(layer);
+                        else if (nivel === 'prioritaria') grupoPrioritaria.addLayer(layer);
+                        else grupoLimpias.addLayer(layer);
+
+                        // SI ESTÁ ATENDIDA, SE CREA EL AURA CIAN Y SE SUPERPONE
+                        if (esAtendida) {
+                            let iconAura = L.divIcon({
+                                className: 'custom-aura-icon',
+                                html: '<div class="aura-azul"></div>',
+                                iconSize: [16, 16], // Ligeramente más grande que el círculo original
+                                iconAnchor: [8, 8]
+                            });
+                            // interactive: false permite que los clics atraviesen el aura y abran el popup del marcador base
+                            let marcadorAura = L.marker(layer.getLatLng(), {icon: iconAura, interactive: false});
+                            grupoAtendidas.addLayer(marcadorAura);
                         }
                     }
-                }); // NO añadimos .addTo(map) directamente, lo controlan los Checkboxes
+                }); 
 
                 document.getElementById('kpi-total').innerText = criticasCount;
                 document.getElementById('val-inmediata').innerText = countInm;
@@ -902,7 +935,6 @@
                 let alturaIdeal = Math.max(300, (cantidadTramos * 32) + 20); 
                 document.getElementById('graficoTramosWrapper').style.height = alturaIdeal + 'px';
 
-                // REFRESCAR GRÁFICO DE BARRAS
                 let chartElement = document.getElementById('graficoTramos');
                 let chartInstance = Chart.getChart(chartElement);
                 if (chartInstance) chartInstance.destroy();
@@ -970,7 +1002,8 @@
         toggleCapa('chk-altainmediata', grupoAltaInmediata);
         toggleCapa('chk-media', grupoMedia);
         toggleCapa('chk-prioritaria', grupoPrioritaria);
-        toggleCapa('chk-atendidas', grupoAtendidas); // EVENTO DEL NUEVO CHECKLIST
+        toggleCapa('chk-limpias', grupoLimpias);
+        toggleCapa('chk-atendidas', grupoAtendidas);
     </script>
 </body>
 </html>
