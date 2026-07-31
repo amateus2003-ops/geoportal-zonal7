@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transparencia y Control - GeoPortal RVE Zonal 7</title>
     
+    <!-- Librerías de Mapa, Gráficos y Lector de Excel -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -61,6 +62,10 @@
 
         .capa-label { display: block; margin-bottom: 12px; cursor: pointer; font-size: 0.9rem; }
         
+        .aura-azul-svg {
+            pointer-events: none;
+        }
+
         .leaflet-popup-content-wrapper, .leaflet-popup-tip { background-color: #1F2937 !important; color: #ffffff !important; box-shadow: 0 4px 15px rgba(0,0,0,0.8) !important; }
         .leaflet-popup-content { margin: 20px 25px !important; line-height: 1.6 !important; width: 440px !important; }
         .leaflet-container a.leaflet-popup-close-button { color: #9CA3AF !important; padding: 10px !important; }
@@ -373,7 +378,7 @@
                 <div class="overlay-total">
                     <div>
                         <div style="font-size: 0.75rem; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px;">Puntos de Atención Prioritaria</div>
-                        <div id="kpi-total" style="font-size: 2.8rem; color: #EF4444; font-weight: bold; line-height: 1;">186</div>
+                        <div id="kpi-total" style="font-size: 2.8rem; color: #EF4444; font-weight: bold; line-height: 1;">0</div>
                     </div>
                     <div style="font-size: 4rem; opacity: 0.9; margin-left: 10px;">🚧</div>
                 </div>
@@ -411,6 +416,36 @@
 
     <script>
         let setAlcantarillasAtendidas = new Set();
+
+        // ==========================================
+        // MÓDULO DE DIAGNÓSTICO EN CONSOLA (F12)
+        // ==========================================
+        function ejecutarDiagnosticoConsola() {
+            console.group("🔍 DIAGNÓSTICO DEL SISTEMA GEOPORTAL - MIT ZONAL 7");
+            if (typeof alcantarillasData !== 'undefined' && alcantarillasData && alcantarillasData.features) {
+                console.log(`✅ Archivo 'alcantarillas.js' detectado con éxito. Total de entidades: ${alcantarillasData.features.length}`);
+                
+                let primerPunto = alcantarillasData.features[0];
+                if (primerPunto && primerPunto.properties) {
+                    console.log("📌 Atributos de cabecera detectados en la entidad [0]:", Object.keys(primerPunto.properties));
+                    console.log("📌 Muestra completa de propiedades del primer registro:", primerPunto.properties);
+                } else {
+                    console.warn("⚠️ La entidad [0] no tiene propiedades legibles.");
+                }
+
+                let contPuntos = 0, contPoligonos = 0, contLineas = 0;
+                alcantarillasData.features.forEach(f => {
+                    let t = f.geometry ? f.geometry.type : '';
+                    if (t.includes('Point')) contPuntos++;
+                    else if (t.includes('Polygon')) contPoligonos++;
+                    else if (t.includes('Line')) contLineas++;
+                });
+                console.log(`🗺️ Geometrías: ${contPuntos} Puntos, ${contPoligonos} Polígonos, ${contLineas} Líneas.`);
+            } else {
+                console.error("❌ ERROR CRÍTICO: No se detectó la variable 'alcantarillasData' o su estructura es inválida. Asegúrate de que tu archivo inicie con 'var alcantarillasData = ...' y tenga coordenadas EPSG:4326.");
+            }
+            console.groupEnd();
+        }
 
         window.cambiarFoto = function(tipo, id, valor) {
             let sufijo = valor === '1' ? '' : valor;
@@ -602,6 +637,9 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
+            // DIAGNÓSTICO EN CONSOLA
+            ejecutarDiagnosticoConsola();
+
             const ctxPie = document.getElementById('graficoAvancePie').getContext('2d');
             avancePieChart = new Chart(ctxPie, {
                 type: 'doughnut',
@@ -743,7 +781,11 @@
                         
                         let esAtendida = setAlcantarillasAtendidas.has(String(idUnico));
 
-                        let nivelRaw = feature.properties['PRIORIDAD'] || feature.properties['prioridad'] || feature.properties['Prioridad'] || '';
+                        let nivelRaw = feature.properties['PRIORIDAD'] || feature.properties['prioridad'] || feature.properties['Prioridad'] || 
+                                       feature.properties['PRIORIDA'] || feature.properties['priorida'] || feature.properties['Priorida'] ||
+                                       feature.properties['NIVEL'] || feature.properties['nivel'] || feature.properties['Nivel'] ||
+                                       feature.properties['PRIORIDA_1'] || feature.properties['PRIORIDAD_'] || '';
+
                         let nivel = String(nivelRaw).toLowerCase().replace(/\s+/g, ''); 
                         let tramoRaw = feature.properties['TRAMO'] || feature.properties['tramo'] || feature.properties['Tramo'] || 'Desconocido';
                         let tramo = String(tramoRaw).trim().toUpperCase(); 
@@ -753,11 +795,11 @@
                         let colorPunto = '#8B4513'; 
                         let esCritica = false;
 
-                        if (nivel === 'inmediata') { colorPunto = '#FF0000'; esCritica = true; countInm++; } 
-                        else if (nivel === 'alta') { colorPunto = '#FFFF00'; esCritica = true; countAlt++; } 
-                        else if (nivel === 'alta/inmediata' || nivel === 'altainmediata') { colorPunto = '#FF7F00'; esCritica = true; countAltInm++; } 
-                        else if (nivel === 'media') { colorPunto = '#008000'; esCritica = true; countMed++; } 
-                        else if (nivel === 'prioritaria') { colorPunto = '#00FF00'; esCritica = true; countPrio++; }
+                        if (nivel.includes('inmediata') && !nivel.includes('alta')) { colorPunto = '#FF0000'; esCritica = true; countInm++; } 
+                        else if (nivel.includes('altainm') || (nivel.includes('alta') && nivel.includes('inmediata'))) { colorPunto = '#FF7F00'; esCritica = true; countAltInm++; } 
+                        else if (nivel.includes('alta') && !nivel.includes('inmediata')) { colorPunto = '#FFFF00'; esCritica = true; countAlt++; } 
+                        else if (nivel.includes('media')) { colorPunto = '#008000'; esCritica = true; countMed++; } 
+                        else if (nivel.includes('prioritaria')) { colorPunto = '#00FF00'; esCritica = true; countPrio++; }
 
                         if (esCritica) {
                             criticasCount++;
@@ -879,27 +921,44 @@
                         let idUnico = feature.properties['OBJECTID'] || feature.properties['FID'] || feature.properties['ID'] || feature.properties['id'] || feature.properties['NUMERO'] || feature.properties['numero'] || 'S/N';
                         let esAtendida = setAlcantarillasAtendidas.has(String(idUnico));
 
-                        let nivelRaw = feature.properties['PRIORIDAD'] || feature.properties['prioridad'] || feature.properties['Prioridad'] || '';
+                        let nivelRaw = feature.properties['PRIORIDAD'] || feature.properties['prioridad'] || feature.properties['Prioridad'] || 
+                                       feature.properties['PRIORIDA'] || feature.properties['priorida'] || feature.properties['Priorida'] ||
+                                       feature.properties['NIVEL'] || feature.properties['nivel'] || feature.properties['Nivel'] ||
+                                       feature.properties['PRIORIDA_1'] || feature.properties['PRIORIDAD_'] || '';
+                                       
                         let nivel = String(nivelRaw).toLowerCase().replace(/\s+/g, '');
                         
-                        if (nivel === 'inmediata') grupoInmediata.addLayer(layer);
-                        else if (nivel === 'alta') grupoAlta.addLayer(layer);
-                        else if (nivel === 'alta/inmediata' || nivel === 'altainmediata') grupoAltaInmediata.addLayer(layer);
-                        else if (nivel === 'media') grupoMedia.addLayer(layer);
-                        else if (nivel === 'prioritaria') grupoPrioritaria.addLayer(layer);
-                        else grupoLimpias.addLayer(layer);
+                        if (nivel.includes('inmediata') && !nivel.includes('alta')) {
+                            grupoInmediata.addLayer(layer);
+                        } else if (nivel.includes('altainm') || (nivel.includes('alta') && nivel.includes('inmediata'))) {
+                            grupoAltaInmediata.addLayer(layer);
+                        } else if (nivel.includes('alta') && !nivel.includes('inmediata')) {
+                            grupoAlta.addLayer(layer);
+                        } else if (nivel.includes('media')) {
+                            grupoMedia.addLayer(layer);
+                        } else if (nivel.includes('prioritaria')) {
+                            grupoPrioritaria.addLayer(layer);
+                        } else {
+                            grupoLimpias.addLayer(layer);
+                        }
 
                         if (esAtendida) {
-                            let marcadorAura = L.circleMarker(layer.getLatLng(), {
-                                radius: 8, 
-                                color: "#00FFFF", 
-                                weight: 3, 
-                                opacity: 0.9,
-                                fillColor: "#00FFFF", 
-                                fillOpacity: 0.35, 
-                                interactive: false 
-                            });
-                            grupoAtendidas.addLayer(marcadorAura);
+                            let latlng = typeof layer.getLatLng === 'function' 
+                                ? layer.getLatLng() 
+                                : (layer.getBounds ? layer.getBounds().getCenter() : null);
+
+                            if (latlng) {
+                                let marcadorAura = L.circleMarker(latlng, {
+                                    radius: 8, 
+                                    color: "#00FFFF", 
+                                    weight: 3, 
+                                    opacity: 0.9,
+                                    fillColor: "#00FFFF", 
+                                    fillOpacity: 0.35, 
+                                    interactive: false 
+                                });
+                                grupoAtendidas.addLayer(marcadorAura);
+                            }
                         }
                     }
                 }); 
@@ -949,7 +1008,12 @@
                                     if (!layer.feature || !layer.feature.properties) return;
                                     let tramoRaw = layer.feature.properties['TRAMO'] || layer.feature.properties['tramo'] || layer.feature.properties['Tramo'] || '';
                                     let tramoActual = String(tramoRaw).trim().toUpperCase();
-                                    if (tramoActual === tramoSeleccionado) latlngs.push(layer.getLatLng());
+                                    if (tramoActual === tramoSeleccionado) {
+                                        let coord = typeof layer.getLatLng === 'function' 
+                                            ? layer.getLatLng() 
+                                            : (layer.getBounds ? layer.getBounds().getCenter() : null);
+                                        if (coord) latlngs.push(coord);
+                                    }
                                 });
                                 if (latlngs.length > 0) {
                                     map.flyToBounds(L.latLngBounds(latlngs), { padding: [50, 50], maxZoom: 13, duration: 1.5 });
