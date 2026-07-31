@@ -1,4 +1,4 @@
-var alcantarillasRVEData =
+var alcantarillasData =
 {
 "type": "FeatureCollection",
 "name": "alcantarillas",
