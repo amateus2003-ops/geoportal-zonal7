@@ -245,9 +245,9 @@
             <div class="panel-avance-general">
                 <div class="avance-text-container">
                     <h3 style="margin-top: 0; color: #10B981; border-bottom: none; padding-bottom: 0; font-size: 1.3rem; letter-spacing: 1px;">📈 AVANCE DE MANTENIMIENTO Y PREVENCIÓN</h3>
-                    <p style="color: #9CA3AF; font-size: 0.95rem; margin-top: 10px; line-height: 1.5;">Avance integral de limpieza de obras de drenaje frente a los <strong>188</strong> puntos de atención prioritaria detectados en la Red Vial Estatal.</p>
+                    <p style="color: #9CA3AF; font-size: 0.95rem; margin-top: 10px; line-height: 1.5;">Avance de desazolve focalizado estrictamente en los puntos de atención prioritaria detectados en la Red Vial Estatal.</p>
                     <div style="font-size: 3.5rem; font-weight: 800; color: #ffffff; text-shadow: 0 4px 6px rgba(0,0,0,0.4); margin: 15px 0; letter-spacing: -1px;" id="kpi-avance-txt">0% Completado</div>
-                    <div style="font-size: 1.2rem; color: #D1D5DB; background: rgba(31, 41, 55, 0.8); padding: 10px 20px; border-radius: 8px; display: inline-block; border: 1px solid #374151;">Obras de Drenaje Limpias: <strong id="kpi-limpias-num" style="color:#60A5FA; font-size: 1.5rem; margin-left: 8px;">0</strong> <span style="color: #6B7280; font-size: 1.1rem;">/ 188</span></div>
+                    <div style="font-size: 1.2rem; color: #D1D5DB; background: rgba(31, 41, 55, 0.8); padding: 10px 20px; border-radius: 8px; display: inline-block; border: 1px solid #374151;">Puntos Críticos Atendidos: <strong id="kpi-limpias-num" style="color:#60A5FA; font-size: 1.5rem; margin-left: 8px;">0</strong> <span id="kpi-criticas-total" style="color: #6B7280; font-size: 1.1rem;">/ 188</span></div>
                 </div>
                 <div class="avance-chart-container">
                     <canvas id="graficoAvancePie"></canvas>
@@ -317,7 +317,7 @@
                                 <th style="width: 140px;">Avance General</th>
                                 <th style="text-align: center;">Kilómetros Atendidos</th>
                                 <th style="width: 140px;">Progreso del Tramo</th>
-                                <th style="text-align: center; width: 130px; background-color: #1F2937;">Rend. Diario<br><span style="font-size:0.65rem; color:#9CA3AF;">(Promedio)</span></th>
+                                <th style="text-align: center; width: 130px; background-color: #1F2937;">Rendimiento Diario</th>
                             </tr>
                         </thead>
                         <tbody id="tabla-rendimiento-body">
@@ -417,9 +417,6 @@
     <script>
         let setAlcantarillasAtendidas = new Set();
 
-        // ==========================================
-        // MÓDULO DE DIAGNÓSTICO EN CONSOLA (F12)
-        // ==========================================
         function ejecutarDiagnosticoConsola() {
             console.group("🔍 DIAGNÓSTICO DEL SISTEMA GEOPORTAL - MIT ZONAL 7");
             if (typeof alcantarillasData !== 'undefined' && alcantarillasData && alcantarillasData.features) {
@@ -428,21 +425,9 @@
                 let primerPunto = alcantarillasData.features[0];
                 if (primerPunto && primerPunto.properties) {
                     console.log("📌 Atributos de cabecera detectados en la entidad [0]:", Object.keys(primerPunto.properties));
-                    console.log("📌 Muestra completa de propiedades del primer registro:", primerPunto.properties);
-                } else {
-                    console.warn("⚠️ La entidad [0] no tiene propiedades legibles.");
                 }
-
-                let contPuntos = 0, contPoligonos = 0, contLineas = 0;
-                alcantarillasData.features.forEach(f => {
-                    let t = f.geometry ? f.geometry.type : '';
-                    if (t.includes('Point')) contPuntos++;
-                    else if (t.includes('Polygon')) contPoligonos++;
-                    else if (t.includes('Line')) contLineas++;
-                });
-                console.log(`🗺️ Geometrías: ${contPuntos} Puntos, ${contPoligonos} Polígonos, ${contLineas} Líneas.`);
             } else {
-                console.error("❌ ERROR CRÍTICO: No se detectó la variable 'alcantarillasData' o su estructura es inválida. Asegúrate de que tu archivo inicie con 'var alcantarillasData = ...' y tenga coordenadas EPSG:4326.");
+                console.error("❌ ERROR CRÍTICO: No se detectó la variable 'alcantarillasData'.");
             }
             console.groupEnd();
         }
@@ -491,7 +476,6 @@
 
         function procesarDatosExcel(excelRows) {
             let resumenEmpresas = {};
-            let totalLimpiasGlobal = 0;
             setAlcantarillasAtendidas.clear(); 
 
             excelRows.forEach(row => {
@@ -549,7 +533,6 @@
 
                 let limpiadasDia = parseInt(rowData['ALCANTARILLAS_LIMPIADAS']) || 0;
                 resumenEmpresas[empresaKey].limpiadasAcumuladas += limpiadasDia;
-                totalLimpiasGlobal += limpiadasDia;
 
                 let kmInicio = parseAbscisa(rowData['ABSCISA_INICIAL']);
                 let kmFin = parseAbscisa(rowData['ABSCISA_FINAL']);
@@ -561,19 +544,6 @@
             });
 
             document.getElementById('contador-atendidas').innerText = setAlcantarillasAtendidas.size;
-
-            let metaCriticas = 188;
-            let pendientes = Math.max(0, metaCriticas - totalLimpiasGlobal);
-            let porcentajeAvance = Math.min(100, Math.round((totalLimpiasGlobal / metaCriticas) * 100));
-
-            document.getElementById('kpi-avance-txt').innerText = `${porcentajeAvance}% Completado`;
-            document.getElementById('kpi-avance-centro').innerText = `${porcentajeAvance}%`;
-            document.getElementById('kpi-limpias-num').innerText = totalLimpiasGlobal;
-
-            if (avancePieChart) {
-                avancePieChart.data.datasets[0].data = [totalLimpiasGlobal, pendientes];
-                avancePieChart.update();
-            }
 
             let tbody = document.getElementById('tabla-rendimiento-body');
             tbody.innerHTML = '';
@@ -625,6 +595,7 @@
                     <td style="text-align: center; font-size: 0.85rem; background: rgba(39, 48, 63, 0.4); border-radius: 0 6px 6px 0;">
                         <div style="color: #60A5FA; font-weight: bold; margin-bottom: 4px;">${promAlcDiario} <span style="font-size: 0.65rem; color: #9CA3AF;">Alc/día</span></div>
                         <div style="color: #34D399; font-weight: bold;">${promKmDiario} <span style="font-size: 0.65rem; color: #9CA3AF;">Km/día</span></div>
+                        <div style="font-size: 0.65rem; color: #FBBF24; margin-top: 4px; border-top: 1px solid #4B5563; padding-top: 2px;">en ${totalDias} días lab.</div>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -637,14 +608,13 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            // DIAGNÓSTICO EN CONSOLA
             ejecutarDiagnosticoConsola();
 
             const ctxPie = document.getElementById('graficoAvancePie').getContext('2d');
             avancePieChart = new Chart(ctxPie, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Limpias', 'Pendientes'],
+                    labels: ['Críticas Limpias', 'Críticas Pendientes'],
                     datasets: [{
                         data: [0, 188],
                         backgroundColor: ['#10B981', '#374151'],
@@ -767,6 +737,7 @@
             }
 
             let criticasCount = 0;
+            let criticasAtendidasCount = 0; 
             let countInm = 0, countAlt = 0, countAltInm = 0, countMed = 0, countPrio = 0;
             let conteoTramos = {};
 
@@ -778,7 +749,6 @@
                         }
 
                         let idUnico = feature.properties['OBJECTID'] || feature.properties['FID'] || feature.properties['ID'] || feature.properties['id'] || feature.properties['NUMERO'] || feature.properties['numero'] || 'S/N';
-                        
                         let esAtendida = setAlcantarillasAtendidas.has(String(idUnico));
 
                         let nivelRaw = feature.properties['PRIORIDAD'] || feature.properties['prioridad'] || feature.properties['Prioridad'] || 
@@ -801,15 +771,7 @@
                         else if (nivel.includes('media')) { colorPunto = '#008000'; esCritica = true; countMed++; } 
                         else if (nivel.includes('prioritaria')) { colorPunto = '#00FF00'; esCritica = true; countPrio++; }
 
-                        if (esCritica) {
-                            criticasCount++;
-                            if (tramo && tramo !== "DESCONOCIDO" && tramo !== "") {
-                                conteoTramos[tramo] = (conteoTramos[tramo] || 0) + 1;
-                            }
-                        }
-
                         let marcadorBase = L.circleMarker(latlng, { radius: 5, fillColor: colorPunto, color: "#ffffff", weight: 1, opacity: 1, fillOpacity: 0.9 });
-                        
                         let popupContent = '';
                         
                         if (!esCritica) {
@@ -819,15 +781,9 @@
 
                             popupContent = `
                                 <div style="font-family: 'Segoe UI', Tahoma, sans-serif;">
-                                    <h4 style="margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 1px solid #374151; color: #F59E0B; font-size: 1.15rem; font-weight: bold;">
-                                        ${tramoRaw}
-                                    </h4>
-                                    <div style="margin-bottom: 8px; font-size: 0.95rem;">
-                                        <b style="color: #ffffff;">ID Único:</b> <span style="color: #9CA3AF;">${idUnico}</span>
-                                    </div>
-                                    <div style="margin-bottom: 8px; font-size: 0.95rem;">
-                                        <b style="color: #ffffff;">Código:</b> <span style="color: #9CA3AF;">${codigoD}</span>
-                                    </div>
+                                    <h4 style="margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 1px solid #374151; color: #F59E0B; font-size: 1.15rem; font-weight: bold;">${tramoRaw}</h4>
+                                    <div style="margin-bottom: 8px; font-size: 0.95rem;"><b style="color: #ffffff;">ID Único:</b> <span style="color: #9CA3AF;">${idUnico}</span></div>
+                                    <div style="margin-bottom: 8px; font-size: 0.95rem;"><b style="color: #ffffff;">Código:</b> <span style="color: #9CA3AF;">${codigoD}</span></div>
                                     ${badgeEstadoLimpias}
                                     ${esAtendida ? `
                                     <div style="display:flex; gap:15px; margin-top:15px;">
@@ -836,9 +792,9 @@
                                             <select onchange="cambiarFoto('antes', '${idUnico}', this.value)" style="width: 100%; margin-bottom: 10px; background: #374151; color: white; border: 1px solid #4B5563; border-radius: 4px; padding: 5px; font-size: 0.8rem; cursor: pointer;">
                                                 <option value="1">📸 Fotografía 1</option><option value="2">📸 Fotografía 2</option><option value="3">📸 Fotografía 3</option>
                                             </select>
-                                            <div style="position: relative; width: 100%; height: 160px; background-color: #27303F; border-radius: 6px; border: 1px solid #4B5563; overflow: hidden;">
-                                                <div style="position: absolute; top:50%; left:50%; transform: translate(-50%, -50%); color: #9CA3AF; font-size: 0.8rem; z-index: 0; width: 100%;">Sin imagen disponible</div>
-                                                <img id="img-antes-${idUnico}" src="fotos/${idUnico}antes.jpg" style="position: relative; z-index: 1; width:100%; height:100%; object-fit:cover; transition: opacity 0.3s ease;" onerror="this.style.opacity='0';" onload="this.style.opacity='1';" alt="Evidencia Antes">
+                                            <div style="position: relative; width: 100%; height: 160px; background-color: #1F2937; border-radius: 6px; border: 1px dashed #4B5563; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                                                <div style="position: absolute; color: #6B7280; font-size: 0.75rem; text-align: center; font-weight: bold; z-index: 0;">🚫<br>FOTO NO<br>DISPONIBLE</div>
+                                                <img id="img-antes-${idUnico}" src="fotos/${idUnico}antes.jpg" style="position: relative; z-index: 1; width:100%; height:100%; object-fit:cover; transition: opacity 0.3s ease;" onerror="this.style.opacity='0';" onload="this.style.opacity='1';" alt="">
                                             </div>
                                         </div>
                                         <div style="flex:1; text-align:center;">
@@ -846,9 +802,9 @@
                                             <select onchange="cambiarFoto('despues', '${idUnico}', this.value)" style="width: 100%; margin-bottom: 10px; background: #374151; color: white; border: 1px solid #4B5563; border-radius: 4px; padding: 5px; font-size: 0.8rem; cursor: pointer;">
                                                 <option value="1">📸 Fotografía 1</option><option value="2">📸 Fotografía 2</option><option value="3">📸 Fotografía 3</option>
                                             </select>
-                                            <div style="position: relative; width: 100%; height: 160px; background-color: #27303F; border-radius: 6px; border: 1px solid #4B5563; overflow: hidden;">
-                                                <div style="position: absolute; top:50%; left:50%; transform: translate(-50%, -50%); color: #9CA3AF; font-size: 0.8rem; z-index: 0; width: 100%;">Sin imagen disponible</div>
-                                                <img id="img-despues-${idUnico}" src="fotos/${idUnico}despues.jpg" style="position: relative; z-index: 1; width:100%; height:100%; object-fit:cover; transition: opacity 0.3s ease;" onerror="this.style.opacity='0';" onload="this.style.opacity='1';" alt="Evidencia Después">
+                                            <div style="position: relative; width: 100%; height: 160px; background-color: #1F2937; border-radius: 6px; border: 1px dashed #4B5563; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                                                <div style="position: absolute; color: #6B7280; font-size: 0.75rem; text-align: center; font-weight: bold; z-index: 0;">🚫<br>FOTO NO<br>DISPONIBLE</div>
+                                                <img id="img-despues-${idUnico}" src="fotos/${idUnico}despues.jpg" style="position: relative; z-index: 1; width:100%; height:100%; object-fit:cover; transition: opacity 0.3s ease;" onerror="this.style.opacity='0';" onload="this.style.opacity='1';" alt="">
                                             </div>
                                         </div>
                                     </div>` : ''}
@@ -859,52 +815,35 @@
                                 ? `<div style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10B981; color: #10B981; padding: 6px 10px; border-radius: 6px; font-weight: bold; text-align: center; margin-bottom: 15px; letter-spacing: 0.5px;">✅ ESTADO: LIMPIA / ATENDIDA</div>`
                                 : ``;
 
-                            let atencionHtml = `<div style="font-size: 0.95rem; margin-bottom: 15px;">
-                                                    <b style="color: #ffffff;">Nivel de Atención Primario:</b> <span style="color: #9CA3AF; font-weight:bold;">${nivelRaw || 'N/A'}</span>
-                                                </div>`;
+                            let atencionHtml = `<div style="font-size: 0.95rem; margin-bottom: 15px;"><b style="color: #ffffff;">Nivel de Atención Primario:</b> <span style="color: #9CA3AF; font-weight:bold;">${nivelRaw || 'N/A'}</span></div>`;
 
                             popupContent = `
                                 <div style="font-family: 'Segoe UI', Tahoma, sans-serif;">
-                                    <h4 style="margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 1px solid #374151; color: #F59E0B; font-size: 1.25rem; font-weight: bold;">
-                                        ${tramoRaw}
-                                    </h4>
-                                    <div style="margin-bottom: 8px; font-size: 0.95rem;">
-                                        <b style="color: #ffffff;">ID Único:</b> <span style="color: #9CA3AF;">${idUnico}</span>
-                                    </div>
-                                    <div style="margin-bottom: 8px; font-size: 0.95rem;">
-                                        <b style="color: #ffffff;">Código:</b> <span style="color: #9CA3AF;">${codigoD}</span>
-                                    </div>
-                                    <div style="margin-bottom: 8px; font-size: 0.95rem;">
-                                        <b style="color: #ffffff;">Diagnóstico Inicial:</b> <span style="color: #9CA3AF;">${estadoFisico}</span>
-                                    </div>
-                                    
+                                    <h4 style="margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 1px solid #374151; color: #F59E0B; font-size: 1.25rem; font-weight: bold;">${tramoRaw}</h4>
+                                    <div style="margin-bottom: 8px; font-size: 0.95rem;"><b style="color: #ffffff;">ID Único:</b> <span style="color: #9CA3AF;">${idUnico}</span></div>
+                                    <div style="margin-bottom: 8px; font-size: 0.95rem;"><b style="color: #ffffff;">Código:</b> <span style="color: #9CA3AF;">${codigoD}</span></div>
+                                    <div style="margin-bottom: 8px; font-size: 0.95rem;"><b style="color: #ffffff;">Diagnóstico Inicial:</b> <span style="color: #9CA3AF;">${estadoFisico}</span></div>
                                     ${atencionHtml}
                                     ${badgeEstado}
-                                    
                                     <div style="display:flex; gap:15px; margin-top:15px;">
                                         <div style="flex:1; text-align:center;">
                                             <div style="font-size:0.8rem; color:#EF4444; font-weight:bold; margin-bottom:5px;">ANTES</div>
                                             <select onchange="cambiarFoto('antes', '${idUnico}', this.value)" style="width: 100%; margin-bottom: 10px; background: #374151; color: white; border: 1px solid #4B5563; border-radius: 4px; padding: 5px; font-size: 0.8rem; cursor: pointer;">
-                                                <option value="1">📸 Fotografía 1</option>
-                                                <option value="2">📸 Fotografía 2</option>
-                                                <option value="3">📸 Fotografía 3</option>
+                                                <option value="1">📸 Fotografía 1</option><option value="2">📸 Fotografía 2</option><option value="3">📸 Fotografía 3</option>
                                             </select>
-                                            <div style="position: relative; width: 100%; height: 160px; background-color: #27303F; border-radius: 6px; border: 1px solid #4B5563; overflow: hidden;">
-                                                <div style="position: absolute; top:50%; left:50%; transform: translate(-50%, -50%); color: #9CA3AF; font-size: 0.8rem; z-index: 0; width: 100%;">Sin imagen disponible</div>
-                                                <img id="img-antes-${idUnico}" src="fotos/${idUnico}antes.jpg" style="position: relative; z-index: 1; width:100%; height:100%; object-fit:cover; transition: opacity 0.3s ease;" onerror="this.style.opacity='0';" onload="this.style.opacity='1';" alt="Evidencia Antes">
+                                            <div style="position: relative; width: 100%; height: 160px; background-color: #1F2937; border-radius: 6px; border: 1px dashed #4B5563; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                                                <div style="position: absolute; color: #6B7280; font-size: 0.75rem; text-align: center; font-weight: bold; z-index: 0;">🚫<br>FOTO NO<br>DISPONIBLE</div>
+                                                <img id="img-antes-${idUnico}" src="fotos/${idUnico}antes.jpg" style="position: relative; z-index: 1; width:100%; height:100%; object-fit:cover; transition: opacity 0.3s ease;" onerror="this.style.opacity='0';" onload="this.style.opacity='1';" alt="">
                                             </div>
                                         </div>
-                                        
                                         <div style="flex:1; text-align:center;">
                                             <div style="font-size:0.8rem; color:#10B981; font-weight:bold; margin-bottom:5px;">DESPUÉS</div>
                                             <select onchange="cambiarFoto('despues', '${idUnico}', this.value)" style="width: 100%; margin-bottom: 10px; background: #374151; color: white; border: 1px solid #4B5563; border-radius: 4px; padding: 5px; font-size: 0.8rem; cursor: pointer;">
-                                                <option value="1">📸 Fotografía 1</option>
-                                                <option value="2">📸 Fotografía 2</option>
-                                                <option value="3">📸 Fotografía 3</option>
+                                                <option value="1">📸 Fotografía 1</option><option value="2">📸 Fotografía 2</option><option value="3">📸 Fotografía 3</option>
                                             </select>
-                                            <div style="position: relative; width: 100%; height: 160px; background-color: #27303F; border-radius: 6px; border: 1px solid #4B5563; overflow: hidden;">
-                                                <div style="position: absolute; top:50%; left:50%; transform: translate(-50%, -50%); color: #9CA3AF; font-size: 0.8rem; z-index: 0; width: 100%;">Sin imagen disponible</div>
-                                                <img id="img-despues-${idUnico}" src="fotos/${idUnico}despues.jpg" style="position: relative; z-index: 1; width:100%; height:100%; object-fit:cover; transition: opacity 0.3s ease;" onerror="this.style.opacity='0';" onload="this.style.opacity='1';" alt="Evidencia Después">
+                                            <div style="position: relative; width: 100%; height: 160px; background-color: #1F2937; border-radius: 6px; border: 1px dashed #4B5563; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                                                <div style="position: absolute; color: #6B7280; font-size: 0.75rem; text-align: center; font-weight: bold; z-index: 0;">🚫<br>FOTO NO<br>DISPONIBLE</div>
+                                                <img id="img-despues-${idUnico}" src="fotos/${idUnico}despues.jpg" style="position: relative; z-index: 1; width:100%; height:100%; object-fit:cover; transition: opacity 0.3s ease;" onerror="this.style.opacity='0';" onload="this.style.opacity='1';" alt="">
                                             </div>
                                         </div>
                                     </div>
@@ -928,18 +867,24 @@
                                        
                         let nivel = String(nivelRaw).toLowerCase().replace(/\s+/g, '');
                         
-                        if (nivel.includes('inmediata') && !nivel.includes('alta')) {
-                            grupoInmediata.addLayer(layer);
-                        } else if (nivel.includes('altainm') || (nivel.includes('alta') && nivel.includes('inmediata'))) {
-                            grupoAltaInmediata.addLayer(layer);
-                        } else if (nivel.includes('alta') && !nivel.includes('inmediata')) {
-                            grupoAlta.addLayer(layer);
-                        } else if (nivel.includes('media')) {
-                            grupoMedia.addLayer(layer);
-                        } else if (nivel.includes('prioritaria')) {
-                            grupoPrioritaria.addLayer(layer);
-                        } else {
-                            grupoLimpias.addLayer(layer);
+                        let esCritica = false;
+                        if (nivel.includes('inmediata') && !nivel.includes('alta')) { grupoInmediata.addLayer(layer); esCritica = true; } 
+                        else if (nivel.includes('altainm') || (nivel.includes('alta') && nivel.includes('inmediata'))) { grupoAltaInmediata.addLayer(layer); esCritica = true; } 
+                        else if (nivel.includes('alta') && !nivel.includes('inmediata')) { grupoAlta.addLayer(layer); esCritica = true; } 
+                        else if (nivel.includes('media')) { grupoMedia.addLayer(layer); esCritica = true; } 
+                        else if (nivel.includes('prioritaria')) { grupoPrioritaria.addLayer(layer); esCritica = true; } 
+                        else { grupoLimpias.addLayer(layer); }
+
+                        if (esCritica) {
+                            criticasCount++;
+                            if (esAtendida) {
+                                criticasAtendidasCount++;
+                            }
+                            let tramoRaw = feature.properties['TRAMO'] || feature.properties['tramo'] || feature.properties['Tramo'] || 'Desconocido';
+                            let tramo = String(tramoRaw).trim().toUpperCase();
+                            if (tramo && tramo !== "DESCONOCIDO" && tramo !== "") {
+                                conteoTramos[tramo] = (conteoTramos[tramo] || 0) + 1;
+                            }
                         }
 
                         if (esAtendida) {
@@ -949,19 +894,26 @@
 
                             if (latlng) {
                                 let marcadorAura = L.circleMarker(latlng, {
-                                    radius: 8, 
-                                    color: "#00FFFF", 
-                                    weight: 3, 
-                                    opacity: 0.9,
-                                    fillColor: "#00FFFF", 
-                                    fillOpacity: 0.35, 
-                                    interactive: false 
+                                    radius: 8, color: "#00FFFF", weight: 3, opacity: 0.9, fillColor: "#00FFFF", fillOpacity: 0.35, interactive: false 
                                 });
                                 grupoAtendidas.addLayer(marcadorAura);
                             }
                         }
                     }
                 }); 
+
+                // ACTUALIZACIÓN DE GRÁFICA DE PASTEL ESTRICTAMENTE PARA PUNTOS CRÍTICOS
+                if (avancePieChart) {
+                    let pendientes = Math.max(0, criticasCount - criticasAtendidasCount);
+                    avancePieChart.data.datasets[0].data = [criticasAtendidasCount, pendientes];
+                    avancePieChart.update();
+                    
+                    let porcentajeAvance = criticasCount > 0 ? Math.min(100, Math.round((criticasAtendidasCount / criticasCount) * 100)) : 0;
+                    document.getElementById('kpi-avance-txt').innerText = `${porcentajeAvance}% Completado`;
+                    document.getElementById('kpi-avance-centro').innerText = `${porcentajeAvance}%`;
+                    document.getElementById('kpi-limpias-num').innerText = criticasAtendidasCount;
+                    document.getElementById('kpi-criticas-total').innerText = '/ ' + criticasCount;
+                }
 
                 document.getElementById('kpi-total').innerText = criticasCount;
                 document.getElementById('val-inmediata').innerText = countInm;
@@ -1054,3 +1006,4 @@
     </script>
 </body>
 </html>
+
