@@ -61,7 +61,11 @@
         .overlay-stat-label { font-size: 0.75rem; color: #9CA3AF; text-transform: uppercase; margin-top: 4px; display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: bold; white-space: nowrap; }
 
         .capa-label { display: block; margin-bottom: 12px; cursor: pointer; font-size: 0.9rem; }
-        
+        /* FILTRO MATEMÁTICO PARA MODO OSCURO EN OSM */
+        .mapa-oscuro-osm {
+            filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+        }
+    
         .aura-azul-svg {
             pointer-events: none;
         }
@@ -698,8 +702,9 @@
         var map = L.map('map', {zoomControl: false}).setView(centroZonal, zoomOriginal);
         L.control.zoom({ position: 'bottomleft' }).addTo(map);
 
-        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-            attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors',
+            className: 'mapa-oscuro-osm',
             maxZoom: 19
         }).addTo(map);
 
