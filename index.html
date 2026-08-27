@@ -149,6 +149,36 @@
             .overlay-stats { flex-wrap: wrap; }
             .leaflet-popup-content { width: 300px !important; }
         }
+        /* ESTILOS DEL BUSCADOR */
+        .search-container { 
+            display: flex; 
+            gap: 8px; 
+            margin-bottom: 20px; 
+        }
+        .search-input { 
+            flex-grow: 1; 
+            background: #374151; 
+            color: white; 
+            border: 1px solid #4B5563; 
+            padding: 10px 15px; 
+            border-radius: 6px; 
+            font-size: 0.9rem; 
+            outline: none; 
+            transition: border-color 0.3s;
+        }
+        .search-input:focus { border-color: #3B82F6; }
+        .search-input::placeholder { color: #9CA3AF; }
+        .search-btn { 
+            background: #3B82F6; 
+            color: white; 
+            border: none; 
+            padding: 10px 15px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 1rem;
+            transition: background 0.3s; 
+        }
+        .search-btn:hover { background: #2563EB; }
     </style>
 </head>
 <body>
@@ -338,6 +368,11 @@
     <div id="geoportal-view" class="view-container">
         
         <div id="sidebar">
+            <!-- BUSCADOR DE ALCANTARILLAS -->
+            <div class="search-container">
+                <input type="text" id="buscador-id" class="search-input" placeholder="Buscar ID o Código (ej. 1820)..." onkeypress="if(event.key === 'Enter') buscarAlcantarilla()">
+                <button class="search-btn" onclick="buscarAlcantarilla()">🔍</button>
+            </div>
             <h3>🗺️ Control de Capas de Prevención</h3>
             
             <div style="background-color: #27303F; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
@@ -1010,6 +1045,58 @@
         toggleCapa('chk-prioritaria', grupoPrioritaria);
         toggleCapa('chk-limpias', grupoLimpias);
         toggleCapa('chk-atendidas', grupoAtendidas);
+        // ==========================================
+        // MOTOR DE BÚSQUEDA ESPACIAL
+        // ==========================================
+        function buscarAlcantarilla() {
+            let inputElement = document.getElementById('buscador-id');
+            let termino = inputElement.value.trim().toLowerCase();
+            
+            if (!termino) return; // Si está vacío, no hace nada
+
+            let encontrada = false;
+
+            if (capaAlcantarillas) {
+                // Recorremos todos los puntos del mapa
+                capaAlcantarillas.eachLayer(function(layer) {
+                    if (!layer.feature || !layer.feature.properties) return;
+
+                    let props = layer.feature.properties;
+                    
+                    // Extraemos los posibles IDs o códigos exportados por QGIS
+                    let idUnico = String(props['OBJECTID'] || props['FID'] || props['ID'] || props['id'] || props['NUMERO'] || props['numero'] || '').toLowerCase();
+                    let codigoD = String(props['CÓDIGO_D_'] || props['CODIGO_D_'] || props['codigo'] || props['CODIGO'] || '').toLowerCase();
+
+                    // Verificamos si el texto buscado coincide con el ID o el Código
+                    if (idUnico === termino || codigoD === termino || idUnico.includes(termino) || codigoD.includes(termino)) {
+                        
+                        // Extraemos la coordenada segura (Punto o Polígono)
+                        let coord = typeof layer.getLatLng === 'function' 
+                            ? layer.getLatLng() 
+                            : (layer.getBounds ? layer.getBounds().getCenter() : null);
+
+                        if (coord) {
+                            encontrada = true;
+                            
+                            // 1. Volar al punto con zoom cercano
+                            map.flyTo(coord, 18, { duration: 1.5 });
+                            
+                            // 2. Esperar a que termine el vuelo para abrir la ventana de fotos (Popup)
+                            setTimeout(() => {
+                                layer.openPopup();
+                            }, 1500);
+                            
+                            // Limpiamos el buscador tras el éxito
+                            inputElement.value = '';
+                        }
+                    }
+                });
+            }
+
+            if (!encontrada) {
+                alert("No se encontró ninguna alcantarilla registrada con el ID o Código: " + termino.toUpperCase());
+            }
+        }
     </script>
 </body>
 </html>
