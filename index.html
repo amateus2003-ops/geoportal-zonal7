@@ -84,22 +84,16 @@
         .planificacion-grid { display: grid; grid-template-columns: 1.35fr 2.65fr; gap: 20px; }
         @media (max-width: 1100px) { .planificacion-grid { grid-template-columns: 1fr; } }
         
-        .plan-box-left { background: #27303F; border-radius: 10px; padding: 15px 12px; border-top: 4px solid #10B981; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; align-items: center; text-align: center; }
-        .plan-box-right { background: #27303F; border-radius: 10px; padding: 15px 10px; border-top: 4px solid #3B82F6; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; align-items: center; text-align: center; }
+        .plan-box-left { background: #27303F; border-radius: 10px; padding: 18px 12px; border-top: 4px solid #10B981; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; align-items: center; text-align: center; }
+        .plan-box-right { background: #27303F; border-radius: 10px; padding: 18px 10px; border-top: 4px solid #3B82F6; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; align-items: center; text-align: center; }
         
         .plan-icon-container { height: 42px; display: flex; align-items: center; justify-content: center; margin-bottom: 4px; }
         .custom-machinery-icon { max-height: 40px; max-width: 60px; object-fit: contain; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.6)); }
 
-        .plan-item-val { font-size: 0.98rem; font-weight: bold; color: #FBBF24; margin-top: 4px; line-height: 1.25; }
-        .plan-item-sub { font-size: 0.7rem; color: #9CA3AF; font-weight: normal; display: block; }
+        .plan-item-val { font-size: 1.1rem; font-weight: bold; color: #FBBF24; margin-top: 6px; line-height: 1.25; }
         .plan-item-lbl { font-size: 0.65rem; color: #9CA3AF; text-transform: uppercase; line-height: 1.2; letter-spacing: 0.5px; }
 
-        /* Barra fina de porcentaje en tarjetas de Resumen */
-        .mini-bar-bg { background: #1F2937; height: 5px; border-radius: 3px; width: 88%; margin: 6px auto 2px auto; overflow: hidden; border: 1px solid #374151; }
-        .mini-bar-fill { height: 100%; background: #10B981; width: 0%; transition: width 0.5s ease; }
-        .mini-bar-pct { font-size: 0.65rem; color: #D1D5DB; font-weight: bold; }
-
-        /* NUEVO ESTILO: TARJETA ÚNICA DE FRENTES DE TRABAJO EN LA RVE (4 FILAS) */
+        /* ESTILO: TARJETA ÚNICA DE FRENTES DE TRABAJO EN LA RVE (4 FILAS) */
         .frentes-rve-card { background: #1F2937; border-radius: 12px; padding: 22px 25px; border: 1px solid #374151; box-shadow: 0 4px 10px rgba(0,0,0,0.4); margin-bottom: 25px; }
         .frentes-rve-title { font-size: 0.95rem; color: #FBBF24; font-weight: bold; text-transform: uppercase; margin-bottom: 16px; letter-spacing: 0.5px; border-bottom: 1px solid #374151; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
         .frente-fila { display: flex; align-items: center; gap: 18px; background: #27303F; padding: 14px 18px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #374151; transition: transform 0.2s; }
@@ -111,15 +105,28 @@
         .frente-stat-title { font-size: 0.7rem; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.4px; }
         .frente-stat-num { font-size: 1.05rem; font-weight: bold; color: #F3F4F6; }
 
-        /* ESTILOS SECCIÓN AVANCE: DOS METAS (PRIORITARIA Y GLOBAL) + PROYECCIÓN */
+        /* Enlace clicable para Grupos intervenidos */
+        .grupos-clicable { cursor: pointer; color: #60A5FA; transition: color 0.2s; display: inline-block; }
+        .grupos-clicable:hover { text-decoration: underline; color: #93C5FD; }
+
+        /* Modal oscuro para listado de grupos por máquina */
+        .modal-maquinaria-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.75); z-index: 5000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px); padding: 20px; }
+        .modal-maquinaria-overlay.activo { display: flex; }
+        .modal-maquinaria-box { background: #1F2937; border: 1px solid #4B5563; border-top: 4px solid #3B82F6; border-radius: 12px; max-width: 560px; width: 100%; padding: 22px 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.85); color: #F3F4F6; max-height: 80vh; display: flex; flex-direction: column; }
+        .modal-maquinaria-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #374151; padding-bottom: 12px; margin-bottom: 15px; }
+        .modal-maquinaria-title { font-size: 1.05rem; font-weight: bold; color: #FBBF24; text-transform: uppercase; letter-spacing: 0.5px; }
+        .modal-maquinaria-close { background: transparent; border: none; color: #9CA3AF; font-size: 1.4rem; cursor: pointer; line-height: 1; padding: 2px 6px; border-radius: 4px; }
+        .modal-maquinaria-close:hover { color: #FFFFFF; background: #374151; }
+        .modal-maquinaria-body { overflow-y: auto; }
+
+        /* ESTILOS SECCIÓN AVANCE: DOS METAS (PRIORITARIA Y GLOBAL) + CUADRO INFERIOR */
         .avance-dual-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; width: 100%; }
         .avance-card-half { background: rgba(17, 24, 39, 0.45); border: 1px solid #374151; border-radius: 10px; padding: 22px; display: flex; flex-direction: column; justify-content: space-between; }
         .avance-card-inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; }
         .avance-proyeccion-box { margin-top: 18px; background: #1F2937; border: 1px solid #374151; border-left: 4px solid #3B82F6; border-radius: 8px; padding: 14px 16px; font-size: 0.83rem; color: #D1D5DB; }
-        .proy-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #374151; }
-        .proy-item-lbl { font-size: 0.68rem; color: #9CA3AF; text-transform: uppercase; }
-        .proy-item-val { font-size: 0.98rem; font-weight: bold; color: #60A5FA; margin-top: 2px; }
-        .proy-comp { display: flex; justify-content: space-between; gap: 12px; font-size: 0.78rem; flex-wrap: wrap; }
+        .proy-grid-dos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .proy-item-lbl { font-size: 0.7rem; color: #9CA3AF; text-transform: uppercase; }
+        .proy-item-val { font-size: 1.05rem; font-weight: bold; color: #60A5FA; margin-top: 4px; }
 
         .panel { background-color: #1F2937; border-radius: 12px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); margin-bottom: 25px; }
         .panel h3 { margin-top: 0; border-bottom: 1px solid #374151; padding-bottom: 12px; color: #9CA3AF; font-size: 1.1rem; text-transform: uppercase; }
@@ -174,7 +181,7 @@
             .plan-box-left, .plan-box-right { grid-template-columns: 1fr 1fr; }
             .frente-fila { flex-direction: column; align-items: flex-start; }
             .frente-stats-inline { grid-template-columns: 1fr; width: 100%; gap: 10px; }
-            .proy-grid { grid-template-columns: 1fr; }
+            .proy-grid-dos { grid-template-columns: 1fr; }
         }
         /* ESTILOS DEL BUSCADOR */
         .search-container { 
@@ -206,20 +213,6 @@
             transition: background 0.3s; 
         }
         .search-btn:hover { background: #2563EB; }
-
-        /* Grupos intervenidos clicables y panel emergente */
-        .grupos-link.activo { cursor: pointer; border-bottom: 1px dashed #60A5FA; width: fit-content; }
-        .grupos-link.activo:hover { color: #93C5FD !important; border-bottom-style: solid; }
-        .grupos-link.activo::after { content: ' ▸'; font-size: 0.8rem; }
-        #modal-grupos { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 5000; padding: 16px; }
-        #modal-grupos.abierto { display: flex; }
-        .modal-grupos-caja { background: #1F2937; border: 1px solid #374151; border-radius: 12px; width: 100%; max-width: 640px; max-height: 80vh; overflow: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
-        .modal-grupos-head { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid #374151; position: sticky; top: 0; background: #1F2937; }
-        .modal-grupos-head h4 { margin: 0; color: #FBBF24; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px; }
-        .modal-grupos-cerrar { background: none; border: none; color: #9CA3AF; font-size: 1.4rem; cursor: pointer; line-height: 1; }
-        .modal-grupos-cerrar:hover { color: #F3F4F6; }
-        .modal-grupos-caja table { width: 100%; }
-        .modal-grupos-caja td, .modal-grupos-caja th { padding: 10px 20px; font-size: 0.85rem; }
     </style>
 </head>
 <body>
@@ -235,27 +228,27 @@
     <div id="cronograma-view" class="view-container active">
         <div style="max-width: 1400px; margin: 0 auto; width: 100%; padding: 20px 0;">
             
-            <!-- SECCIÓN 3: RESUMEN DE INVERSIÓN Y CAPACIDAD OPERATIVA (SOLO VALORES EJECUTADOS) -->
+            <!-- SECCIÓN 1: RESUMEN DE INVERSIÓN Y CAPACIDAD OPERATIVA (SOLO VALORES EJECUTADOS) -->
             <div class="planificacion-banner">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
                     <div style="font-size: 0.9rem; color: #10B981; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">⚙️ Resumen de Inversión y Capacidad Operativa</div>
-                    <div id="drive-status-pill" style="font-size: 0.75rem; padding: 4px 10px; border-radius: 12px; background: rgba(156, 163, 175, 0.15); color: #9CA3AF; border: 1px solid #4B5563;">🔄 Conectando con la base de datos de la Zonal 7...</div>
+                    <div id="drive-status-pill" style="font-size: 0.75rem; padding: 4px 10px; border-radius: 12px; background: rgba(156, 163, 175, 0.15); color: #9CA3AF; border: 1px solid #4B5563;">🔄 Verificando conexión con la base de datos de la Zonal 7...</div>
                 </div>
                 <div class="planificacion-grid">
                     <div class="plan-box-left">
-                        <!-- Inversión en maquinaria: solo valor ejecutado -->
+                        <!-- Inversión Maquinaria -->
                         <div>
                             <div class="plan-icon-container" style="font-size: 1.7rem;">🚜</div>
                             <div class="plan-item-lbl">Inversión Maquinaria</div>
-                            <div class="plan-item-val" style="color: #34D399;" id="card-inv-maq">—</div>
+                            <div class="plan-item-val" style="color: #34D399;" id="card-inv-maq">$0.00</div>
                         </div>
-                        <!-- Inversión en microempresas: solo valor ejecutado -->
+                        <!-- Inversión Microempresas -->
                         <div>
                             <div class="plan-icon-container" style="font-size: 1.7rem;">💰</div>
                             <div class="plan-item-lbl">Inversión Microempresas</div>
                             <div class="plan-item-val" style="color: #FBBF24;" id="card-inv-micro">—</div>
                         </div>
-                        <!-- Plazo de ejecución: meses transcurridos -->
+                        <!-- Plazo de Ejecución -->
                         <div>
                             <div class="plan-icon-container" style="font-size: 1.7rem;">⏳</div>
                             <div class="plan-item-lbl">Plazo de Ejecución</div>
@@ -264,11 +257,11 @@
                     </div>
 
                     <div class="plan-box-right">
-                        <!-- Horas ejecutadas (sin metas) -->
+                        <!-- Horas Globales -->
                         <div>
                             <div class="plan-icon-container" style="font-size: 1.7rem;">⏱️</div>
                             <div class="plan-item-lbl">Horas Globales</div>
-                            <div class="plan-item-val" id="card-h-global">—</div>
+                            <div class="plan-item-val" id="card-h-global">0.0 h</div>
                         </div>
                         <!-- Retroexcavadora -->
                         <div>
@@ -277,7 +270,7 @@
                                 <span style="display:none; font-size:1.5rem;">🚜</span>
                             </div>
                             <div class="plan-item-lbl">Retroexcavadora</div>
-                            <div class="plan-item-val" id="card-h-retro">—</div>
+                            <div class="plan-item-val" id="card-h-retro">0.0 h</div>
                         </div>
                         <!-- Excavadora -->
                         <div>
@@ -286,7 +279,7 @@
                                 <span style="display:none; font-size:1.5rem;">🏗️</span>
                             </div>
                             <div class="plan-item-lbl">Excavadora</div>
-                            <div class="plan-item-val" id="card-h-exc">—</div>
+                            <div class="plan-item-val" id="card-h-exc">0.0 h</div>
                         </div>
                         <!-- Volquetes -->
                         <div>
@@ -295,19 +288,19 @@
                                 <span style="display:none; font-size:1.5rem;">🚛</span>
                             </div>
                             <div class="plan-item-lbl">Volquetes</div>
-                            <div class="plan-item-val" id="card-h-volq">—</div>
+                            <div class="plan-item-val" id="card-h-volq">0.0 h</div>
                         </div>
                         <!-- Microempresas -->
                         <div>
                             <div class="plan-icon-container" style="font-size: 2rem; line-height: 1;">👷‍♂️</div>
                             <div class="plan-item-lbl">Microempresas</div>
-                            <div class="plan-item-val" style="color: #38BDF8;" id="card-micro-count">—</div>
+                            <div class="plan-item-val" style="color: #38BDF8; font-size: 1.05rem;" id="card-micro-count">—</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- SECCIÓN 4: REEMPLAZO DE FRENTE 1/2/3 POR "FRENTES DE TRABAJO EN LA RVE" -->
+            <!-- SECCIÓN 2: FRENTES DE TRABAJO EN LA RVE -->
             <div class="frentes-rve-card">
                 <div class="frentes-rve-title">
                     <span>🚜 FRENTES DE TRABAJO EN LA RVE</span>
@@ -334,7 +327,7 @@
                         </div>
                         <div class="frente-stat-block">
                             <span class="frente-stat-title">Grupos Intervenidos</span>
-                            <span class="frente-stat-num grupos-link" style="color: #60A5FA;" id="frente-retro-grupos" data-maquina="retro">—</span>
+                            <span class="frente-stat-num" style="color: #60A5FA;" id="frente-retro-grupos">—</span>
                         </div>
                         <div class="frente-stat-block">
                             <span class="frente-stat-title">Rendimiento Hora Máquina</span>
@@ -363,7 +356,7 @@
                         </div>
                         <div class="frente-stat-block">
                             <span class="frente-stat-title">Grupos Intervenidos</span>
-                            <span class="frente-stat-num grupos-link" style="color: #60A5FA;" id="frente-volq-grupos" data-maquina="volquete">—</span>
+                            <span class="frente-stat-num" style="color: #60A5FA;" id="frente-volq-grupos">—</span>
                         </div>
                         <div class="frente-stat-block">
                             <span class="frente-stat-title">Rendimiento Hora Máquina</span>
@@ -392,7 +385,7 @@
                         </div>
                         <div class="frente-stat-block">
                             <span class="frente-stat-title">Grupos Intervenidos</span>
-                            <span class="frente-stat-num grupos-link" style="color: #60A5FA;" id="frente-exc-grupos" data-maquina="excavadora">—</span>
+                            <span class="frente-stat-num" style="color: #60A5FA;" id="frente-exc-grupos">—</span>
                         </div>
                         <div class="frente-stat-block">
                             <span class="frente-stat-title">Rendimiento Hora Máquina</span>
@@ -421,7 +414,7 @@
                         </div>
                         <div class="frente-stat-block">
                             <span class="frente-stat-title">Días Gestión Prom. / Rend. Prom.</span>
-                            <span class="frente-stat-num" style="color: #34D399;" id="frente-mic-rend">—</span>
+                            <span class="frente-stat-num" style="color: #34D399;" id="frente-mic-rend">— días / — alc/día</span>
                         </div>
                         <div class="frente-stat-block">
                             <span class="frente-stat-title">Costo Prom. por Alcantarilla</span>
@@ -431,11 +424,11 @@
                 </div>
             </div>
 
-            <!-- SECCIÓN 5: AVANCE DE MANTENIMIENTO Y PREVENCIÓN (DOS METAS Y PROYECCIÓN) -->
+            <!-- SECCIÓN 3: AVANCE DE MANTENIMIENTO Y PREVENCIÓN -->
             <div class="panel-avance-general">
                 <div class="avance-dual-grid">
                     
-                    <!-- SUB-PANEL IZQUIERDO: META ESPECÍFICA (188 PUNTOS PRIORITARIOS - INTACTO) -->
+                    <!-- SUB-PANEL IZQUIERDO: META ESPECÍFICA (188 PUNTOS PRIORITARIOS) -->
                     <div class="avance-card-half">
                         <div class="avance-card-inner">
                             <div class="avance-text-container">
@@ -454,34 +447,34 @@
                         </div>
                     </div>
 
-                    <!-- SUB-PANEL DERECHO: META GLOBAL RVE LOJA (3,473 ALCANTARILLAS + PROYECCIÓN) -->
+                    <!-- SUB-PANEL DERECHO: META GLOBAL RVE LOJA (3,473 ALCANTARILLAS) -->
                     <div class="avance-card-half">
                         <div class="avance-card-inner">
                             <div class="avance-text-container">
                                 <h3 style="margin-top: 0; color: #3B82F6; border-bottom: none; padding-bottom: 0; font-size: 1.15rem; letter-spacing: 1px;">🌐 META GLOBAL – RVE LOJA (<span id="lbl-meta-global-titulo">3,473</span> ALCANTARILLAS)</h3>
-                                <p style="color: #9CA3AF; font-size: 0.88rem; margin-top: 8px; line-height: 1.4;" id="txt-meta-global">El trabajo conjunto de las microempresas y la logística de la Zonal 7 con su maquinaria ha permitido limpiar el —% de las alcantarillas de la Red Vial Estatal.</p>
-                                <div style="font-size: 2.8rem; font-weight: 800; color: #ffffff; text-shadow: 0 4px 6px rgba(0,0,0,0.4); margin: 12px 0; letter-spacing: -1px;" id="kpi-global-txt">0% Completado</div>
+                                <p id="desc-meta-global" style="color: #9CA3AF; font-size: 0.88rem; margin-top: 8px; line-height: 1.4;">El trabajo conjunto de las microempresas y la logística de la Zonal 7 con su maquinaria ha permitido limpiar el 0.0% de las 3,473 alcantarillas de la Red Vial Estatal.</p>
+                                <div style="font-size: 2.8rem; font-weight: 800; color: #ffffff; text-shadow: 0 4px 6px rgba(0,0,0,0.4); margin: 12px 0; letter-spacing: -1px;" id="kpi-global-txt">0.0% Completado</div>
                                 <div style="font-size: 1.05rem; color: #D1D5DB; background: rgba(31, 41, 55, 0.8); padding: 8px 16px; border-radius: 8px; display: inline-block; border: 1px solid #374151;">Alcantarillas Limpias RVE: <strong id="kpi-global-num" style="color:#34D399; font-size: 1.35rem; margin-left: 6px;">0</strong> <span id="kpi-global-total" style="color: #6B7280; font-size: 1rem;">/ 3,473</span></div>
                             </div>
                             <div class="avance-chart-container">
                                 <canvas id="graficoGlobalPie"></canvas>
                                 <div style="position: absolute; text-align: center; pointer-events: none; margin-top: 5px;">
                                     <span style="display: block; font-size: 0.8rem; color: #9CA3AF; font-weight: bold; letter-spacing: 2px;">GLOBAL</span>
-                                    <strong id="kpi-global-centro" style="font-size: 2.5rem; color: #3B82F6; line-height: 1; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">0%</strong>
+                                    <strong id="kpi-global-centro" style="font-size: 2.5rem; color: #3B82F6; line-height: 1; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">0.0%</strong>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Rendimiento actualizado y tiempo transcurrido (Registro Diario) -->
+                        <!-- Cuadro inferior con SOLO dos datos -->
                         <div class="avance-proyeccion-box">
-                            <div class="proy-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 0; padding-bottom: 0; border-bottom: none;">
+                            <div class="proy-grid-dos">
                                 <div>
                                     <div class="proy-item-lbl">Rendimiento Actualizado</div>
                                     <div class="proy-item-val" id="proy-rend-actual">— alc/día</div>
                                 </div>
                                 <div>
                                     <div class="proy-item-lbl">Tiempo Transcurrido</div>
-                                    <div class="proy-item-val" style="color: #34D399;" id="proy-tiempo">— días laborables</div>
+                                    <div class="proy-item-val" style="color: #34D399;" id="proy-tiempo-trans">— días laborables</div>
                                 </div>
                             </div>
                         </div>
@@ -511,7 +504,7 @@
                 </div>
             </div>
 
-            <!-- SECCIÓN 6: TABLA DE MONITORIZACIÓN PÚBLICA (REGISTRO DIARIO + COSTO POR ALCANTARILLA) -->
+            <!-- SECCIÓN 4: TABLA DE DESPLIEGUE TÉCNICO Y PROGRESO EN CAMPO -->
             <div class="panel">
                 <h3>📋 Despliegue Técnico y Progreso en Campo</h3>
                 
@@ -525,7 +518,7 @@
                             <div class="status-dot"></div> Conectando a Servidor...
                         </div>
                         <div class="status-badge" id="conexion-drive-badge" style="background: rgba(156, 163, 175, 0.15); color: #9CA3AF; border: 1px solid #4B5563;">
-                            Conectando con la base de datos de la Zonal 7...
+                            Verificando base de datos...
                         </div>
                     </div>
                 </div>
@@ -556,7 +549,7 @@
                                 <th style="text-align: center;">Kilómetros Atendidos</th>
                                 <th style="width: 130px;">Progreso del Tramo</th>
                                 <th style="text-align: center; width: 125px; background-color: #1F2937;">Rendimiento Diario</th>
-                                <th style="text-align: center;">Costo / Alc. (USD)</th>
+                                <th style="text-align: center; background-color: #172033; color: #60A5FA;">Costo / Alc. (USD)</th>
                             </tr>
                         </thead>
                         <tbody id="tabla-rendimiento-body">
@@ -566,6 +559,28 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+
+    <!-- MODAL OSCURO PARA GRUPOS INTERVENIDOS POR MAQUINARIA -->
+    <div id="modal-maquinaria" class="modal-maquinaria-overlay" onclick="if(event.target === this) cerrarModalMaquinaria()">
+        <div class="modal-maquinaria-box">
+            <div class="modal-maquinaria-header">
+                <div class="modal-maquinaria-title" id="modal-maquinaria-titulo">Grupos Intervenidos</div>
+                <button class="modal-maquinaria-close" onclick="cerrarModalMaquinaria()" title="Cerrar">✕</button>
+            </div>
+            <div class="modal-maquinaria-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Grupo / Microempresa</th>
+                            <th>Tramo</th>
+                            <th style="text-align: right;">Horas Máquina</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modal-maquinaria-tbody"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -655,32 +670,17 @@
         </div>
     </div>
 
-    <!-- Panel emergente: grupos intervenidos por cada máquina -->
-    <div id="modal-grupos" role="dialog" aria-modal="true" aria-labelledby="modal-grupos-titulo">
-        <div class="modal-grupos-caja">
-            <div class="modal-grupos-head">
-                <h4 id="modal-grupos-titulo">Grupos intervenidos</h4>
-                <button class="modal-grupos-cerrar" onclick="cerrarModalGrupos()" aria-label="Cerrar">&times;</button>
-            </div>
-            <table>
-                <thead><tr><th>Grupo</th><th>Tramo</th><th style="text-align:right;">Horas</th></tr></thead>
-                <tbody id="modal-grupos-body"></tbody>
-            </table>
-        </div>
-    </div>
-
     <script src="alcantarillas.js"></script>
     <script src="rutasRVE.js"></script>
 
     <script>
         // =========================================================================
-        // 1) NUEVAS FUENTES (GOOGLE SHEETS PUBLICADO COMO CSV) Y PARÁMETROS BASE
+        // ENLACES CSV Y PARÁMETROS BASE
         // =========================================================================
-        const URL_GRUPOS      = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRiKv8b_aqemoRDqnpObERya2YtDl1YPLZreGuFoN3ODItctXixCAitBxUS-cDNN43Ef8v85hANnaXz/pub?gid=715116195&single=true&output=csv";
-        const URL_ALC_DRIVE   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRiKv8b_aqemoRDqnpObERya2YtDl1YPLZreGuFoN3ODItctXixCAitBxUS-cDNN43Ef8v85hANnaXz/pub?gid=353357775&single=true&output=csv";
-        const URL_PARAMETROS  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRiKv8b_aqemoRDqnpObERya2YtDl1YPLZreGuFoN3ODItctXixCAitBxUS-cDNN43Ef8v85hANnaXz/pub?gid=134870880&single=true&output=csv";
+        const URL_GRUPOS      = "PEGAR_ENLACE_CSV_GRUPOS";
+        const URL_ALC_DRIVE   = "PEGAR_ENLACE_CSV_ALCANTARILLAS";
+        const URL_PARAMETROS  = "PEGAR_ENLACE_CSV_PARAMETROS";
 
-        // Valores por defecto si la hoja Parámetros falla o no está configurada
         const PLAN = {
             horas: { retro: 793, excavadora: 177, volquete: 303 },
             tarifa: { retro: 32.40, excavadora: 41.93, volquete: 25.38 },
@@ -691,7 +691,7 @@
         };
 
         // =========================================================================
-        // 2) EMPAREJAMIENTO DE MICROEMPRESAS ENTRE REGISTRO DIARIO Y DRIVE
+        // EMPAREJAMIENTO DE MICROEMPRESAS
         // =========================================================================
         const ALIAS_MICROS = {
             "PALTENSES": "PALTENSES",
@@ -704,7 +704,6 @@
             "PUYANGO": "PUYANGO"
         };
 
-        // Normaliza el nombre de la microempresa quitando tildes, prefijos y espacios extra
         function normalizarMicro(nombre) {
             if (!nombre) return '';
             let s = String(nombre).toUpperCase()
@@ -725,7 +724,6 @@
             return ALIAS_MICROS[s] || s;
         }
 
-        // Normaliza encabezados de columnas CSV/Excel (trim, mayúsculas, sin tildes)
         function normalizarEncabezado(texto) {
             if (!texto) return '';
             return String(texto).toUpperCase()
@@ -733,72 +731,101 @@
                 .trim().replace(/\s+/g, ' ');
         }
 
-        // Parsea números del Google Sheets. La hoja está en configuración regional de Ecuador:
-        // "36.934,56" (punto = miles, coma = decimal). También acepta "36,934.56" y números puros.
+        // =========================================================================
+        // 0) CORRECCIÓN DE LECTURA DE DATOS (CONFIGURACIÓN REGIONAL ECUADOR)
+        // =========================================================================
         function parseNumeroDrive(val) {
             if (val === null || val === undefined || val === '') return 0;
             if (typeof val === 'number') return isNaN(val) ? 0 : val;
-            let s = String(val).replace(/[^0-9.,-]/g, '').trim();
-            if (!s || s === '-') return 0;
 
-            let lastComma = s.lastIndexOf(',');
-            let lastDot = s.lastIndexOf('.');
-            if (lastComma > -1 && lastDot > -1) {
-                // El último símbolo es el decimal; el otro es separador de miles
+            // Quitar "$", "USD", espacios y cualquier símbolo ajeno a dígitos, punto, coma o signo menos
+            let s = String(val)
+                .replace(/USD/gi, '')
+                .replace(/\$/g, '')
+                .replace(/\s+/g, '')
+                .replace(/[^0-9.,-]/g, '')
+                .trim();
+
+            if (!s || s === '-' || s === '.' || s === ',') return 0;
+
+            let tienePunto = s.indexOf('.') > -1;
+            let tieneComa = s.indexOf(',') > -1;
+
+            if (tienePunto && tieneComa) {
+                // El último símbolo es el decimal y el otro se elimina
+                let lastDot = s.lastIndexOf('.');
+                let lastComma = s.lastIndexOf(',');
                 if (lastComma > lastDot) {
                     s = s.replace(/\./g, '').replace(',', '.');
                 } else {
                     s = s.replace(/,/g, '');
                 }
-            } else if (lastComma > -1) {
-                // Solo coma: en Ecuador es el decimal ("3,5" = 3.5; "32,40" = 32.4)
+            } else if (tieneComa) {
+                // Si solo tiene "," -> es decimal (ej. "$ 3,5" -> 3.5)
                 let partes = s.split(',');
                 if (partes.length > 2) {
-                    s = s.replace(/,/g, '');
+                    let dec = partes.pop();
+                    s = partes.join('') + '.' + dec;
                 } else {
                     s = s.replace(',', '.');
                 }
-            } else if (lastDot > -1) {
-                // Solo punto: "1.273" o "36.934" son miles; "0.5" o "3.5" son decimales
-                let esMiles = /^-?\d{1,3}(\.\d{3})+$/.test(s) && !/^-?0\./.test(s);
-                if (esMiles) s = s.replace(/\./g, '');
+            } else if (tienePunto) {
+                // Si solo tiene "." y después vienen exactamente 3 dígitos (ej. "1.273" o "36.934") -> separador de miles
+                if (/^-?\d{1,3}(\.\d{3})+$/.test(s)) {
+                    s = s.replace(/\./g, '');
+                }
             }
+
             let num = parseFloat(s);
             return isNaN(num) ? 0 : num;
         }
 
-        // Parsea fechas del Google Sheets: "d/m/aaaa" (día/mes/año), ISO o número serial de Excel
         function parseFechaDrive(val) {
             if (val === null || val === undefined || val === '') return null;
-            if (val instanceof Date && !isNaN(val)) return val;
-            if (typeof val === 'number' || /^\d{4,6}(\.\d+)?$/.test(String(val).trim())) {
-                let n = Number(val);
-                if (n > 20000 && n < 80000) {
-                    let base = new Date(1899, 11, 30);
-                    return new Date(base.getTime() + Math.round(n) * 86400000);
+            if (val instanceof Date && !isNaN(val.getTime())) return val;
+
+            // Si llega un número (serial de Excel), convertir con fecha = 30/12/1899 + n días
+            if (typeof val === 'number' && !isNaN(val) && val > 1000) {
+                let baseExcel = new Date(1899, 11, 30);
+                baseExcel.setDate(baseExcel.getDate() + Math.floor(val));
+                return baseExcel;
+            }
+
+            let s = String(val).trim();
+            if (!s) return null;
+
+            // Si llega como texto numérico serial de Excel (ej. "46303")
+            if (/^\d{4,6}([.,]\d+)?$/.test(s)) {
+                let serial = parseFloat(s.replace(',', '.'));
+                if (serial > 1000 && serial < 100000) {
+                    let baseExcel = new Date(1899, 11, 30);
+                    baseExcel.setDate(baseExcel.getDate() + Math.floor(serial));
+                    return baseExcel;
                 }
             }
-            let s = String(val).trim();
-            let m = s.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})/);
+
+            // "d/m/aaaa" siempre como DÍA/MES/AÑO
+            let m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
             if (m) {
-                let d = parseInt(m[1], 10);
-                let mo = parseInt(m[2], 10) - 1;
-                let y = parseInt(m[3], 10);
-                if (y < 100) y += 2000;
-                let dt = new Date(y, mo, d);
+                let dia = parseInt(m[1], 10);
+                let mes = parseInt(m[2], 10) - 1;
+                let anio = parseInt(m[3], 10);
+                if (anio < 100) anio += 2000;
+                let dt = new Date(anio, mes, dia);
                 return isNaN(dt.getTime()) ? null : dt;
             }
-            let iso = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
-            if (iso) return new Date(parseInt(iso[1],10), parseInt(iso[2],10)-1, parseInt(iso[3],10));
-            return null;
-        }
 
-        function formatearFechaCorta(dt) {
-            if (!dt || isNaN(dt.getTime())) return '—';
-            let d = String(dt.getDate()).padStart(2, '0');
-            let m = String(dt.getMonth() + 1).padStart(2, '0');
-            let y = dt.getFullYear();
-            return `${d}/${m}/${y}`;
+            // Formato ISO aaaa-mm-dd
+            let mIso = s.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
+            if (mIso) {
+                let anio = parseInt(mIso[1], 10);
+                let mes = parseInt(mIso[2], 10) - 1;
+                let dia = parseInt(mIso[3], 10);
+                let dt = new Date(anio, mes, dia);
+                return isNaN(dt.getTime()) ? null : dt;
+            }
+
+            return null;
         }
 
         function formatearMoneda(val) {
@@ -806,11 +833,12 @@
             return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
-        // Estado global para almacenar información proveniente de Drive y Registro Diario
+        // Estado global
         let driveConectado = false;
         let driveGruposPorMicro = {};
         let driveAlcantarillasRows = [];
         let ultimoResumenRegistroDiario = {};
+        let fechasUnicasGlobalesDiario = new Set();
 
         let setAlcantarillasAtendidas = new Set();
 
@@ -873,11 +901,12 @@
         }
 
         // =========================================================================
-        // PROCESAMIENTO DEL REGISTRO DIARIO (MANTIENE TODA SU LÓGICA INTACTA)
+        // PROCESAMIENTO DE REPORTE_DIARIO.XLSX (GUÍA OFICIAL)
         // =========================================================================
         function procesarDatosExcel(excelRows) {
             let resumenEmpresas = {};
-            setAlcantarillasAtendidas.clear(); 
+            setAlcantarillasAtendidas.clear();
+            fechasUnicasGlobalesDiario.clear();
 
             excelRows.forEach(row => {
                 let rowData = {};
@@ -915,7 +944,11 @@
                 }
 
                 if (rowData['FECHA']) {
-                    resumenEmpresas[empresaKey].fechasUnicas.add(String(rowData['FECHA']).trim());
+                    let fStr = String(rowData['FECHA']).trim();
+                    if (fStr !== '') {
+                        resumenEmpresas[empresaKey].fechasUnicas.add(fStr);
+                        fechasUnicasGlobalesDiario.add(fStr);
+                    }
                 }
 
                 if (rowData['TRAMO_RUTA']) {
@@ -948,13 +981,13 @@
             document.getElementById('contador-atendidas').innerText = setAlcantarillasAtendidas.size;
 
             renderizarTablaMonitorizacion(resumenEmpresas);
+            actualizarFilaMicroempresasFrentes();
             actualizarSeccionMetaGlobalYProyeccion();
-            actualizarFilaMicroempresas();
             actualizarMapaGeografico();
         }
 
         // =========================================================================
-        // 6) RENDERIZADO DE LA TABLA DE MONITORIZACIÓN PÚBLICA (DIARIO + DRIVE)
+        // 4) RENDERIZADO DE TABLA "DESPLIEGUE TÉCNICO Y PROGRESO EN CAMPO"
         // =========================================================================
         function renderizarTablaMonitorizacion(resumenEmpresas) {
             let tbody = document.getElementById('tabla-rendimiento-body');
@@ -973,20 +1006,18 @@
                     porcAbs = Math.min(100, Math.round((info.kmTrabajados / info.distanciaTotalKm) * 100));
                 }
 
-                // Cruce con Drive mediante normalizarMicro()
-                let claveMicro = normalizarMicro(info.nombreReal);
-                let datosDrive = driveConectado ? driveGruposPorMicro[claveMicro] : null;
-
-                // Días laborables: solo del Registro Diario (fechas únicas de la microempresa)
+                // Rendimiento diario calculado SOLO con las fechas únicas de esa microempresa en Reporte_Diario.xlsx
                 let totalDias = info.fechasUnicas.size > 0 ? info.fechasUnicas.size : 1;
-
                 let promAlcDiario = (info.limpiadasAcumuladas / totalDias).toFixed(1);
                 let promKmDiario = (info.kmTrabajados / totalDias).toFixed(2);
 
-                // Única columna complementaria: costo por alcantarilla (base de datos Zonal 7)
+                // Emparejar Costo / Alc. (USD) por microempresa con normalizarMicro()
+                let claveMicro = normalizarMicro(info.nombreReal);
+                let datosComp = driveConectado ? driveGruposPorMicro[claveMicro] : null;
                 let colCostoAlc = '—';
-                if (datosDrive && datosDrive.costoPorAlc > 0) {
-                    colCostoAlc = `<strong style="color:#FBBF24;">${formatearMoneda(datosDrive.costoPorAlc)}</strong>`;
+
+                if (datosComp && datosComp.costoPorAlc > 0) {
+                    colCostoAlc = `<strong style="color:#FBBF24;">${formatearMoneda(datosComp.costoPorAlc)}</strong>`;
                 }
 
                 let tr = document.createElement('tr');
@@ -1031,25 +1062,92 @@
         }
 
         // =========================================================================
-        // LECTURA Y PROCESAMIENTO DE LAS 3 HOJAS CSV DE GOOGLE DRIVE
+        // PARSER CSV PROPIO Y LECTURA SIN CONVERSIÓN AUTOMÁTICA (RAW TEXT)
         // =========================================================================
+        function parsearTextoCSV(texto) {
+            let filas = [];
+            let filaActual = [];
+            let campo = '';
+            let enComillas = false;
+
+            for (let i = 0; i < texto.length; i++) {
+                let c = texto[i];
+                let sig = texto[i + 1];
+
+                if (enComillas) {
+                    if (c === '"' && sig === '"') {
+                        campo += '"';
+                        i++;
+                    } else if (c === '"') {
+                        enComillas = false;
+                    } else {
+                        campo += c;
+                    }
+                } else {
+                    if (c === '"') {
+                        enComillas = true;
+                    } else if (c === ',') {
+                        filaActual.push(campo);
+                        campo = '';
+                    } else if (c === '\r' && sig === '\n') {
+                        filaActual.push(campo);
+                        filas.push(filaActual);
+                        filaActual = [];
+                        campo = '';
+                        i++;
+                    } else if (c === '\n' || c === '\r') {
+                        filaActual.push(campo);
+                        filas.push(filaActual);
+                        filaActual = [];
+                        campo = '';
+                    } else {
+                        campo += c;
+                    }
+                }
+            }
+            if (campo !== '' || filaActual.length > 0) {
+                filaActual.push(campo);
+                filas.push(filaActual);
+            }
+            return filas;
+        }
+
         async function leerCSVDesdeDrive(url) {
             if (!url || url.startsWith("PEGAR_ENLACE_CSV")) {
-                throw new Error("URL de Drive no configurada");
+                throw new Error("URL no configurada");
             }
             const resp = await fetch(url);
             if (!resp.ok) throw new Error("Error HTTP " + resp.status);
             const texto = await resp.text();
-            const wb = XLSX.read(texto, { type: "string", raw: true });
-            const firstSheet = wb.SheetNames[0];
-            const rawRows = XLSX.utils.sheet_to_json(wb.Sheets[firstSheet], { defval: "", raw: false });
-            return rawRows.map(r => {
-                let norm = {};
-                for (let k in r) {
-                    norm[normalizarEncabezado(k)] = r[k];
+
+            // Leemos con parser CSV propio en texto puro para evitar que SheetJS altere "36.934,56" o fechas "9/4/2026"
+            const matriz = parsearTextoCSV(texto);
+            if (!matriz || matriz.length === 0) return [];
+
+            // Buscar la fila de encabezados (la primera que contenga al menos 2 celdas no vacías)
+            let idxHeader = 0;
+            for (let i = 0; i < Math.min(10, matriz.length); i++) {
+                let noVacias = matriz[i].filter(c => String(c).trim() !== '').length;
+                if (noVacias >= 2) {
+                    idxHeader = i;
+                    break;
                 }
-                return norm;
-            });
+            }
+
+            const encabezados = matriz[idxHeader].map(h => normalizarEncabezado(h));
+            const resultado = [];
+
+            for (let i = idxHeader + 1; i < matriz.length; i++) {
+                let fila = matriz[i];
+                if (!fila || fila.every(celda => String(celda).trim() === '')) continue;
+                let obj = {};
+                for (let j = 0; j < encabezados.length; j++) {
+                    let key = encabezados[j] || `COL_${j}`;
+                    obj[key] = fila[j] !== undefined ? String(fila[j]).trim() : "";
+                }
+                resultado.push(obj);
+            }
+            return resultado;
         }
 
         function procesarHojaParametros(rows) {
@@ -1098,8 +1196,8 @@
             rows.forEach(r => {
                 let rawNombre = obtenerValorColumna(r, ["GRUPO / MICROEMPRESA", "GRUPO", "MICROEMPRESA"]);
                 let nombreLimpio = String(rawNombre || "").trim();
-                // Ignorar filas sin "Grupo / Microempresa" o filas de totales
-                if (!nombreLimpio || normalizarEncabezado(nombreLimpio) === "TOTAL") return;
+                let normNom = normalizarEncabezado(nombreLimpio);
+                if (!nombreLimpio || normNom === "TOTAL" || normNom.startsWith("TOTAL ") || normNom === "PROMEDIO") return;
 
                 let clave = normalizarMicro(nombreLimpio);
                 if (!clave) return;
@@ -1143,19 +1241,16 @@
             const pill = document.getElementById('drive-status-pill');
             const badge = document.getElementById('conexion-drive-badge');
             try {
-                // Intentamos leer Parámetros (si falla, se usan los valores de PLAN por defecto)
                 try {
                     const paramRows = await leerCSVDesdeDrive(URL_PARAMETROS);
                     procesarHojaParametros(paramRows);
                 } catch (eParam) {
-                    console.warn("Usando PLAN por defecto (Parámetros Drive no disponible):", eParam.message);
+                    console.warn("Parámetros por defecto activos:", eParam.message);
                 }
 
-                // Leemos la hoja principal de Grupos (obligatoria para considerar Drive conectado)
                 const gruposRows = await leerCSVDesdeDrive(URL_GRUPOS);
                 procesarHojaGrupos(gruposRows);
 
-                // Leemos opcionalmente la hoja de Alcantarillas del Drive (solo abscisas, no se usa para el mapa)
                 try {
                     driveAlcantarillasRows = await leerCSVDesdeDrive(URL_ALC_DRIVE);
                 } catch (eAlc) {
@@ -1179,12 +1274,13 @@
 
                 actualizarTarjetasResumenCapacidad();
                 actualizarTarjetaFrentesRVE();
-                actualizarFilaMicroempresas();
+                actualizarFilaMicroempresasFrentes();
+                actualizarSeccionMetaGlobalYProyeccion();
                 if (Object.keys(ultimoResumenRegistroDiario).length > 0) {
                     renderizarTablaMonitorizacion(ultimoResumenRegistroDiario);
                 }
             } catch (err) {
-                console.warn("Sin conexión con Drive:", err.message);
+                console.warn("Sin conexión con la base de datos de la Zonal 7:", err.message);
                 driveConectado = false;
                 pill.innerHTML = '⚠️ Sin conexión con la base de datos de la Zonal 7';
                 pill.style.background = 'rgba(245, 158, 11, 0.15)';
@@ -1195,21 +1291,21 @@
                 badge.style.background = 'rgba(245, 158, 11, 0.15)';
                 badge.style.color = '#F59E0B';
                 badge.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+
+                actualizarFilaMicroempresasFrentes();
+                actualizarSeccionMetaGlobalYProyeccion();
             }
         }
 
         // =========================================================================
-        // 3) "RESUMEN DE INVERSIÓN Y CAPACIDAD OPERATIVA": SOLO VALORES EJECUTADOS
+        // 1) "RESUMEN DE INVERSIÓN Y CAPACIDAD OPERATIVA": SOLO VALORES EJECUTADOS
         // =========================================================================
-        function formatearHoras(h) {
-            return `${(Number(h) || 0).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} h`;
-        }
-
         function actualizarTarjetasResumenCapacidad() {
             const lista = Object.values(driveGruposPorMicro);
             if (!driveConectado || lista.length === 0) return;
 
-            let sumaCostoMaq = 0, sumaMontoMicro = 0;
+            let sumaCostoMaq = 0;
+            let sumaMontoMicro = 0;
             let hRetro = 0, hExc = 0, hVolq = 0;
             let minFechaInicio = null;
 
@@ -1219,155 +1315,219 @@
                 hRetro += g.horasRetro;
                 hExc += g.horasExc;
                 hVolq += g.horasVolq;
-                if (g.inicioGestionDate && (!minFechaInicio || g.inicioGestionDate < minFechaInicio)) {
-                    minFechaInicio = g.inicioGestionDate;
+                if (g.inicioGestionDate) {
+                    if (!minFechaInicio || g.inicioGestionDate < minFechaInicio) {
+                        minFechaInicio = g.inicioGestionDate;
+                    }
                 }
             });
 
+            // Inversión en maquinaria = suma de COSTO MAQUINARIA (USD)
             document.getElementById('card-inv-maq').innerText = formatearMoneda(sumaCostoMaq);
+
+            // Inversión microempresas = suma de MONTO TOTAL COBRADO (USD)
             document.getElementById('card-inv-micro').innerText = formatearMoneda(sumaMontoMicro);
 
-            // Plazo de ejecución: meses transcurridos desde el primer inicio de gestión hasta hoy
+            // Plazo de ejecución = meses transcurridos (1 decimal) desde el menor INICIO DE GESTION hasta hoy
+            let mesesTrans = 0;
             if (minFechaInicio) {
-                let dias = Math.max(0, (new Date() - minFechaInicio) / 86400000);
-                document.getElementById('card-plazo').innerText = `${(dias / 30.4375).toFixed(1)} Meses`;
+                let hoy = new Date();
+                let diffDias = Math.max(0, (hoy - minFechaInicio) / (1000 * 60 * 60 * 24));
+                mesesTrans = diffDias / 30.4375;
+                document.getElementById('card-plazo').innerText = `${mesesTrans.toFixed(1)} Meses`;
             } else {
                 document.getElementById('card-plazo').innerText = '—';
             }
 
-            document.getElementById('card-h-global').innerText = formatearHoras(hRetro + hExc + hVolq);
-            document.getElementById('card-h-retro').innerText = formatearHoras(hRetro);
-            document.getElementById('card-h-exc').innerText = formatearHoras(hExc);
-            document.getElementById('card-h-volq').innerText = formatearHoras(hVolq);
+            // Horas globales, Retroexcavadora, Excavadora, Volquetes = suma de horas ejecutadas de cada tipo
+            let ejecHorasTotal = hRetro + hExc + hVolq;
+            document.getElementById('card-h-global').innerText = `${ejecHorasTotal.toFixed(1)} h`;
+            document.getElementById('card-h-retro').innerText = `${hRetro.toFixed(1)} h`;
+            document.getElementById('card-h-exc').innerText = `${hExc.toFixed(1)} h`;
+            document.getElementById('card-h-volq').innerText = `${hVolq.toFixed(1)} h`;
+
+            // Microempresas = "N Grupos"
             document.getElementById('card-micro-count').innerText = `${lista.length} Grupos`;
         }
 
         // =========================================================================
-        // 4) "FRENTES DE TRABAJO EN LA RVE"
+        // 2) "FRENTES DE TRABAJO EN LA RVE" Y MODAL DE GRUPOS INTERVENIDOS
         // =========================================================================
-        // Grupos intervenidos por cada máquina (se muestran al hacer clic)
-        let gruposPorMaquina = { retro: [], volquete: [], excavadora: [] };
+        window.abrirModalMaquinaria = function(tipoMaquina, tituloMaquina) {
+            if (!driveConectado) return;
+            const lista = Object.values(driveGruposPorMicro);
+            const tbody = document.getElementById('modal-maquinaria-tbody');
+            const tituloEl = document.getElementById('modal-maquinaria-titulo');
+            tbody.innerHTML = '';
+            tituloEl.innerText = `🚜 ${tituloMaquina} — Grupos Intervenidos`;
+
+            let filtrados = lista.filter(g => (g[tipoMaquina] || 0) > 0);
+            filtrados.forEach(g => {
+                let tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${g.nombreOriginal}</strong></td>
+                    <td>${g.tramo || '—'}</td>
+                    <td style="text-align: right; color: #34D399; font-weight: bold;">${g[tipoMaquina].toFixed(1)} h</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('modal-maquinaria').classList.add('activo');
+        };
+
+        window.cerrarModalMaquinaria = function() {
+            document.getElementById('modal-maquinaria').classList.remove('activo');
+        };
+
+        window.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                cerrarModalMaquinaria();
+            }
+        });
 
         function actualizarTarjetaFrentesRVE() {
             const lista = Object.values(driveGruposPorMicro);
             if (!driveConectado || lista.length === 0) return;
 
             function calcMaquina(propHoras, tarifaH) {
-                let horas = 0, alcConMaqSuma = 0;
-                let grupos = [];
+                let horas = 0;
+                let grupos = 0;
+                let alcConMaqSuma = 0;
                 lista.forEach(g => {
                     let h = g[propHoras] || 0;
                     if (h > 0) {
                         horas += h;
+                        grupos++;
                         alcConMaqSuma += g.alcConMaq;
-                        grupos.push({ nombre: g.nombreOriginal, tramo: g.tramo, horas: h });
                     }
                 });
-                grupos.sort((a, b) => b.horas - a.horas);
-                return { horas, costo: horas * (tarifaH || 0), grupos, rendHora: horas > 0 ? (alcConMaqSuma / horas) : 0 };
+                let costo = horas * tarifaH;
+                let rendHora = horas > 0 ? (alcConMaqSuma / horas) : 0;
+                return { horas, costo, grupos, rendHora };
             }
 
-            const filas = [
-                { key: 'retro', maquina: 'retro', prop: 'horasRetro', tarifa: PLAN.tarifa.retro },
-                { key: 'volq',  maquina: 'volquete', prop: 'horasVolq', tarifa: PLAN.tarifa.volquete },
-                { key: 'exc',   maquina: 'excavadora', prop: 'horasExc', tarifa: PLAN.tarifa.excavadora }
-            ];
-            filas.forEach(f => {
-                let st = calcMaquina(f.prop, f.tarifa);
-                gruposPorMaquina[f.maquina] = st.grupos;
-                document.getElementById(`frente-${f.key}-horas`).innerText = formatearHoras(st.horas);
-                document.getElementById(`frente-${f.key}-costo`).innerText = formatearMoneda(st.costo);
-                document.getElementById(`frente-${f.key}-rend`).innerText = `${st.rendHora.toFixed(2)} alc/h`;
-                let el = document.getElementById(`frente-${f.key}-grupos`);
-                let n = st.grupos.length;
-                el.innerText = `${n} ${n === 1 ? 'grupo' : 'grupos'}`;
-                el.classList.toggle('activo', n > 0);
-                el.title = n > 0 ? 'Ver grupos intervenidos' : '';
-            });
-        }
-
-        // Fila de microempresas: avance desde el Registro Diario; costo por alcantarilla desde la base de la Zonal 7
-        function actualizarFilaMicroempresas() {
-            let micros = Object.values(ultimoResumenRegistroDiario || {});
-            if (micros.length > 0) {
-                let sumaDias = 0, sumaRend = 0;
-                micros.forEach(m => {
-                    let dias = m.fechasUnicas.size > 0 ? m.fechasUnicas.size : 1;
-                    sumaDias += dias;
-                    sumaRend += (m.limpiadasAcumuladas || 0) / dias;
-                });
-                document.getElementById('frente-mic-grupos').innerText = `${micros.length} grupos`;
-                document.getElementById('frente-mic-alc').innerText = `${setAlcantarillasAtendidas.size.toLocaleString('en-US')} alc.`;
-                document.getElementById('frente-mic-rend').innerText =
-                    `${(sumaDias / micros.length).toFixed(1)} días / ${(sumaRend / micros.length).toFixed(2)} alc/día`;
-            }
-
-            let lista = driveConectado ? Object.values(driveGruposPorMicro) : [];
-            let sumaCosto = 0, sumaAlc = 0;
-            lista.forEach(g => {
-                if (g.alcLimpiadas > 0 && g.costoTotal > 0) {
-                    sumaCosto += g.costoTotal;
-                    sumaAlc += g.alcLimpiadas;
+            function renderizarCeldaGrupos(elId, numGrupos, propHoras, nombreMaq) {
+                const el = document.getElementById(elId);
+                if (numGrupos > 0) {
+                    el.innerHTML = `<span class="grupos-clicable" onclick="abrirModalMaquinaria('${propHoras}', '${nombreMaq}')">${numGrupos} grupos</span>`;
+                } else {
+                    el.innerText = '0 grupos';
                 }
-            });
-            document.getElementById('frente-mic-costo').innerText = sumaAlc > 0 ? formatearMoneda(sumaCosto / sumaAlc) : '—';
+            }
+
+            // Fila 1: Retroexcavadora
+            let stRetro = calcMaquina('horasRetro', PLAN.tarifa.retro);
+            document.getElementById('frente-retro-horas').innerText = `${stRetro.horas.toFixed(1)} h`;
+            document.getElementById('frente-retro-costo').innerText = formatearMoneda(stRetro.costo);
+            renderizarCeldaGrupos('frente-retro-grupos', stRetro.grupos, 'horasRetro', 'Retroexcavadora');
+            document.getElementById('frente-retro-rend').innerText = `${stRetro.rendHora.toFixed(2)} alc/h`;
+
+            // Fila 2: Volquete
+            let stVolq = calcMaquina('horasVolq', PLAN.tarifa.volquete);
+            document.getElementById('frente-volq-horas').innerText = `${stVolq.horas.toFixed(1)} h`;
+            document.getElementById('frente-volq-costo').innerText = formatearMoneda(stVolq.costo);
+            renderizarCeldaGrupos('frente-volq-grupos', stVolq.grupos, 'horasVolq', 'Volquete');
+            document.getElementById('frente-volq-rend').innerText = `${stVolq.rendHora.toFixed(2)} alc/h`;
+
+            // Fila 3: Excavadora
+            let stExc = calcMaquina('horasExc', PLAN.tarifa.excavadora);
+            document.getElementById('frente-exc-horas').innerText = `${stExc.horas.toFixed(1)} h`;
+            document.getElementById('frente-exc-costo').innerText = formatearMoneda(stExc.costo);
+            renderizarCeldaGrupos('frente-exc-grupos', stExc.grupos, 'horasExc', 'Excavadora');
+            document.getElementById('frente-exc-rend').innerText = `${stExc.rendHora.toFixed(2)} alc/h`;
         }
 
-        // Panel emergente con los grupos intervenidos por una máquina
-        const NOMBRES_MAQUINA = { retro: 'Retroexcavadora', volquete: 'Volquete', excavadora: 'Excavadora' };
-        function abrirModalGrupos(maquina) {
-            let grupos = gruposPorMaquina[maquina] || [];
-            if (grupos.length === 0) return;
-            document.getElementById('modal-grupos-titulo').innerText = `${NOMBRES_MAQUINA[maquina]} — Grupos intervenidos`;
-            document.getElementById('modal-grupos-body').innerHTML = grupos.map(g => `
-                <tr>
-                    <td><strong>${g.nombre}</strong></td>
-                    <td>${g.tramo || '—'}</td>
-                    <td style="text-align:right; color:#FBBF24; font-weight:bold; white-space:nowrap;">${formatearHoras(g.horas)}</td>
-                </tr>`).join('');
-            document.getElementById('modal-grupos').classList.add('abierto');
+        // Fila 4: Microempresas (Datos desde Reporte_Diario.xlsx + Costo prom. ponderado desde Google Sheets)
+        function actualizarFilaMicroempresasFrentes() {
+            const clavesMicrosDiario = Object.keys(ultimoResumenRegistroDiario);
+            const numGruposDiario = clavesMicrosDiario.length;
+
+            // Número de grupos = microempresas distintas en Reporte_Diario.xlsx
+            document.getElementById('frente-mic-grupos').innerText = numGruposDiario > 0 ? `${numGruposDiario} grupos` : '—';
+
+            // Alcantarillas limpiadas = códigos únicos de CODIGO_ALCANTARILLA con ESTADO "LIMPIO"
+            const totalUnicasLimpias = setAlcantarillasAtendidas.size;
+            document.getElementById('frente-mic-alc').innerText = numGruposDiario > 0 ? `${totalUnicasLimpias.toLocaleString()} alc.` : '—';
+
+            // Días de gestión prom. / Rend. prom. = promediado entre microempresas con el cálculo de la tabla
+            if (numGruposDiario > 0) {
+                let sumaDiasMicro = 0;
+                let sumaRendMicro = 0;
+                clavesMicrosDiario.forEach(k => {
+                    let info = ultimoResumenRegistroDiario[k];
+                    let dias = info.fechasUnicas.size > 0 ? info.fechasUnicas.size : 1;
+                    let rend = info.limpiadasAcumuladas / dias;
+                    sumaDiasMicro += dias;
+                    sumaRendMicro += rend;
+                });
+                let promDias = sumaDiasMicro / numGruposDiario;
+                let promRend = sumaRendMicro / numGruposDiario;
+                document.getElementById('frente-mic-rend').innerText = `${promDias.toFixed(1)} días / ${promRend.toFixed(2)} alc/día`;
+            } else {
+                document.getElementById('frente-mic-rend').innerText = '— días / — alc/día';
+            }
+
+            // Costo prom. por alcantarilla = suma de COSTO TOTAL (USD) / suma de N° ALCANTARILLAS LIMPIADAS (grupos con alcantarillas > 0)
+            if (driveConectado) {
+                let lista = Object.values(driveGruposPorMicro);
+                let sumaCostoTotal = 0;
+                let sumaAlcLimpias = 0;
+                lista.forEach(g => {
+                    if (g.alcLimpiadas > 0) {
+                        sumaCostoTotal += g.costoTotal;
+                        sumaAlcLimpias += g.alcLimpiadas;
+                    }
+                });
+                if (sumaAlcLimpias > 0) {
+                    let costoPromPonderado = sumaCostoTotal / sumaAlcLimpias;
+                    document.getElementById('frente-mic-costo').innerText = formatearMoneda(costoPromPonderado);
+                } else {
+                    document.getElementById('frente-mic-costo').innerText = '—';
+                }
+            } else {
+                document.getElementById('frente-mic-costo').innerText = '—';
+            }
         }
-        function cerrarModalGrupos() {
-            document.getElementById('modal-grupos').classList.remove('abierto');
-        }
-        document.addEventListener('click', e => {
-            let link = e.target.closest('.grupos-link.activo');
-            if (link) { abrirModalGrupos(link.dataset.maquina); return; }
-            if (e.target.id === 'modal-grupos') cerrarModalGrupos();
-        });
-        document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarModalGrupos(); });
 
         // =========================================================================
-        // 5) META GLOBAL: avance oficial del Registro Diario sobre el total de la RVE
+        // 3) SECCIÓN DE AVANCE: META GLOBAL Y DOS DATOS INFERIORES
         // =========================================================================
         function actualizarSeccionMetaGlobalYProyeccion() {
             const metaGlobal = PLAN.metaGlobal || 3473;
-            document.getElementById('lbl-meta-global-titulo').innerText = metaGlobal.toLocaleString('en-US');
-            document.getElementById('kpi-global-total').innerText = '/ ' + metaGlobal.toLocaleString('en-US');
+            document.getElementById('lbl-meta-global-titulo').innerText = metaGlobal.toLocaleString();
+            document.getElementById('kpi-global-total').innerText = '/ ' + metaGlobal.toLocaleString();
 
-            // Alcantarillas limpias = códigos únicos con estado LIMPIO en el Registro Diario
-            let limpias = setAlcantarillasAtendidas.size;
-            let pendientes = Math.max(0, metaGlobal - limpias);
-            let pct = metaGlobal > 0 ? Math.min(100, (limpias / metaGlobal) * 100) : 0;
-            let pctTxt = pct.toFixed(1);
+            // El avance = códigos únicos limpios de Reporte_Diario.xlsx ÷ meta global (3,473)
+            const avanceGlobal = setAlcantarillasAtendidas.size;
+            const pendientesGlobal = Math.max(0, metaGlobal - avanceGlobal);
+            const pctGlobalNum = metaGlobal > 0 ? Math.min(100, (avanceGlobal / metaGlobal) * 100) : 0;
+            const pctGlobalTxt = pctGlobalNum.toFixed(1);
 
-            document.getElementById('kpi-global-txt').innerText = `${pctTxt}% Completado`;
-            document.getElementById('kpi-global-centro').innerText = `${pctTxt}%`;
-            document.getElementById('kpi-global-num').innerText = limpias.toLocaleString('en-US');
-            document.getElementById('txt-meta-global').innerText =
-                `El trabajo conjunto de las microempresas y la logística de la Zonal 7 con su maquinaria ha permitido limpiar el ${pctTxt}% de las ${metaGlobal.toLocaleString('en-US')} alcantarillas de la Red Vial Estatal.`;
+            document.getElementById('kpi-global-txt').innerText = `${pctGlobalTxt}% Completado`;
+            document.getElementById('kpi-global-centro').innerText = `${pctGlobalTxt}%`;
+            document.getElementById('kpi-global-num').innerText = avanceGlobal.toLocaleString();
+
+            document.getElementById('desc-meta-global').innerText =
+                `El trabajo conjunto de las microempresas y la logística de la Zonal 7 con su maquinaria ha permitido limpiar el ${pctGlobalTxt}\% de las${metaGlobal.toLocaleString()} alcantarillas de la Red Vial Estatal.`;
 
             if (globalPieChart) {
-                globalPieChart.data.datasets[0].data = [limpias, pendientes];
+                globalPieChart.data.datasets[0].data = [avanceGlobal, pendientesGlobal];
                 globalPieChart.update();
             }
 
-            // Rendimiento actualizado y tiempo transcurrido: días laborables registrados (fechas únicas)
-            let fechas = new Set();
-            Object.values(ultimoResumenRegistroDiario || {}).forEach(m => m.fechasUnicas.forEach(f => fechas.add(f)));
-            let dias = fechas.size;
-            document.getElementById('proy-rend-actual').innerText = dias > 0 ? `${(limpias / dias).toFixed(2)} alc/día` : '— alc/día';
-            document.getElementById('proy-tiempo').innerText = dias > 0 ? `${dias} días laborables` : '—';
+            // Cuadro inferior con SOLO dos datos desde las fechas únicas registradas
+            const diasLaborablesReg = fechasUnicasGlobalesDiario.size;
+            if (diasLaborablesReg > 0 && avanceGlobal > 0) {
+                const rendActualizado = avanceGlobal / diasLaborablesReg;
+                document.getElementById('proy-rend-actual').innerText = `${rendActualizado.toFixed(2)} alc/día`;
+                document.getElementById('proy-tiempo-trans').innerText = `${diasLaborablesReg} días laborables`;
+            } else if (diasLaborablesReg > 0) {
+                document.getElementById('proy-rend-actual').innerText = `0.00 alc/día`;
+                document.getElementById('proy-tiempo-trans').innerText = `${diasLaborablesReg} días laborables`;
+            } else {
+                document.getElementById('proy-rend-actual').innerText = '— alc/día';
+                document.getElementById('proy-tiempo-trans').innerText = '— días laborables';
+            }
         }
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -1419,7 +1579,7 @@
                 }
             });
 
-            // Iniciar carga complementaria desde Google Drive (CSV)
+            // Iniciar carga complementaria
             cargarDatosDrive();
 
             fetch('Reporte_Diario.xlsx?v=' + new Date().getTime())
