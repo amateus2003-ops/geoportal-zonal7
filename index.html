@@ -119,7 +119,7 @@
         .modal-maquinaria-close:hover { color: #FFFFFF; background: #374151; }
         .modal-maquinaria-body { overflow-y: auto; }
 
-        /* ESTILOS MEJORADOS SECCIÓN AVANCE: PANELES DE ANCHO COMPLETO (COMO IMAGEN 2) */
+        /* ESTILOS MEJORADOS SECCIÓN AVANCE: PANELES DE ANCHO COMPLETO Y TÍTULO ALINEADO */
         .panel-avance-general {
             display: flex;
             flex-wrap: wrap;
@@ -150,9 +150,8 @@
             font-weight: 800;
             letter-spacing: 1px;
             text-transform: uppercase;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            display: block;
+            line-height: 1.3;
         }
         .avance-desc-banner {
             color: #9CA3AF;
@@ -522,11 +521,11 @@
                 </div>
             </div>
 
-            <!-- SECCIÓN 3B: PANEL DE ANCHO COMPLETO — META GLOBAL RVE LOJA (3,473 ALCANTARILLAS) -->
+            <!-- SECCIÓN 3B: PANEL DE ANCHO COMPLETO — META GLOBAL - RED VIAL ESTATAL ZONAL 7 -->
             <div class="panel-avance-general panel-avance-global">
                 <div class="avance-text-container">
-                    <h3 class="avance-titulo-banner" style="color: #60A5FA;">🌐 META GLOBAL — RED VIAL ESTATAL LOJA (<span id="lbl-meta-global-titulo">3,473</span> ALCANTARILLAS)</h3>
-                    <p id="desc-meta-global" class="avance-desc-banner">Avance integral de limpieza y desazolve ejecutado de forma articulada entre las microempresas de conservación vial y la maquinaria institucional en toda la Red Vial Estatal de Loja.</p>
+                    <h3 class="avance-titulo-banner" style="color: #60A5FA;">🌐 META GLOBAL - RED VIAL ESTATAL ZONAL 7</h3>
+                    <p id="desc-meta-global" class="avance-desc-banner">Avance integral de limpieza y desazolve ejecutado de forma articulada entre las microempresas de conservación vial y la maquinaria institucional en toda la Red Vial Estatal de la Zonal 7.</p>
                     <div class="avance-big-pct" id="kpi-global-txt">0% Completado</div>
                     <div class="avance-badges-row">
                         <div class="avance-pill-box">
@@ -747,7 +746,7 @@
 
     <script>
         // =========================================================================
-        // ENLACES CSV Y PARÁMETROS BASE
+        // ENLACES CSV CONFIGURADOS Y PARÁMETROS BASE DE LA ZONAL 7
         // =========================================================================
         const URL_GRUPOS      = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRiKv8b_aqemoRDqnpObERya2YtDl1YPLZreGuFoN3ODItctXixCAitBxUS-cDNN43Ef8v85hANnaXz/pub?gid=715116195&single=true&output=csv";
         const URL_ALC_DRIVE   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRiKv8b_aqemoRDqnpObERya2YtDl1YPLZreGuFoN3ODItctXixCAitBxUS-cDNN43Ef8v85hANnaXz/pub?gid=353357775&single=true&output=csv";
@@ -1536,16 +1535,14 @@
         }
 
         // =========================================================================
-        // SECCIÓN DE AVANCE: META GLOBAL CON PORCENTAJE ENTERO REDONDEADO Y TEXTO EJECUTIVO
+        // SECCIÓN DE AVANCE: META GLOBAL CON PORCENTAJE ENTERO REDONDEADO Y TÍTULO ALINEADO
         // =========================================================================
         function actualizarSeccionMetaGlobalYProyeccion() {
             const metaGlobal = PLAN.metaGlobal || 3473;
-            document.getElementById('lbl-meta-global-titulo').innerText = metaGlobal.toLocaleString();
             document.getElementById('kpi-global-total').innerText = '/ ' + metaGlobal.toLocaleString();
 
             const avanceGlobal = setAlcantarillasAtendidas.size;
             const pendientesGlobal = Math.max(0, metaGlobal - avanceGlobal);
-            // Porcentaje entero redondeado para una presentación limpia y uniforme con el primer gráfico
             const pctGlobalEntero = metaGlobal > 0 ? Math.min(100, Math.round((avanceGlobal / metaGlobal) * 100)) : 0;
 
             document.getElementById('kpi-global-txt').innerText = `${pctGlobalEntero}% Completado`;
@@ -1553,7 +1550,7 @@
             document.getElementById('kpi-global-num').innerText = avanceGlobal.toLocaleString();
 
             document.getElementById('desc-meta-global').innerText =
-                `Avance integral de limpieza y desazolve ejecutado de forma articulada entre las microempresas de conservación vial y la maquinaria institucional en toda la Red Vial Estatal de Loja.`;
+                `Avance integral de limpieza y desazolve ejecutado de forma articulada entre las microempresas de conservación vial y la maquinaria institucional en toda la Red Vial Estatal de la Zonal 7.`;
 
             if (globalPieChart) {
                 globalPieChart.data.datasets[0].data = [avanceGlobal, pendientesGlobal];
@@ -1600,7 +1597,7 @@
                 }
             });
 
-            // Donut Meta Global (3,473 alcantarillas RVE Loja)
+            // Donut Meta Global (3,473 alcantarillas RVE Zonal 7)
             const ctxGlobal = document.getElementById('graficoGlobalPie').getContext('2d');
             globalPieChart = new Chart(ctxGlobal, {
                 type: 'doughnut',
