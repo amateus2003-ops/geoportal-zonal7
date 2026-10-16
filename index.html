@@ -81,31 +81,52 @@
         #cronograma-view { padding: 30px; box-sizing: border-box; background-color: #111827; }
         
         .planificacion-banner { background: #1F2937; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.4); margin-bottom: 25px; border: 1px solid #374151; }
-        .planificacion-grid { display: grid; grid-template-columns: 1fr 3fr; gap: 20px; }
-        @media (max-width: 1000px) { .planificacion-grid { grid-template-columns: 1fr; } }
+        .planificacion-grid { display: grid; grid-template-columns: 1.35fr 2.65fr; gap: 20px; }
+        @media (max-width: 1100px) { .planificacion-grid { grid-template-columns: 1fr; } }
         
-        .plan-box-left { background: #27303F; border-radius: 10px; padding: 20px; border-top: 4px solid #10B981; display: flex; justify-content: space-around; align-items: center; text-align: center; }
+        .plan-box-left { background: #27303F; border-radius: 10px; padding: 15px 12px; border-top: 4px solid #10B981; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; align-items: center; text-align: center; }
         .plan-box-right { background: #27303F; border-radius: 10px; padding: 15px 10px; border-top: 4px solid #3B82F6; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; align-items: center; text-align: center; }
         
-        .plan-icon-container { height: 45px; display: flex; align-items: center; justify-content: center; margin-bottom: 5px; }
-        .custom-machinery-icon { max-height: 44px; max-width: 65px; object-fit: contain; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.6)); }
+        .plan-icon-container { height: 42px; display: flex; align-items: center; justify-content: center; margin-bottom: 4px; }
+        .custom-machinery-icon { max-height: 40px; max-width: 60px; object-fit: contain; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.6)); }
 
-        .plan-item-val { font-size: 1.1rem; font-weight: bold; color: #FBBF24; margin-top: 4px; }
+        .plan-item-val { font-size: 0.98rem; font-weight: bold; color: #FBBF24; margin-top: 4px; line-height: 1.25; }
+        .plan-item-sub { font-size: 0.7rem; color: #9CA3AF; font-weight: normal; display: block; }
         .plan-item-lbl { font-size: 0.65rem; color: #9CA3AF; text-transform: uppercase; line-height: 1.2; letter-spacing: 0.5px; }
 
-        .frentes-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px; }
-        .frente-card { background: #1F2937; border-radius: 10px; padding: 18px; border: 1px solid #374151; box-shadow: 0 4px 6px rgba(0,0,0,0.3); position: relative; }
-        .frente-badge { position: absolute; top: -12px; left: 20px; background: #10B981; color: #fff; font-size: 0.75rem; font-weight: bold; padding: 3px 12px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .frente-content { margin-top: 8px; display: flex; flex-direction: column; gap: 8px; font-size: 0.85rem; color: #D1D5DB; }
-        .frente-item { display: flex; align-items: center; gap: 10px; background: #27303F; padding: 8px 12px; border-radius: 6px; }
-        .frente-icon-img { height: 26px; max-width: 35px; object-fit: contain; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5)); }
+        /* Barra fina de porcentaje en tarjetas de Resumen */
+        .mini-bar-bg { background: #1F2937; height: 5px; border-radius: 3px; width: 88%; margin: 6px auto 2px auto; overflow: hidden; border: 1px solid #374151; }
+        .mini-bar-fill { height: 100%; background: #10B981; width: 0%; transition: width 0.5s ease; }
+        .mini-bar-pct { font-size: 0.65rem; color: #D1D5DB; font-weight: bold; }
+
+        /* NUEVO ESTILO: TARJETA ÚNICA DE FRENTES DE TRABAJO EN LA RVE (4 FILAS) */
+        .frentes-rve-card { background: #1F2937; border-radius: 12px; padding: 22px 25px; border: 1px solid #374151; box-shadow: 0 4px 10px rgba(0,0,0,0.4); margin-bottom: 25px; }
+        .frentes-rve-title { font-size: 0.95rem; color: #FBBF24; font-weight: bold; text-transform: uppercase; margin-bottom: 16px; letter-spacing: 0.5px; border-bottom: 1px solid #374151; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .frente-fila { display: flex; align-items: center; gap: 18px; background: #27303F; padding: 14px 18px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #374151; transition: transform 0.2s; }
+        .frente-fila:last-child { margin-bottom: 0; }
+        .frente-icon-box { width: 58px; height: 58px; min-width: 58px; background: #1F2937; border-radius: 10px; border: 1px solid #4B5563; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); }
+        .frente-icon-box img { max-width: 44px; max-height: 44px; object-fit: contain; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.6)); }
+        .frente-stats-inline { display: grid; grid-template-columns: 1.2fr repeat(4, 1fr); gap: 15px; flex-grow: 1; align-items: center; }
+        .frente-stat-block { display: flex; flex-direction: column; gap: 3px; }
+        .frente-stat-title { font-size: 0.7rem; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.4px; }
+        .frente-stat-num { font-size: 1.05rem; font-weight: bold; color: #F3F4F6; }
+
+        /* ESTILOS SECCIÓN AVANCE: DOS METAS (PRIORITARIA Y GLOBAL) + PROYECCIÓN */
+        .avance-dual-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; width: 100%; }
+        .avance-card-half { background: rgba(17, 24, 39, 0.45); border: 1px solid #374151; border-radius: 10px; padding: 22px; display: flex; flex-direction: column; justify-content: space-between; }
+        .avance-card-inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; }
+        .avance-proyeccion-box { margin-top: 18px; background: #1F2937; border: 1px solid #374151; border-left: 4px solid #3B82F6; border-radius: 8px; padding: 14px 16px; font-size: 0.83rem; color: #D1D5DB; }
+        .proy-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #374151; }
+        .proy-item-lbl { font-size: 0.68rem; color: #9CA3AF; text-transform: uppercase; }
+        .proy-item-val { font-size: 0.98rem; font-weight: bold; color: #60A5FA; margin-top: 2px; }
+        .proy-comp { display: flex; justify-content: space-between; gap: 12px; font-size: 0.78rem; flex-wrap: wrap; }
 
         .panel { background-color: #1F2937; border-radius: 12px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); margin-bottom: 25px; }
         .panel h3 { margin-top: 0; border-bottom: 1px solid #374151; padding-bottom: 12px; color: #9CA3AF; font-size: 1.1rem; text-transform: uppercase; }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.85rem; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.82rem; }
         th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid #374151; }
-        th { background-color: #111827; color: #FBBF24; text-transform: uppercase; font-size: 0.75rem; }
+        th { background-color: #111827; color: #FBBF24; text-transform: uppercase; font-size: 0.72rem; }
         tr:hover { background-color: #27303F; }
 
         .progress-bar-container { background-color: #374151; border-radius: 6px; height: 16px; width: 100%; position: relative; overflow: hidden; margin-top: 5px; }
@@ -113,8 +134,8 @@
         .progress-bar-fill-abs { background-color: #10B981; height: 100%; width: 0%; transition: width 0.6s ease-in-out; }
         .progress-text { position: absolute; width: 100%; text-align: center; font-size: 0.7rem; color: #FFFFFF; font-weight: bold; top: 0; line-height: 16px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
 
-        .sync-status { display: flex; align-items: center; justify-content: space-between; background: #27303F; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #4B5563; }
-        .status-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; background: rgba(16, 185, 129, 0.2); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.4); }
+        .sync-status { display: flex; align-items: center; justify-content: space-between; background: #27303F; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #4B5563; flex-wrap: wrap; gap: 10px; }
+        .status-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 20px; font-size: 0.82rem; font-weight: bold; background: rgba(16, 185, 129, 0.2); color: #10B981; border: 1px solid rgba(16, 185, 129, 0.4); }
         .status-dot { width: 8px; height: 8px; background-color: #10B981; border-radius: 50%; box-shadow: 0 0 8px #10B981; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
@@ -124,17 +145,18 @@
         #excel-file { display: none; }
 
         .panel-avance-general {
-            display: flex; flex-wrap: wrap; justify-content: space-around; align-items: center; gap: 30px; 
-            border-left: 6px solid #10B981; padding: 40px 30px; background: linear-gradient(145deg, #1F2937 0%, #171F2E 100%); 
+            display: flex; flex-wrap: wrap; justify-content: space-around; align-items: stretch; gap: 25px; 
+            border-left: 6px solid #10B981; padding: 30px 25px; background: linear-gradient(145deg, #1F2937 0%, #171F2E 100%); 
             box-shadow: inset 0 0 20px rgba(0,0,0,0.2); border-radius: 12px; margin-bottom: 25px;
         }
-        .avance-text-container { flex: 1; min-width: 300px; max-width: 600px; }
-        .avance-chart-container { width: 280px; height: 280px; position: relative; display: flex; justify-content: center; align-items: center; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3)); }
+        .avance-text-container { flex: 1; min-width: 240px; }
+        .avance-chart-container { width: 220px; height: 220px; position: relative; display: flex; justify-content: center; align-items: center; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3)); margin: 0 auto; }
 
         @media (max-width: 1250px) {
             .map-header-overlay { flex-wrap: wrap; gap: 10px; }
             .overlay-total { border-right: none; padding-right: 0; margin: 0 auto; }
             .overlay-stats { width: 100%; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 5px; }
+            .avance-dual-grid { grid-template-columns: 1fr; }
         }
 
         @media (max-width: 850px) {
@@ -148,6 +170,11 @@
             
             .overlay-stats { flex-wrap: wrap; }
             .leaflet-popup-content { width: 300px !important; }
+
+            .plan-box-left, .plan-box-right { grid-template-columns: 1fr 1fr; }
+            .frente-fila { flex-direction: column; align-items: flex-start; }
+            .frente-stats-inline { grid-template-columns: 1fr; width: 100%; gap: 10px; }
+            .proy-grid { grid-template-columns: 1fr; }
         }
         /* ESTILOS DEL BUSCADOR */
         .search-container { 
@@ -194,102 +221,292 @@
     <div id="cronograma-view" class="view-container active">
         <div style="max-width: 1400px; margin: 0 auto; width: 100%; padding: 20px 0;">
             
+            <!-- SECCIÓN 3: RESUMEN DE INVERSIÓN Y CAPACIDAD OPERATIVA (EJECUTADO / PLANIFICADO) -->
             <div class="planificacion-banner">
-                <div style="font-size: 0.9rem; color: #10B981; font-weight: bold; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px;">⚙️ Resumen de Inversión y Capacidad Operativa</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+                    <div style="font-size: 0.9rem; color: #10B981; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">⚙️ Resumen de Inversión y Capacidad Operativa</div>
+                    <div id="drive-status-pill" style="font-size: 0.75rem; padding: 4px 10px; border-radius: 12px; background: rgba(156, 163, 175, 0.15); color: #9CA3AF; border: 1px solid #4B5563;">🔄 Verificando conexión con Google Drive...</div>
+                </div>
                 <div class="planificacion-grid">
                     <div class="plan-box-left">
+                        <!-- Tarjeta Inversión Maquinaria con barra -->
                         <div>
-                            <div class="plan-icon-container" style="font-size: 1.8rem;">💰</div>
-                            <div class="plan-item-lbl">Inversión</div>
-                            <div class="plan-item-val" style="color: #34D399;">$36,483.40</div>
+                            <div class="plan-icon-container" style="font-size: 1.7rem;">🚜</div>
+                            <div class="plan-item-lbl">Inversión Maquinaria</div>
+                            <div class="plan-item-val" style="color: #34D399;" id="card-inv-maq">$0.00 <span class="plan-item-sub">/ $40,804.95</span></div>
+                            <div class="mini-bar-bg"><div class="mini-bar-fill" id="bar-inv-maq" style="width: 0%;"></div></div>
+                            <div class="mini-bar-pct" id="pct-inv-maq">0%</div>
                         </div>
-                        <div style="border-left: 1px solid #374151; height: 45px;"></div>
+                        <!-- Tarjeta Inversión Microempresas aparte y sin barra -->
                         <div>
-                            <div class="plan-icon-container" style="font-size: 1.8rem;">⏳</div>
+                            <div class="plan-icon-container" style="font-size: 1.7rem;">💰</div>
+                            <div class="plan-item-lbl">Inversión Microempresas</div>
+                            <div class="plan-item-val" style="color: #FBBF24;" id="card-inv-micro">—</div>
+                            <div class="plan-item-sub" style="margin-top: 6px;">Monto Cobrado (Drive)</div>
+                        </div>
+                        <!-- Tarjeta Plazo de Ejecución con barra -->
+                        <div>
+                            <div class="plan-icon-container" style="font-size: 1.7rem;">⏳</div>
                             <div class="plan-item-lbl">Plazo de Ejecución</div>
-                            <div class="plan-item-val" style="color: #60A5FA;">3.5 Meses</div>
+                            <div class="plan-item-val" style="color: #60A5FA;" id="card-plazo">3.5 Meses</div>
+                            <div class="mini-bar-bg"><div class="mini-bar-fill" id="bar-plazo" style="width: 0%; background: #3B82F6;"></div></div>
+                            <div class="mini-bar-pct" id="pct-plazo">—</div>
                         </div>
                     </div>
 
                     <div class="plan-box-right">
+                        <!-- Horas Globales -->
                         <div>
-                            <div class="plan-icon-container" style="font-size: 1.8rem;">⏱️</div>
+                            <div class="plan-icon-container" style="font-size: 1.7rem;">⏱️</div>
                             <div class="plan-item-lbl">Horas Globales</div>
-                            <div class="plan-item-val">1,273 h</div>
+                            <div class="plan-item-val" id="card-h-global">1,273 h</div>
+                            <div class="mini-bar-bg"><div class="mini-bar-fill" id="bar-h-global" style="width: 0%; background: #3B82F6;"></div></div>
+                            <div class="mini-bar-pct" id="pct-h-global">Plan: 1,273 h</div>
                         </div>
+                        <!-- Retroexcavadora -->
                         <div>
                             <div class="plan-icon-container">
                                 <img src="icono-retro.png" alt="Retro" class="custom-machinery-icon" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                                 <span style="display:none; font-size:1.5rem;">🚜</span>
                             </div>
                             <div class="plan-item-lbl">Retroexcavadora</div>
-                            <div class="plan-item-val">793 h</div>
+                            <div class="plan-item-val" id="card-h-retro">793 h</div>
+                            <div class="mini-bar-bg"><div class="mini-bar-fill" id="bar-h-retro" style="width: 0%;"></div></div>
+                            <div class="mini-bar-pct" id="pct-h-retro">Plan: 793 h</div>
                         </div>
+                        <!-- Excavadora -->
                         <div>
                             <div class="plan-icon-container">
                                 <img src="icono-excavadora.png" alt="Excavadora" class="custom-machinery-icon" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                                 <span style="display:none; font-size:1.5rem;">🏗️</span>
                             </div>
                             <div class="plan-item-lbl">Excavadora</div>
-                            <div class="plan-item-val">177 h</div>
+                            <div class="plan-item-val" id="card-h-exc">177 h</div>
+                            <div class="mini-bar-bg"><div class="mini-bar-fill" id="bar-h-exc" style="width: 0%; background: #F59E0B;"></div></div>
+                            <div class="mini-bar-pct" id="pct-h-exc">Plan: 177 h</div>
                         </div>
+                        <!-- Volquetes -->
                         <div>
                             <div class="plan-icon-container">
                                 <img src="icono-volquete.png" alt="Volquetes" class="custom-machinery-icon" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                                 <span style="display:none; font-size:1.5rem;">🚛</span>
                             </div>
                             <div class="plan-item-lbl">Volquetes</div>
-                            <div class="plan-item-val">303 h</div>
+                            <div class="plan-item-val" id="card-h-volq">303 h</div>
+                            <div class="mini-bar-bg"><div class="mini-bar-fill" id="bar-h-volq" style="width: 0%; background: #60A5FA;"></div></div>
+                            <div class="mini-bar-pct" id="pct-h-volq">Plan: 303 h</div>
                         </div>
+                        <!-- Microempresas -->
                         <div>
-                            <div class="plan-icon-container" style="font-size: 2.1rem; line-height: 1;">👷‍♂️</div>
+                            <div class="plan-icon-container" style="font-size: 2rem; line-height: 1;">👷‍♂️</div>
                             <div class="plan-item-lbl">Microempresas</div>
-                            <div class="plan-item-val" style="color: #38BDF8; font-size: 0.85rem;">En Campo</div>
+                            <div class="plan-item-val" style="color: #38BDF8; font-size: 0.95rem;" id="card-micro-count">En Campo</div>
+                            <div class="plan-item-sub" id="sub-micro-count">Grupos activos</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="frentes-container">
-                <div class="frente-card">
-                    <div class="frente-badge">Frente 1</div>
-                    <div class="frente-content">
-                        <div class="frente-item"><img src="icono-retro.png" class="frente-icon-img" alt="Retro" onerror="this.style.display='none';"><strong>Retroexcavadora</strong></div>
-                        <div class="frente-item"><img src="icono-volquete.png" class="frente-icon-img" alt="Volquete" onerror="this.style.display='none';"><strong>Volquete</strong></div>
-                        <div class="frente-item"><span style="font-size: 1.3rem;">👷‍♂️</span><strong>Microempresa</strong></div>
+            <!-- SECCIÓN 4: REEMPLAZO DE FRENTE 1/2/3 POR "FRENTES DE TRABAJO EN LA RVE" -->
+            <div class="frentes-rve-card">
+                <div class="frentes-rve-title">
+                    <span>🚜 FRENTES DE TRABAJO EN LA RVE</span>
+                    <span style="font-size: 0.75rem; color: #9CA3AF; font-weight: normal;">Rendimiento operativo de maquinaria y grupos de conservación</span>
+                </div>
+
+                <!-- Fila 1: Retroexcavadora -->
+                <div class="frente-fila">
+                    <div class="frente-icon-box">
+                        <img src="icono-retro.png" alt="Retroexcavadora" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <span style="display:none; font-size: 1.8rem;">🚜</span>
+                    </div>
+                    <div class="frente-stats-inline">
+                        <div class="frente-stat-block">
+                            <span style="color: #10B981; font-weight: bold; font-size: 0.95rem; text-transform: uppercase;">Retroexcavadora</span>
+                            <span class="frente-stat-title">Tarifa: <b id="frente-retro-tarifa">$32.40/h</b></span>
+                        </div>
+                        <div class="frente-stat-block">
+                            <span class="frente-stat-title">Horas Ejecutadas / Plan</span>
+                            <span class="frente-stat-num" id="frente-retro-horas">— / 793 h</span>
+                            <div class="progress-bar-container" style="height: 10px; margin-top: 3px;">
+                                <div class="progress-bar-fill-abs" id="frente-retro-bar" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                        <div class="frente-stat-block">
+                            <span class="frente-stat-title">Costo Ejecutado</span>
+                            <span class="frente-stat-num" style="color: #34D399;" id="frente-retro-costo">—</span>
+                        </div>
+                        <div class="frente-stat-block">
+                            <span class="frente-stat-title">Grupos Intervenidos</span>
+                            <span class="frente-stat-num" style="color: #60A5FA;" id="frente-retro-grupos">—</span>
+                        </div>
+                        <div class="frente-stat-block">
+                            <span class="frente-stat-title">Rendimiento Hora Máquina</span>
+                            <span class="frente-stat-num" style="color: #FBBF24;" id="frente-retro-rend">— alc/h</span>
+                        </div>
                     </div>
                 </div>
-                <div class="frente-card">
-                    <div class="frente-badge" style="background: #3B82F6;">Frente 2</div>
-                    <div class="frente-content">
-                        <div class="frente-item"><img src="icono-retro.png" class="frente-icon-img" alt="Retro" onerror="this.style.display='none';"><strong>Retroexcavadora</strong></div>
-                        <div class="frente-item"><img src="icono-volquete.png" class="frente-icon-img" alt="Volquete" onerror="this.style.display='none';"><strong>Volquete</strong></div>
-                        <div class="frente-item"><span style="font-size: 1.3rem;">👷‍♂️</span><strong>Microempresa</strong></div>
+
+                <!-- Fila 2: Volquete -->
+                <div class="frente-fila">
+                    <div class="frente-icon-box">
+                        <img src="icono-volquete.png" alt="Volquete" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <span style="display:none; font-size: 1.8rem;">🚛</span>
+                    </div>
+                    <div class="frente-stats-inline">
+                        <div class="frente-stat-block">
+                            <span style="color: #3B82F6; font-weight: bold; font-size: 0.95rem; text-transform: uppercase;">Volquete</span>
+                            <span class="frente-stat-title">Tarifa: <b id="frente-volq-tarifa">$25.38/h</b></span>
+                        </div>
+                        <div class="frente-stat-block">
+                            <span class="frente-stat-title">Horas Ejecutadas / Plan</span>
+                            <span class="frente-stat-num" id="frente-volq-horas">— / 303 h</span>
+                            <div class="progress-bar-container" style="height: 10px; margin-top: 3px;">
+                                <div class="progress-bar-fill-alc" id="frente-volq-bar" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                        <div class="frente-stat-block">
+                            <span class="frente-stat-title">Costo Ejecutado</span>
+                            <span class="frente-stat-num" style="color: #34D399;" id="frente-volq-costo">—</span>
+                        </div>
+                        <div class="frente-stat-block">
+                            <span class="frente-stat-title">Grupos Intervenidos</span>
+                            <span class="frente-stat-num" style="color: #60A5FA;" id="frente-volq-grupos">—</span>
+                        </div>
+                        <div class="frente-stat-block">
+                            <span class="frente-stat-title">Rendimiento Hora Máquina</span>
+                            <span class="frente-stat-num" style="color: #FBBF24;" id="frente-volq-rend">— alc/h</span>
+                        </div>
                     </div>
                 </div>
-                <div class="frente-card">
-                    <div class="frente-badge" style="background: #F59E0B;">Frente 3</div>
-                    <div class="frente-content">
-                        <div class="frente-item"><img src="icono-excavadora.png" class="frente-icon-img" alt="Excavadora" onerror="this.style.display='none';"><strong>Excavadora</strong></div>
-                        <div class="frente-item"><img src="icono-volquete.png" class="frente-icon-img" alt="Volquete" onerror="this.style.display='none';"><strong>Volquete</strong></div>
-                        <div class="frente-item"><span style="font-size: 1.3rem;">👷‍♂️</span><strong>Microempresa</strong></div>
+
+                <!-- Fila 3: Excavadora -->
+                <div class="frente-fila">
+                    <div class="frente-icon-box">
+                        <img src="icono-excavadora.png" alt="Excavadora" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <span style="display:none; font-size: 1.8rem;">🏗️</span>
+                    </div>
+                    <div class="frente-stats-inline">
+                        <div class="frente-stat-block">
+                            <span style="color: #F59E0B; font-weight: bold; font-size: 0.95rem; text-transform: uppercase;">Excavadora</span>
+                            <span class="frente-stat-title">Tarifa: <b id="frente-exc-tarifa">$41.93/h</b></span>
+                        </div>
+                        <div class="frente-stat-block">
+                            <span class="frente-stat-title">Horas Ejecutadas / Plan</span>
+                            <span class="frente-stat-num" id="frente-exc-horas">— / 177 h</span>
+                            <div class="progress-bar-container" style="height: 10px; margin-top: 3px;">
+                                <div class="progress-bar-fill-abs" id="frente-exc-bar" style="width: 0%; background-color: #F59E0B;"></div>
+                            </div>
+                        </div>
+                        <div class="frente-stat-block">
+                            <span class="frente-stat-title">Costo Ejecutado</span>
+                            <span class="frente-stat-num" style="color: #34D399;" id="frente-exc-costo">—</span>
+                        </div>
+                        <div class="frente-stat-block">
+                            <span class="frente-stat-title">Grupos Intervenidos</span>
+                            <span class="frente-stat-num" style="color: #60A5FA;" id="frente-exc-grupos">—</span>
+                        </div>
+                        <div class="frente-stat-block">
+                            <span class="frente-stat-title">Rendimiento Hora Máquina</span>
+                            <span class="frente-stat-num" style="color: #FBBF24;" id="frente-exc-rend">— alc/h</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fila 4: Microempresas -->
+                <div class="frente-fila">
+                    <div class="frente-icon-box" style="font-size: 1.9rem;">
+                        👷
+                    </div>
+                    <div class="frente-stats-inline">
+                        <div class="frente-stat-block">
+                            <span style="color: #38BDF8; font-weight: bold; font-size: 0.95rem; text-transform: uppercase;">Microempresas</span>
+                            <span class="frente-stat-title">Conservación Vial RVE</span>
+                        </div>
+                        <div class="frente-stat-block">
+                            <span class="frente-stat-title">Número de Grupos</span>
+                            <span class="frente-stat-num" id="frente-mic-grupos">—</span>
+                        </div>
+                        <div class="frente-stat-block">
+                            <span class="frente-stat-title">Alcantarillas Limpiadas (Drive)</span>
+                            <span class="frente-stat-num" style="color: #60A5FA;" id="frente-mic-alc">—</span>
+                        </div>
+                        <div class="frente-stat-block">
+                            <span class="frente-stat-title">Días Gestión Prom. / Rend. Prom.</span>
+                            <span class="frente-stat-num" style="color: #34D399;" id="frente-mic-rend">— días | — alc/día</span>
+                        </div>
+                        <div class="frente-stat-block">
+                            <span class="frente-stat-title">Costo Prom. por Alcantarilla</span>
+                            <span class="frente-stat-num" style="color: #FBBF24;" id="frente-mic-costo">—</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
+            <!-- SECCIÓN 5: AVANCE DE MANTENIMIENTO Y PREVENCIÓN (DOS METAS Y PROYECCIÓN) -->
             <div class="panel-avance-general">
-                <div class="avance-text-container">
-                    <h3 style="margin-top: 0; color: #10B981; border-bottom: none; padding-bottom: 0; font-size: 1.3rem; letter-spacing: 1px;">📈 AVANCE DE MANTENIMIENTO Y PREVENCIÓN</h3>
-                    <p style="color: #9CA3AF; font-size: 0.95rem; margin-top: 10px; line-height: 1.5;">Avance de desazolve focalizado estrictamente en los puntos de atención prioritaria detectados en la Red Vial Estatal.</p>
-                    <div style="font-size: 3.5rem; font-weight: 800; color: #ffffff; text-shadow: 0 4px 6px rgba(0,0,0,0.4); margin: 15px 0; letter-spacing: -1px;" id="kpi-avance-txt">0% Completado</div>
-                    <div style="font-size: 1.2rem; color: #D1D5DB; background: rgba(31, 41, 55, 0.8); padding: 10px 20px; border-radius: 8px; display: inline-block; border: 1px solid #374151;">Puntos Críticos Atendidos: <strong id="kpi-limpias-num" style="color:#60A5FA; font-size: 1.5rem; margin-left: 8px;">0</strong> <span id="kpi-criticas-total" style="color: #6B7280; font-size: 1.1rem;">/ 188</span></div>
-                </div>
-                <div class="avance-chart-container">
-                    <canvas id="graficoAvancePie"></canvas>
-                    <div style="position: absolute; text-align: center; pointer-events: none; margin-top: 5px;">
-                        <span style="display: block; font-size: 0.9rem; color: #9CA3AF; font-weight: bold; letter-spacing: 2px;">AVANCE</span>
-                        <strong id="kpi-avance-centro" style="font-size: 3.2rem; color: #10B981; line-height: 1; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">0%</strong>
+                <div class="avance-dual-grid">
+                    
+                    <!-- SUB-PANEL IZQUIERDO: META ESPECÍFICA (188 PUNTOS PRIORITARIOS - INTACTO) -->
+                    <div class="avance-card-half">
+                        <div class="avance-card-inner">
+                            <div class="avance-text-container">
+                                <h3 style="margin-top: 0; color: #10B981; border-bottom: none; padding-bottom: 0; font-size: 1.15rem; letter-spacing: 1px;">📈 META ESPECÍFICA — PUNTOS PRIORITARIOS</h3>
+                                <p style="color: #9CA3AF; font-size: 0.88rem; margin-top: 8px; line-height: 1.4;">Avance de desazolve focalizado estrictamente en los puntos de atención prioritaria detectados en la Red Vial Estatal (Registro Diario).</p>
+                                <div style="font-size: 2.8rem; font-weight: 800; color: #ffffff; text-shadow: 0 4px 6px rgba(0,0,0,0.4); margin: 12px 0; letter-spacing: -1px;" id="kpi-avance-txt">0% Completado</div>
+                                <div style="font-size: 1.05rem; color: #D1D5DB; background: rgba(31, 41, 55, 0.8); padding: 8px 16px; border-radius: 8px; display: inline-block; border: 1px solid #374151;">Puntos Críticos Atendidos: <strong id="kpi-limpias-num" style="color:#60A5FA; font-size: 1.35rem; margin-left: 6px;">0</strong> <span id="kpi-criticas-total" style="color: #6B7280; font-size: 1rem;">/ 188</span></div>
+                            </div>
+                            <div class="avance-chart-container">
+                                <canvas id="graficoAvancePie"></canvas>
+                                <div style="position: absolute; text-align: center; pointer-events: none; margin-top: 5px;">
+                                    <span style="display: block; font-size: 0.8rem; color: #9CA3AF; font-weight: bold; letter-spacing: 2px;">AVANCE</span>
+                                    <strong id="kpi-avance-centro" style="font-size: 2.5rem; color: #10B981; line-height: 1; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">0%</strong>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
+                    <!-- SUB-PANEL DERECHO: META GLOBAL RVE LOJA (3,473 ALCANTARILLAS + PROYECCIÓN) -->
+                    <div class="avance-card-half">
+                        <div class="avance-card-inner">
+                            <div class="avance-text-container">
+                                <h3 style="margin-top: 0; color: #3B82F6; border-bottom: none; padding-bottom: 0; font-size: 1.15rem; letter-spacing: 1px;">🌐 META GLOBAL – RVE LOJA (<span id="lbl-meta-global-titulo">3,473</span> ALCANTARILLAS)</h3>
+                                <p style="color: #9CA3AF; font-size: 0.88rem; margin-top: 8px; line-height: 1.4;">Suma del máximo registrado por microempresa entre el Registro Diario y Google Drive (sin duplicar alcantarillas).</p>
+                                <div style="font-size: 2.8rem; font-weight: 800; color: #ffffff; text-shadow: 0 4px 6px rgba(0,0,0,0.4); margin: 12px 0; letter-spacing: -1px;" id="kpi-global-txt">0% Completado</div>
+                                <div style="font-size: 1.05rem; color: #D1D5DB; background: rgba(31, 41, 55, 0.8); padding: 8px 16px; border-radius: 8px; display: inline-block; border: 1px solid #374151;">Alcantarillas Limpias RVE: <strong id="kpi-global-num" style="color:#34D399; font-size: 1.35rem; margin-left: 6px;">0</strong> <span id="kpi-global-total" style="color: #6B7280; font-size: 1rem;">/ 3,473</span></div>
+                            </div>
+                            <div class="avance-chart-container">
+                                <canvas id="graficoGlobalPie"></canvas>
+                                <div style="position: absolute; text-align: center; pointer-events: none; margin-top: 5px;">
+                                    <span style="display: block; font-size: 0.8rem; color: #9CA3AF; font-weight: bold; letter-spacing: 2px;">GLOBAL</span>
+                                    <strong id="kpi-global-centro" style="font-size: 2.5rem; color: #3B82F6; line-height: 1; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">0%</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bloque de Proyección debajo de la Meta Global -->
+                        <div class="avance-proyeccion-box">
+                            <div class="proy-grid">
+                                <div>
+                                    <div class="proy-item-lbl">Rendimiento Actual</div>
+                                    <div class="proy-item-val" id="proy-rend-actual">— alc/día</div>
+                                </div>
+                                <div>
+                                    <div class="proy-item-lbl">Días Restantes Est.</div>
+                                    <div class="proy-item-val" style="color: #FBBF24;" id="proy-dias-rest">— días</div>
+                                </div>
+                                <div>
+                                    <div class="proy-item-lbl">Fecha Estimada Término</div>
+                                    <div class="proy-item-val" style="color: #34D399;" id="proy-fecha-fin">—</div>
+                                </div>
+                            </div>
+                            <div class="proy-comp">
+                                <span>🚜 Con Maquinaria (Prom. Drive): <b style="color: #10B981;" id="proy-con-maq">—</b></span>
+                                <span>👷 Sin Maquinaria (Prom. Drive): <b style="color: #F59E0B;" id="proy-sin-maq">—</b></span>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -314,16 +531,22 @@
                 </div>
             </div>
 
+            <!-- SECCIÓN 6: TABLA DE MONITORIZACIÓN PÚBLICA CON COLUMNAS DEL DRIVE A LA DERECHA -->
             <div class="panel">
                 <h3>📋 Despliegue Técnico y Progreso en Campo</h3>
                 
                 <div class="sync-status">
                     <div>
                         <div style="font-size: 0.95rem; font-weight: bold; color: #F3F4F6;">Monitorización Pública en Tiempo Real</div>
-                        <div style="font-size: 0.8rem; color: #9CA3AF;">Los datos se actualizan diariamente desde la plataforma central del Ministerio.</div>
+                        <div style="font-size: 0.8rem; color: #9CA3AF;">El Registro Diario manda en el avance espacial; Google Drive complementa costos, maquinaria y tiempos.</div>
                     </div>
-                    <div class="status-badge" id="conexion-estado">
-                        <div class="status-dot"></div> Conectando a Servidor...
+                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                        <div class="status-badge" id="conexion-estado">
+                            <div class="status-dot"></div> Conectando a Servidor...
+                        </div>
+                        <div class="status-badge" id="conexion-drive-badge" style="background: rgba(156, 163, 175, 0.15); color: #9CA3AF; border: 1px solid #4B5563;">
+                            Drive: Esperando...
+                        </div>
                     </div>
                 </div>
 
@@ -349,14 +572,20 @@
                                 <th>Ruta o Vía Asignada</th>
                                 <th style="text-align: center;">Puntos Prioritarios</th>
                                 <th style="text-align: center;">Puntos Limpios</th>
-                                <th style="width: 140px;">Avance General</th>
+                                <th style="width: 130px;">Avance General</th>
                                 <th style="text-align: center;">Kilómetros Atendidos</th>
-                                <th style="width: 140px;">Progreso del Tramo</th>
-                                <th style="text-align: center; width: 130px; background-color: #1F2937;">Rendimiento Diario</th>
+                                <th style="width: 130px;">Progreso del Tramo</th>
+                                <th style="text-align: center; width: 125px; background-color: #1F2937;">Rendimiento Diario</th>
+                                <!-- Columnas nuevas agregadas a la derecha (Google Drive) -->
+                                <th style="text-align: center; background-color: #172033; color: #60A5FA;">Inicio–Fin Gestión</th>
+                                <th style="text-align: center; background-color: #172033; color: #60A5FA;">Alcantarillas Drive</th>
+                                <th style="text-align: center; background-color: #172033; color: #60A5FA;">Horas Máquina</th>
+                                <th style="text-align: center; background-color: #172033; color: #60A5FA;">Rend. Con / Sin Maq.</th>
+                                <th style="text-align: center; background-color: #172033; color: #60A5FA;">Costo / Alc. (USD)</th>
                             </tr>
                         </thead>
                         <tbody id="tabla-rendimiento-body">
-                            <tr><td colspan="8" style="text-align: center; color: #9CA3AF; padding: 20px;">Esperando carga de datos...</td></tr>
+                            <tr><td colspan="13" style="text-align: center; color: #9CA3AF; padding: 20px;">Esperando carga de datos...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -455,6 +684,130 @@
     <script src="rutasRVE.js"></script>
 
     <script>
+        // =========================================================================
+        // 1) NUEVAS FUENTES (GOOGLE SHEETS PUBLICADO COMO CSV) Y PARÁMETROS BASE
+        // =========================================================================
+        const URL_GRUPOS      = "PEGAR_ENLACE_CSV_GRUPOS";
+        const URL_ALC_DRIVE   = "PEGAR_ENLACE_CSV_ALCANTARILLAS";
+        const URL_PARAMETROS  = "PEGAR_ENLACE_CSV_PARAMETROS";
+
+        // Valores por defecto si la hoja Parámetros falla o no está configurada
+        const PLAN = {
+            horas: { retro: 793, excavadora: 177, volquete: 303 },
+            tarifa: { retro: 32.40, excavadora: 41.93, volquete: 25.38 },
+            inversionMaquinaria: 40804.95,
+            metaPrioritaria: 188,
+            metaGlobal: 3473,
+            plazoMeses: 3.5
+        };
+
+        // =========================================================================
+        // 2) EMPAREJAMIENTO DE MICROEMPRESAS ENTRE REGISTRO DIARIO Y DRIVE
+        // =========================================================================
+        const ALIAS_MICROS = {
+            "PALTENSES": "PALTENSES",
+            "BUENAVISTA": "BUENAVISTA",
+            "AMERICA": "AMERICA",
+            "CANAVERALES": "CANAVERALES",
+            "DIVINO NINO": "DIVINO NINO",
+            "NINO DE POTRERILLOS": "NINO DE POTRERILLOS",
+            "SABIANGO": "SABIANGO",
+            "PUYANGO": "PUYANGO"
+        };
+
+        // Normaliza el nombre de la microempresa quitando tildes, prefijos y espacios extra
+        function normalizarMicro(nombre) {
+            if (!nombre) return '';
+            let s = String(nombre).toUpperCase()
+                .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                .trim().replace(/\s+/g, ' ');
+            
+            const prefijos = ["CONSERVACION VIAL ", "MICROEMPRESA ", "LOS ", "LAS "];
+            let cambio = true;
+            while (cambio) {
+                cambio = false;
+                for (let p of prefijos) {
+                    if (s.startsWith(p)) {
+                        s = s.substring(p.length).trim();
+                        cambio = true;
+                    }
+                }
+            }
+            return ALIAS_MICROS[s] || s;
+        }
+
+        // Normaliza encabezados de columnas CSV/Excel (trim, mayúsculas, sin tildes)
+        function normalizarEncabezado(texto) {
+            if (!texto) return '';
+            return String(texto).toUpperCase()
+                .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                .trim().replace(/\s+/g, ' ');
+        }
+
+        // Parsea números que pueden venir con "$", separador de miles o coma decimal
+        function parseNumeroDrive(val) {
+            if (val === null || val === undefined || val === '') return 0;
+            if (typeof val === 'number') return isNaN(val) ? 0 : val;
+            let s = String(val).replace(/[^0-9.,-]/g, '').trim();
+            if (!s) return 0;
+
+            let lastComma = s.lastIndexOf(',');
+            let lastDot = s.lastIndexOf('.');
+            if (lastComma > -1 && lastDot > -1) {
+                if (lastComma > lastDot) {
+                    s = s.replace(/\./g, '').replace(',', '.');
+                } else {
+                    s = s.replace(/,/g, '');
+                }
+            } else if (lastComma > -1) {
+                let parts = s.split(',');
+                if (parts.length === 2 && parts[1].length <= 2) {
+                    s = s.replace(',', '.');
+                } else {
+                    s = s.replace(/,/g, '');
+                }
+            }
+            let num = parseFloat(s);
+            return isNaN(num) ? 0 : num;
+        }
+
+        // Parsea fechas en formato dd/mm/aaaa o ISO a objeto Date
+        function parseFechaDrive(val) {
+            if (!val) return null;
+            if (val instanceof Date && !isNaN(val)) return val;
+            let s = String(val).trim();
+            let m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
+            if (m) {
+                let d = parseInt(m[1], 10);
+                let mo = parseInt(m[2], 10) - 1;
+                let y = parseInt(m[3], 10);
+                if (y < 100) y += 2000;
+                let dt = new Date(y, mo, d);
+                return isNaN(dt.getTime()) ? null : dt;
+            }
+            let dt = new Date(s);
+            return isNaN(dt.getTime()) ? null : dt;
+        }
+
+        function formatearFechaCorta(dt) {
+            if (!dt || isNaN(dt.getTime())) return '—';
+            let d = String(dt.getDate()).padStart(2, '0');
+            let m = String(dt.getMonth() + 1).padStart(2, '0');
+            let y = dt.getFullYear();
+            return `${d}/${m}/${y}`;
+        }
+
+        function formatearMoneda(val) {
+            let n = Number(val) || 0;
+            return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        // Estado global para almacenar información proveniente de Drive y Registro Diario
+        let driveConectado = false;
+        let driveGruposPorMicro = {};
+        let driveAlcantarillasRows = [];
+        let ultimoResumenRegistroDiario = {};
+
         let setAlcantarillasAtendidas = new Set();
 
         function ejecutarDiagnosticoConsola() {
@@ -484,6 +837,7 @@
         };
 
         let avancePieChart;
+        let globalPieChart;
 
         function switchTab(tabName) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -514,6 +868,9 @@
             return parseFloat(val) || 0;
         }
 
+        // =========================================================================
+        // PROCESAMIENTO DEL REGISTRO DIARIO (MANTIENE TODA SU LÓGICA INTACTA)
+        // =========================================================================
         function procesarDatosExcel(excelRows) {
             let resumenEmpresas = {};
             setAlcantarillasAtendidas.clear(); 
@@ -583,8 +940,18 @@
                 }
             });
 
+            ultimoResumenRegistroDiario = resumenEmpresas;
             document.getElementById('contador-atendidas').innerText = setAlcantarillasAtendidas.size;
 
+            renderizarTablaMonitorizacion(resumenEmpresas);
+            actualizarSeccionMetaGlobalYProyeccion();
+            actualizarMapaGeografico();
+        }
+
+        // =========================================================================
+        // 6) RENDERIZADO DE LA TABLA DE MONITORIZACIÓN PÚBLICA (DIARIO + DRIVE)
+        // =========================================================================
+        function renderizarTablaMonitorizacion(resumenEmpresas) {
             let tbody = document.getElementById('tabla-rendimiento-body');
             tbody.innerHTML = '';
 
@@ -601,9 +968,34 @@
                     porcAbs = Math.min(100, Math.round((info.kmTrabajados / info.distanciaTotalKm) * 100));
                 }
 
-                let totalDias = info.fechasUnicas.size > 0 ? info.fechasUnicas.size : 1;
+                // Cruce con Drive mediante normalizarMicro()
+                let claveMicro = normalizarMicro(info.nombreReal);
+                let datosDrive = driveConectado ? driveGruposPorMicro[claveMicro] : null;
+
+                // Si existe DIAS DE GESTION en el Drive, se usa para el texto y cálculo de días lab.; si no, mantiene cálculo actual
+                let totalDias = (datosDrive && datosDrive.diasGestion > 0)
+                    ? datosDrive.diasGestion
+                    : (info.fechasUnicas.size > 0 ? info.fechasUnicas.size : 1);
+
                 let promAlcDiario = (info.limpiadasAcumuladas / totalDias).toFixed(1);
                 let promKmDiario = (info.kmTrabajados / totalDias).toFixed(2);
+
+                // Columnas adicionales de Drive (muestran "—" si no hay coincidencia o sin conexión)
+                let colFechas = '—';
+                let colAlcDrive = '—';
+                let colHorasMaq = '—';
+                let colRendMaq = '—';
+                let colCostoAlc = '—';
+
+                if (datosDrive) {
+                    let iniTxt = datosDrive.inicioGestionRaw || '—';
+                    let finTxt = datosDrive.finGestionRaw || '—';
+                    colFechas = `${iniTxt}<br><span style="color:#9CA3AF; font-size:0.72rem;">al ${finTxt}</span>`;
+                    colAlcDrive = `<strong style="color:#34D399; font-size:1rem;">${datosDrive.alcLimpiadas}</strong>`;
+                    colHorasMaq = `${datosDrive.horasMaqTotales.toFixed(1)} h`;
+                    colRendMaq = `<span style="color:#10B981; font-weight:bold;">${datosDrive.rendConMaq.toFixed(2)}</span> / <span style="color:#F59E0B; font-weight:bold;">${datosDrive.rendSinMaq.toFixed(2)}</span> <span style="font-size:0.65rem; color:#9CA3AF;">alc/día</span>`;
+                    colCostoAlc = `<strong style="color:#FBBF24;">${formatearMoneda(datosDrive.costoPorAlc)}</strong>`;
+                }
 
                 let tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -632,24 +1024,448 @@
                             <div class="progress-text">${porcAbs}%</div>
                         </div>
                     </td>
-                    <td style="text-align: center; font-size: 0.85rem; background: rgba(39, 48, 63, 0.4); border-radius: 0 6px 6px 0;">
+                    <td style="text-align: center; font-size: 0.85rem; background: rgba(39, 48, 63, 0.4);">
                         <div style="color: #60A5FA; font-weight: bold; margin-bottom: 4px;">${promAlcDiario} <span style="font-size: 0.65rem; color: #9CA3AF;">Alc/día</span></div>
                         <div style="color: #34D399; font-weight: bold;">${promKmDiario} <span style="font-size: 0.65rem; color: #9CA3AF;">Km/día</span></div>
                         <div style="font-size: 0.65rem; color: #FBBF24; margin-top: 4px; border-top: 1px solid #4B5563; padding-top: 2px;">en ${totalDias} días lab.</div>
                     </td>
+                    <td style="text-align: center; font-size: 0.78rem;">${colFechas}</td>
+                    <td style="text-align: center;">${colAlcDrive}</td>
+                    <td style="text-align: center; font-weight: bold; color: #D1D5DB;">${colHorasMaq}</td>
+                    <td style="text-align: center; font-size: 0.8rem;">${colRendMaq}</td>
+                    <td style="text-align: center;">${colCostoAlc}</td>
                 `;
                 tbody.appendChild(tr);
             }
             if(Object.keys(resumenEmpresas).length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #9CA3AF; padding: 20px;">No se encontraron datos válidos en el archivo Excel.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="13" style="text-align: center; color: #9CA3AF; padding: 20px;">No se encontraron datos válidos en el archivo Excel.</td></tr>`;
+            }
+        }
+
+        // =========================================================================
+        // LECTURA Y PROCESAMIENTO DE LAS 3 HOJAS CSV DE GOOGLE DRIVE
+        // =========================================================================
+        async function leerCSVDesdeDrive(url) {
+            if (!url || url.startsWith("PEGAR_ENLACE_CSV")) {
+                throw new Error("URL de Drive no configurada");
+            }
+            const resp = await fetch(url);
+            if (!resp.ok) throw new Error("Error HTTP " + resp.status);
+            const texto = await resp.text();
+            const wb = XLSX.read(texto, { type: "string" });
+            const firstSheet = wb.SheetNames[0];
+            const rawRows = XLSX.utils.sheet_to_json(wb.Sheets[firstSheet], { defval: "" });
+            return rawRows.map(r => {
+                let norm = {};
+                for (let k in r) {
+                    norm[normalizarEncabezado(k)] = r[k];
+                }
+                return norm;
+            });
+        }
+
+        function procesarHojaParametros(rows) {
+            if (!rows || rows.length === 0) return;
+            rows.forEach(r => {
+                let textoFila = Object.values(r).map(v => normalizarEncabezado(v)).join(" ");
+                let nums = Object.values(r).map(v => parseNumeroDrive(v)).filter(n => n > 0);
+                if (nums.length === 0) return;
+
+                if (textoFila.includes("RETROEXCAVADORA")) {
+                    if (nums[0]) PLAN.horas.retro = nums[0];
+                    if (nums[1]) PLAN.tarifa.retro = nums[1];
+                } else if (textoFila.includes("EXCAVADORA")) {
+                    if (nums[0]) PLAN.horas.excavadora = nums[0];
+                    if (nums[1]) PLAN.tarifa.excavadora = nums[1];
+                } else if (textoFila.includes("VOLQUETE")) {
+                    if (nums[0]) PLAN.horas.volquete = nums[0];
+                    if (nums[1]) PLAN.tarifa.volquete = nums[1];
+                } else if (textoFila.includes("META PRIORITARIA")) {
+                    PLAN.metaPrioritaria = nums[0];
+                } else if (textoFila.includes("META GLOBAL")) {
+                    PLAN.metaGlobal = nums[0];
+                } else if (textoFila.includes("PLAZO")) {
+                    PLAN.plazoMeses = nums[0];
+                } else if (textoFila.includes("TOTAL") || textoFila.includes("INVERSION")) {
+                    let mayor = Math.max(...nums);
+                    if (mayor > 2000) PLAN.inversionMaquinaria = mayor;
+                }
+            });
+        }
+
+        function obtenerValorColumna(row, posiblesNombres) {
+            for (let nombre of posiblesNombres) {
+                if (row[nombre] !== undefined && row[nombre] !== "") return row[nombre];
+            }
+            for (let k in row) {
+                for (let nombre of posiblesNombres) {
+                    if (k.includes(nombre) && row[k] !== "") return row[k];
+                }
+            }
+            return "";
+        }
+
+        function procesarHojaGrupos(rows) {
+            driveGruposPorMicro = {};
+            rows.forEach(r => {
+                let rawNombre = obtenerValorColumna(r, ["GRUPO / MICROEMPRESA", "GRUPO", "MICROEMPRESA"]);
+                let nombreLimpio = String(rawNombre || "").trim();
+                // Ignorar filas sin "Grupo / Microempresa" o filas de totales
+                if (!nombreLimpio || normalizarEncabezado(nombreLimpio) === "TOTAL") return;
+
+                let clave = normalizarMicro(nombreLimpio);
+                if (!clave) return;
+
+                let iniRaw = String(obtenerValorColumna(r, ["INICIO DE GESTION", "INICIO GESTION"]) || "").trim();
+                let finRaw = String(obtenerValorColumna(r, ["FIN DE GESTION", "FIN GESTION"]) || "").trim();
+
+                driveGruposPorMicro[clave] = {
+                    nombreOriginal: nombreLimpio,
+                    tramo: String(obtenerValorColumna(r, ["TRAMO"]) || "").trim(),
+                    inicioGestionRaw: iniRaw,
+                    finGestionRaw: finRaw,
+                    inicioGestionDate: parseFechaDrive(iniRaw),
+                    finGestionDate: parseFechaDrive(finRaw),
+                    montoCobrado: parseNumeroDrive(obtenerValorColumna(r, ["MONTO TOTAL COBRADO (USD)", "MONTO TOTAL COBRADO"])),
+                    intervinoMaq: String(obtenerValorColumna(r, ["¿INTERVINO MAQUINARIA? (SI/NO)", "INTERVINO MAQUINARIA"]) || "").toUpperCase(),
+                    horasRetro: parseNumeroDrive(obtenerValorColumna(r, ["HORAS RETROEXCAVADORA (H)", "HORAS RETROEXCAVADORA"])),
+                    horasExc: parseNumeroDrive(obtenerValorColumna(r, ["HORAS EXCAVADORA (H)", "HORAS EXCAVADORA"])),
+                    horasVolq: parseNumeroDrive(obtenerValorColumna(r, ["HORAS VOLQUETE (H)", "HORAS VOLQUETE"])),
+                    diasGestion: parseNumeroDrive(obtenerValorColumna(r, ["DIAS DE GESTION"])),
+                    diasConMaq: parseNumeroDrive(obtenerValorColumna(r, ["DIAS CON MAQUINARIA"])),
+                    diasSinMaq: parseNumeroDrive(obtenerValorColumna(r, ["DIAS SIN MAQUINARIA"])),
+                    alcLimpiadas: parseNumeroDrive(obtenerValorColumna(r, ["N° ALCANTARILLAS LIMPIADAS", "ALCANTARILLAS LIMPIADAS"])),
+                    alcConMaq: parseNumeroDrive(obtenerValorColumna(r, ["ALCANTARILLAS CON MAQUINARIA"])),
+                    alcSinMaq: parseNumeroDrive(obtenerValorColumna(r, ["ALCANTARILLAS SIN MAQUINARIA"])),
+                    rendGlobal: parseNumeroDrive(obtenerValorColumna(r, ["RENDIMIENTO GLOBAL (ALC/DIA)", "RENDIMIENTO GLOBAL"])),
+                    rendConMaq: parseNumeroDrive(obtenerValorColumna(r, ["RENDIMIENTO CON MAQUINARIA (ALC/DIA)", "RENDIMIENTO CON MAQUINARIA"])),
+                    rendSinMaq: parseNumeroDrive(obtenerValorColumna(r, ["RENDIMIENTO SIN MAQUINARIA (ALC/DIA)", "RENDIMIENTO SIN MAQUINARIA"])),
+                    horasMaqTotales: parseNumeroDrive(obtenerValorColumna(r, ["HORAS MAQUINA TOTALES (H)", "HORAS MAQUINA TOTALES"])),
+                    rendPorHoraMaq: parseNumeroDrive(obtenerValorColumna(r, ["RENDIMIENTO POR HORA MAQUINA (ALC/H)", "RENDIMIENTO POR HORA MAQUINA"])),
+                    costoMaquinaria: parseNumeroDrive(obtenerValorColumna(r, ["COSTO MAQUINARIA (USD)", "COSTO MAQUINARIA"])),
+                    costoTotal: parseNumeroDrive(obtenerValorColumna(r, ["COSTO TOTAL (USD)", "COSTO TOTAL"])),
+                    costoPorAlc: parseNumeroDrive(obtenerValorColumna(r, ["COSTO POR ALCANTARILLA (USD/ALC)", "COSTO POR ALCANTARILLA"])),
+                    costoPorDia: parseNumeroDrive(obtenerValorColumna(r, ["COSTO POR DIA (USD/DIA)", "COSTO POR DIA"])),
+                    observaciones: String(obtenerValorColumna(r, ["OBSERVACIONES"]) || "").trim()
+                };
+            });
+        }
+
+        async function cargarDatosDrive() {
+            const pill = document.getElementById('drive-status-pill');
+            const badge = document.getElementById('conexion-drive-badge');
+            try {
+                // Intentamos leer Parámetros (si falla, se usan los valores de PLAN por defecto)
+                try {
+                    const paramRows = await leerCSVDesdeDrive(URL_PARAMETROS);
+                    procesarHojaParametros(paramRows);
+                } catch (eParam) {
+                    console.warn("Usando PLAN por defecto (Parámetros Drive no disponible):", eParam.message);
+                }
+
+                // Leemos la hoja principal de Grupos (obligatoria para considerar Drive conectado)
+                const gruposRows = await leerCSVDesdeDrive(URL_GRUPOS);
+                procesarHojaGrupos(gruposRows);
+
+                // Leemos opcionalmente la hoja de Alcantarillas del Drive (solo abscisas, no se usa para el mapa)
+                try {
+                    driveAlcantarillasRows = await leerCSVDesdeDrive(URL_ALC_DRIVE);
+                } catch (eAlc) {
+                    driveAlcantarillasRows = [];
+                }
+
+                if (Object.keys(driveGruposPorMicro).length === 0) {
+                    throw new Error("Hoja Grupos sin registros válidos");
+                }
+
+                driveConectado = true;
+                pill.innerHTML = '✅ Sincronizado con Google Drive';
+                pill.style.background = 'rgba(16, 185, 129, 0.2)';
+                pill.style.color = '#10B981';
+                pill.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+
+                badge.innerHTML = 'Drive: Conectado';
+                badge.style.background = 'rgba(16, 185, 129, 0.2)';
+                badge.style.color = '#10B981';
+                badge.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+
+                actualizarTarjetasResumenCapacidad();
+                actualizarTarjetaFrentesRVE();
+                actualizarSeccionMetaGlobalYProyeccion();
+                if (Object.keys(ultimoResumenRegistroDiario).length > 0) {
+                    renderizarTablaMonitorizacion(ultimoResumenRegistroDiario);
+                }
+            } catch (err) {
+                console.warn("Sin conexión con Drive:", err.message);
+                driveConectado = false;
+                pill.innerHTML = '⚠️ Sin conexión con Drive';
+                pill.style.background = 'rgba(245, 158, 11, 0.15)';
+                pill.style.color = '#F59E0B';
+                pill.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+
+                badge.innerHTML = 'Sin conexión con Drive';
+                badge.style.background = 'rgba(245, 158, 11, 0.15)';
+                badge.style.color = '#F59E0B';
+                badge.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+
+                actualizarSeccionMetaGlobalYProyeccion();
+            }
+        }
+
+        // =========================================================================
+        // 3) ACTUALIZACIÓN DEL "RESUMEN DE INVERSIÓN Y CAPACIDAD OPERATIVA"
+        // =========================================================================
+        function actualizarTarjetasResumenCapacidad() {
+            const lista = Object.values(driveGruposPorMicro);
+            if (!driveConectado || lista.length === 0) return;
+
+            let sumaCostoMaq = 0;
+            let sumaMontoMicro = 0;
+            let hRetro = 0, hExc = 0, hVolq = 0;
+            let minFechaInicio = null;
+
+            lista.forEach(g => {
+                sumaCostoMaq += g.costoMaquinaria;
+                sumaMontoMicro += g.montoCobrado;
+                hRetro += g.horasRetro;
+                hExc += g.horasExc;
+                hVolq += g.horasVolq;
+                if (g.inicioGestionDate) {
+                    if (!minFechaInicio || g.inicioGestionDate < minFechaInicio) {
+                        minFechaInicio = g.inicioGestionDate;
+                    }
+                }
+            });
+
+            // 1. Inversión en maquinaria
+            let pctInvMaq = PLAN.inversionMaquinaria > 0 ? Math.min(100, Math.round((sumaCostoMaq / PLAN.inversionMaquinaria) * 100)) : 0;
+            document.getElementById('card-inv-maq').innerHTML = `${formatearMoneda(sumaCostoMaq)} <span class="plan-item-sub">/ ${formatearMoneda(PLAN.inversionMaquinaria)}</span>`;
+            document.getElementById('bar-inv-maq').style.width = `${pctInvMaq}%`;
+            document.getElementById('pct-inv-maq').innerText = `${pctInvMaq}% ejecutado`;
+
+            // 2. Inversión microempresas (tarjeta aparte, sin barra)
+            document.getElementById('card-inv-micro').innerText = formatearMoneda(sumaMontoMicro);
+
+            // 3. Plazo de ejecución (meses transcurridos desde menor INICIO DE GESTION hasta hoy)
+            let mesesTrans = 0;
+            if (minFechaInicio) {
+                let hoy = new Date();
+                let diffDias = Math.max(0, (hoy - minFechaInicio) / (1000 * 60 * 60 * 24));
+                mesesTrans = diffDias / 30.4375;
+            }
+            let pctPlazo = PLAN.plazoMeses > 0 ? Math.min(100, Math.round((mesesTrans / PLAN.plazoMeses) * 100)) : 0;
+            document.getElementById('card-plazo').innerHTML = `${mesesTrans.toFixed(1)} <span class="plan-item-sub">/ ${PLAN.plazoMeses} Meses</span>`;
+            document.getElementById('bar-plazo').style.width = `${pctPlazo}%`;
+            document.getElementById('pct-plazo').innerText = `${pctPlazo}% del plazo`;
+
+            // 4. Horas globales y por tipo de máquina
+            let planHorasTotal = PLAN.horas.retro + PLAN.horas.excavadora + PLAN.horas.volquete;
+            let ejecHorasTotal = hRetro + hExc + hVolq;
+            let pctHGlobal = planHorasTotal > 0 ? Math.min(100, Math.round((ejecHorasTotal / planHorasTotal) * 100)) : 0;
+            document.getElementById('card-h-global').innerHTML = `${ejecHorasTotal.toFixed(1)} h <span class="plan-item-sub">/ ${planHorasTotal.toLocaleString()} h</span>`;
+            document.getElementById('bar-h-global').style.width = `${pctHGlobal}%`;
+            document.getElementById('pct-h-global').innerText = `${pctHGlobal}%`;
+
+            let pctRetro = PLAN.horas.retro > 0 ? Math.min(100, Math.round((hRetro / PLAN.horas.retro) * 100)) : 0;
+            document.getElementById('card-h-retro').innerHTML = `${hRetro.toFixed(1)} h <span class="plan-item-sub">/ ${PLAN.horas.retro} h</span>`;
+            document.getElementById('bar-h-retro').style.width = `${pctRetro}%`;
+            document.getElementById('pct-h-retro').innerText = `${pctRetro}%`;
+
+            let pctExc = PLAN.horas.excavadora > 0 ? Math.min(100, Math.round((hExc / PLAN.horas.excavadora) * 100)) : 0;
+            document.getElementById('card-h-exc').innerHTML = `${hExc.toFixed(1)} h <span class="plan-item-sub">/ ${PLAN.horas.excavadora} h</span>`;
+            document.getElementById('bar-h-exc').style.width = `${pctExc}%`;
+            document.getElementById('pct-h-exc').innerText = `${pctExc}%`;
+
+            let pctVolq = PLAN.horas.volquete > 0 ? Math.min(100, Math.round((hVolq / PLAN.horas.volquete) * 100)) : 0;
+            document.getElementById('card-h-volq').innerHTML = `${hVolq.toFixed(1)} h <span class="plan-item-sub">/ ${PLAN.horas.volquete} h</span>`;
+            document.getElementById('bar-h-volq').style.width = `${pctVolq}%`;
+            document.getElementById('pct-h-volq').innerText = `${pctVolq}%`;
+
+            // 5. Microempresas con datos en Drive
+            document.getElementById('card-micro-count').innerText = `${lista.length} Grupos`;
+            document.getElementById('sub-micro-count').innerText = `Con datos en Drive`;
+        }
+
+        // =========================================================================
+        // 4) ACTUALIZACIÓN DE LA TARJETA "FRENTES DE TRABAJO EN LA RVE" (4 FILAS)
+        // =========================================================================
+        function actualizarTarjetaFrentesRVE() {
+            const lista = Object.values(driveGruposPorMicro);
+            if (!driveConectado || lista.length === 0) return;
+
+            // Función auxiliar para calcular estadísticas de cada tipo de maquinaria
+            function calcMaquina(propHoras, planH, tarifaH) {
+                let horas = 0;
+                let grupos = 0;
+                let alcConMaqSuma = 0;
+                lista.forEach(g => {
+                    let h = g[propHoras] || 0;
+                    if (h > 0) {
+                        horas += h;
+                        grupos++;
+                        alcConMaqSuma += g.alcConMaq;
+                    }
+                });
+                let pct = planH > 0 ? Math.min(100, Math.round((horas / planH) * 100)) : 0;
+                let costo = horas * tarifaH;
+                let rendHora = horas > 0 ? (alcConMaqSuma / horas) : 0;
+                return { horas, planH, pct, costo, grupos, rendHora };
             }
 
-            actualizarMapaGeografico();
+            // Fila 1: Retroexcavadora
+            let stRetro = calcMaquina('horasRetro', PLAN.horas.retro, PLAN.tarifa.retro);
+            document.getElementById('frente-retro-tarifa').innerText = `$${PLAN.tarifa.retro.toFixed(2)}/h`;
+            document.getElementById('frente-retro-horas').innerText = `${stRetro.horas.toFixed(1)} / ${stRetro.planH} h (${stRetro.pct}%)`;
+            document.getElementById('frente-retro-bar').style.width = `${stRetro.pct}%`;
+            document.getElementById('frente-retro-costo').innerText = formatearMoneda(stRetro.costo);
+            document.getElementById('frente-retro-grupos').innerText = `${stRetro.grupos} grupos`;
+            document.getElementById('frente-retro-rend').innerText = `${stRetro.rendHora.toFixed(2)} alc/h`;
+
+            // Fila 2: Volquete
+            let stVolq = calcMaquina('horasVolq', PLAN.horas.volquete, PLAN.tarifa.volquete);
+            document.getElementById('frente-volq-tarifa').innerText = `$${PLAN.tarifa.volquete.toFixed(2)}/h`;
+            document.getElementById('frente-volq-horas').innerText = `${stVolq.horas.toFixed(1)} / ${stVolq.planH} h (${stVolq.pct}%)`;
+            document.getElementById('frente-volq-bar').style.width = `${stVolq.pct}%`;
+            document.getElementById('frente-volq-costo').innerText = formatearMoneda(stVolq.costo);
+            document.getElementById('frente-volq-grupos').innerText = `${stVolq.grupos} grupos`;
+            document.getElementById('frente-volq-rend').innerText = `${stVolq.rendHora.toFixed(2)} alc/h`;
+
+            // Fila 3: Excavadora
+            let stExc = calcMaquina('horasExc', PLAN.horas.excavadora, PLAN.tarifa.excavadora);
+            document.getElementById('frente-exc-tarifa').innerText = `$${PLAN.tarifa.excavadora.toFixed(2)}/h`;
+            document.getElementById('frente-exc-horas').innerText = `${stExc.horas.toFixed(1)} / ${stExc.planH} h (${stExc.pct}%)`;
+            document.getElementById('frente-exc-bar').style.width = `${stExc.pct}%`;
+            document.getElementById('frente-exc-costo').innerText = formatearMoneda(stExc.costo);
+            document.getElementById('frente-exc-grupos').innerText = `${stExc.grupos} grupos`;
+            document.getElementById('frente-exc-rend').innerText = `${stExc.rendHora.toFixed(2)} alc/h`;
+
+            // Fila 4: Microempresas
+            let nGrupos = lista.length;
+            let totalAlcDrive = 0;
+            let sumaDias = 0;
+            let sumaRendGlobal = 0;
+            let sumaCostoAlc = 0, contCostoAlc = 0;
+
+            lista.forEach(g => {
+                totalAlcDrive += g.alcLimpiadas;
+                sumaDias += g.diasGestion;
+                sumaRendGlobal += g.rendGlobal;
+                if (g.costoPorAlc > 0) {
+                    sumaCostoAlc += g.costoPorAlc;
+                    contCostoAlc++;
+                }
+            });
+
+            let promDias = nGrupos > 0 ? (sumaDias / nGrupos) : 0;
+            let promRend = nGrupos > 0 ? (sumaRendGlobal / nGrupos) : 0;
+            let promCostoAlc = contCostoAlc > 0 ? (sumaCostoAlc / contCostoAlc) : 0;
+
+            document.getElementById('frente-mic-grupos').innerText = `${nGrupos} grupos`;
+            document.getElementById('frente-mic-alc').innerText = `${totalAlcDrive.toLocaleString()} alc.`;
+            document.getElementById('frente-mic-rend').innerText = `${promDias.toFixed(1)} días \vert{} ${promRend.toFixed(2)} alc/día`;
+            document.getElementById('frente-mic-costo').innerText = formatearMoneda(promCostoAlc);
+        }
+
+        // =========================================================================
+        // 5) SECCIÓN "AVANCE": META GLOBAL (3,473 ALCANTARILLAS) Y PROYECCIÓN
+        // =========================================================================
+        function actualizarSeccionMetaGlobalYProyeccion() {
+            const metaGlobal = PLAN.metaGlobal || 3473;
+            document.getElementById('lbl-meta-global-titulo').innerText = metaGlobal.toLocaleString();
+            document.getElementById('kpi-global-total').innerText = '/ ' + metaGlobal.toLocaleString();
+
+            // Unimos todas las microempresas (tanto del Registro Diario como del Drive) usando normalizarMicro
+            let mapaDiarioPorMicro = {};
+            for (let k in ultimoResumenRegistroDiario) {
+                let item = ultimoResumenRegistroDiario[k];
+                let norm = normalizarMicro(item.nombreReal);
+                mapaDiarioPorMicro[norm] = (mapaDiarioPorMicro[norm] || 0) + (item.limpiadasAcumuladas || 0);
+            }
+
+            let todasLasClaves = new Set([
+                ...Object.keys(mapaDiarioPorMicro),
+                ...(driveConectado ? Object.keys(driveGruposPorMicro) : [])
+            ]);
+
+            // Avance por micro = MÁXIMO entre (limpias en Registro Diario) y (N° ALCANTARILLAS LIMPIADAS del Drive)
+            let avanceGlobal = 0;
+            todasLasClaves.forEach(clave => {
+                let limDiario = mapaDiarioPorMicro[clave] || 0;
+                let limDrive = (driveConectado && driveGruposPorMicro[clave]) ? (driveGruposPorMicro[clave].alcLimpiadas || 0) : 0;
+                avanceGlobal += Math.max(limDiario, limDrive);
+            });
+
+            let pendientesGlobal = Math.max(0, metaGlobal - avanceGlobal);
+            let pctGlobal = metaGlobal > 0 ? Math.min(100, Math.round((avanceGlobal / metaGlobal) * 100)) : 0;
+
+            document.getElementById('kpi-global-txt').innerText = `${pctGlobal}% Completado`;
+            document.getElementById('kpi-global-centro').innerText = `${pctGlobal}%`;
+            document.getElementById('kpi-global-num').innerText = avanceGlobal.toLocaleString();
+
+            if (globalPieChart) {
+                globalPieChart.data.datasets[0].data = [avanceGlobal, pendientesGlobal];
+                globalPieChart.update();
+            }
+
+            // Cálculo de proyección debajo de la meta global
+            let listaDrive = driveConectado ? Object.values(driveGruposPorMicro) : [];
+            let minFechaInicio = null;
+            let sumaRendConMaq = 0, contConMaq = 0;
+            let sumaRendSinMaq = 0, contSinMaq = 0;
+
+            listaDrive.forEach(g => {
+                if (g.inicioGestionDate) {
+                    if (!minFechaInicio || g.inicioGestionDate < minFechaInicio) {
+                        minFechaInicio = g.inicioGestionDate;
+                    }
+                }
+                if (g.rendConMaq > 0) {
+                    sumaRendConMaq += g.rendConMaq;
+                    contConMaq++;
+                }
+                if (g.rendSinMaq > 0) {
+                    sumaRendSinMaq += g.rendSinMaq;
+                    contSinMaq++;
+                }
+            });
+
+            if (minFechaInicio && avanceGlobal > 0) {
+                let hoy = new Date();
+                let diasTranscurridos = Math.max(1, Math.floor((hoy - minFechaInicio) / (1000 * 60 * 60 * 24)));
+                let rendActual = avanceGlobal / diasTranscurridos;
+                let diasRestantes = rendActual > 0 ? Math.ceil(pendientesGlobal / rendActual) : 0;
+                let fechaEstimada = new Date(hoy.getTime() + diasRestantes * 24 * 60 * 60 * 1000);
+
+                document.getElementById('proy-rend-actual').innerText = `${rendActual.toFixed(2)} alc/día`;
+                document.getElementById('proy-dias-rest').innerText = `${diasRestantes.toLocaleString()} días`;
+                document.getElementById('proy-fecha-fin').innerText = formatearFechaCorta(fechaEstimada);
+            } else {
+                document.getElementById('proy-rend-actual').innerText = '— alc/día';
+                document.getElementById('proy-dias-rest').innerText = '— días';
+                document.getElementById('proy-fecha-fin').innerText = '—';
+            }
+
+            if (contConMaq > 0) {
+                let promConMaq = sumaRendConMaq / contConMaq;
+                let diasConMaq = Math.ceil(pendientesGlobal / promConMaq);
+                document.getElementById('proy-con-maq').innerText = `${promConMaq.toFixed(2)} alc/día (~${diasConMaq.toLocaleString()} días rest.)`;
+            } else {
+                document.getElementById('proy-con-maq').innerText = '—';
+            }
+
+            if (contSinMaq > 0) {
+                let promSinMaq = sumaRendSinMaq / contSinMaq;
+                let diasSinMaq = Math.ceil(pendientesGlobal / promSinMaq);
+                document.getElementById('proy-sin-maq').innerText = `${promSinMaq.toFixed(2)} alc/día (~${diasSinMaq.toLocaleString()} días rest.)`;
+            } else {
+                document.getElementById('proy-sin-maq').innerText = '—';
+            }
         }
 
         window.addEventListener('DOMContentLoaded', () => {
             ejecutarDiagnosticoConsola();
 
+            // Donut Meta Específica (188 prioritarias)
             const ctxPie = document.getElementById('graficoAvancePie').getContext('2d');
             avancePieChart = new Chart(ctxPie, {
                 type: 'doughnut',
@@ -671,6 +1487,32 @@
                     }
                 }
             });
+
+            // Donut Meta Global (3,473 alcantarillas RVE Loja)
+            const ctxGlobal = document.getElementById('graficoGlobalPie').getContext('2d');
+            globalPieChart = new Chart(ctxGlobal, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Alcantarillas Limpias RVE', 'Pendientes RVE'],
+                    datasets: [{
+                        data: [0, PLAN.metaGlobal],
+                        backgroundColor: ['#3B82F6', '#374151'],
+                        borderWidth: 0,
+                        cutout: '80%'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        datalabels: { display: false }
+                    }
+                }
+            });
+
+            // Iniciar carga complementaria desde Google Drive (CSV)
+            cargarDatosDrive();
 
             fetch('Reporte_Diario.xlsx?v=' + new Date().getTime())
                 .then(response => {
@@ -698,7 +1540,7 @@
                     badge.style.color = '#F59E0B';
                     badge.style.border = '1px solid rgba(245, 158, 11, 0.4)';
                     
-                    document.getElementById('tabla-rendimiento-body').innerHTML = `<tr><td colspan="8" style="text-align: center; color: #F59E0B; padding: 20px;"><b>No se detectó el archivo en el servidor.</b><br>Por favor, usa el botón de "Carga Local" abajo para leer el archivo desde tu computadora.</td></tr>`;
+                    document.getElementById('tabla-rendimiento-body').innerHTML = `<tr><td colspan="13" style="text-align: center; color: #F59E0B; padding: 20px;"><b>No se detectó el archivo en el servidor.</b><br>Por favor, usa el botón de "Carga Local" abajo para leer el archivo desde tu computadora.</td></tr>`;
                     document.getElementById('manual-upload-container').style.display = 'flex';
                     
                     actualizarMapaGeografico();
@@ -826,8 +1668,7 @@
                                     <h4 style="margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 1px solid #374151; color: #F59E0B; font-size: 1.15rem; font-weight: bold;">${tramoRaw}</h4>
                                     <div style="margin-bottom: 8px; font-size: 0.95rem;"><b style="color: #ffffff;">ID Único:</b> <span style="color: #9CA3AF;">${idUnico}</span></div>
                                     <div style="margin-bottom: 8px; font-size: 0.95rem;"><b style="color: #ffffff;">Código:</b> <span style="color: #9CA3AF;">${codigoD}</span></div>
-                                    ${badgeEstadoLimpias}
-                                    ${esAtendida ? `
+                                    ${badgeEstadoLimpias}${esAtendida ? `
                                     <div style="display:flex; gap:15px; margin-top:15px;">
                                         <div style="flex:1; text-align:center;">
                                             <div style="font-size:0.8rem; color:#EF4444; font-weight:bold; margin-bottom:5px;">ANTES</div>
