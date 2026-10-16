@@ -119,22 +119,107 @@
         .modal-maquinaria-close:hover { color: #FFFFFF; background: #374151; }
         .modal-maquinaria-body { overflow-y: auto; }
 
-        /* ESTILOS SECCIÓN AVANCE: DOS METAS (PRIORITARIA Y GLOBAL) + CUADRO INFERIOR */
-        .avance-dual-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; width: 100%; }
-        .avance-card-half { background: rgba(17, 24, 39, 0.45); border: 1px solid #374151; border-radius: 10px; padding: 22px; display: flex; flex-direction: column; justify-content: space-between; }
-        .avance-card-inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; }
-        .avance-proyeccion-box { margin-top: 18px; background: #1F2937; border: 1px solid #374151; border-left: 4px solid #3B82F6; border-radius: 8px; padding: 14px 16px; font-size: 0.83rem; color: #D1D5DB; }
-        .proy-grid-dos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .proy-item-lbl { font-size: 0.7rem; color: #9CA3AF; text-transform: uppercase; }
-        .proy-item-val { font-size: 1.05rem; font-weight: bold; color: #60A5FA; margin-top: 4px; }
+        /* ESTILOS MEJORADOS SECCIÓN AVANCE: PANELES DE ANCHO COMPLETO (COMO IMAGEN 2) */
+        .panel-avance-general {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 35px;
+            border-left: 6px solid #10B981;
+            padding: 38px 50px;
+            background: linear-gradient(145deg, #1F2937 0%, #171F2E 100%);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.35), inset 0 0 20px rgba(0,0,0,0.2);
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-sizing: border-box;
+        }
+        .panel-avance-global {
+            border-left-color: #3B82F6;
+        }
+        .avance-text-container {
+            flex: 1;
+            min-width: 320px;
+            max-width: 780px;
+        }
+        .avance-titulo-banner {
+            margin: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .avance-desc-banner {
+            color: #9CA3AF;
+            font-size: 0.98rem;
+            margin-top: 10px;
+            margin-bottom: 0;
+            line-height: 1.55;
+        }
+        .avance-big-pct {
+            font-size: 3.6rem;
+            font-weight: 800;
+            color: #ffffff;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.45);
+            margin: 16px 0 20px 0;
+            letter-spacing: -1px;
+            white-space: nowrap;
+            line-height: 1.05;
+        }
+        .avance-badges-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 14px;
+        }
+        .avance-pill-box {
+            font-size: 1.1rem;
+            color: #D1D5DB;
+            background: rgba(31, 41, 55, 0.85);
+            padding: 11px 22px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid #374151;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .avance-chart-container {
+            width: 260px;
+            height: 260px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.35));
+            flex-shrink: 0;
+            margin: 0 auto;
+        }
 
         .panel { background-color: #1F2937; border-radius: 12px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); margin-bottom: 25px; }
         .panel h3 { margin-top: 0; border-bottom: 1px solid #374151; padding-bottom: 12px; color: #9CA3AF; font-size: 1.1rem; text-transform: uppercase; }
 
         table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.82rem; }
         th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid #374151; }
-        th { background-color: #111827; color: #FBBF24; text-transform: uppercase; font-size: 0.72rem; }
+        th { background-color: #111827; color: #FBBF24; text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.3px; }
         tr:hover { background-color: #27303F; }
+
+        /* Estilo elegante y sobrio para los valores de Costo / Alc. en la tabla */
+        .costo-alc-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 6px;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #A7F3D0;
+            font-weight: 700;
+            font-size: 0.88rem;
+            letter-spacing: 0.2px;
+        }
 
         .progress-bar-container { background-color: #374151; border-radius: 6px; height: 16px; width: 100%; position: relative; overflow: hidden; margin-top: 5px; }
         .progress-bar-fill-alc { background-color: #3B82F6; height: 100%; width: 0%; transition: width 0.6s ease-in-out; }
@@ -151,19 +236,10 @@
         .upload-btn:hover { background-color: #2563EB; }
         #excel-file { display: none; }
 
-        .panel-avance-general {
-            display: flex; flex-wrap: wrap; justify-content: space-around; align-items: stretch; gap: 25px; 
-            border-left: 6px solid #10B981; padding: 30px 25px; background: linear-gradient(145deg, #1F2937 0%, #171F2E 100%); 
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.2); border-radius: 12px; margin-bottom: 25px;
-        }
-        .avance-text-container { flex: 1; min-width: 240px; }
-        .avance-chart-container { width: 220px; height: 220px; position: relative; display: flex; justify-content: center; align-items: center; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.3)); margin: 0 auto; }
-
         @media (max-width: 1250px) {
             .map-header-overlay { flex-wrap: wrap; gap: 10px; }
             .overlay-total { border-right: none; padding-right: 0; margin: 0 auto; }
             .overlay-stats { width: 100%; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 5px; }
-            .avance-dual-grid { grid-template-columns: 1fr; }
         }
 
         @media (max-width: 850px) {
@@ -181,7 +257,8 @@
             .plan-box-left, .plan-box-right { grid-template-columns: 1fr 1fr; }
             .frente-fila { flex-direction: column; align-items: flex-start; }
             .frente-stats-inline { grid-template-columns: 1fr; width: 100%; gap: 10px; }
-            .proy-grid-dos { grid-template-columns: 1fr; }
+            .panel-avance-general { padding: 25px 20px; }
+            .avance-big-pct { font-size: 2.6rem; }
         }
         /* ESTILOS DEL BUSCADOR */
         .search-container { 
@@ -424,62 +501,57 @@
                 </div>
             </div>
 
-            <!-- SECCIÓN 3: AVANCE DE MANTENIMIENTO Y PREVENCIÓN -->
+            <!-- SECCIÓN 3A: PANEL DE ANCHO COMPLETO — META ESPECÍFICA (PUNTOS PRIORITARIOS) -->
             <div class="panel-avance-general">
-                <div class="avance-dual-grid">
-                    
-                    <!-- SUB-PANEL IZQUIERDO: META ESPECÍFICA (188 PUNTOS PRIORITARIOS) -->
-                    <div class="avance-card-half">
-                        <div class="avance-card-inner">
-                            <div class="avance-text-container">
-                                <h3 style="margin-top: 0; color: #10B981; border-bottom: none; padding-bottom: 0; font-size: 1.15rem; letter-spacing: 1px;">📈 META ESPECÍFICA — PUNTOS PRIORITARIOS</h3>
-                                <p style="color: #9CA3AF; font-size: 0.88rem; margin-top: 8px; line-height: 1.4;">Avance de desazolve focalizado estrictamente en los puntos de atención prioritaria detectados en la Red Vial Estatal.</p>
-                                <div style="font-size: 2.8rem; font-weight: 800; color: #ffffff; text-shadow: 0 4px 6px rgba(0,0,0,0.4); margin: 12px 0; letter-spacing: -1px;" id="kpi-avance-txt">0% Completado</div>
-                                <div style="font-size: 1.05rem; color: #D1D5DB; background: rgba(31, 41, 55, 0.8); padding: 8px 16px; border-radius: 8px; display: inline-block; border: 1px solid #374151;">Puntos Críticos Atendidos: <strong id="kpi-limpias-num" style="color:#60A5FA; font-size: 1.35rem; margin-left: 6px;">0</strong> <span id="kpi-criticas-total" style="color: #6B7280; font-size: 1rem;">/ 188</span></div>
+                <div class="avance-text-container">
+                    <h3 class="avance-titulo-banner" style="color: #10B981;">📈 META ESPECÍFICA — PUNTOS PRIORITARIOS</h3>
+                    <p class="avance-desc-banner">Avance de desazolve focalizado estrictamente en los puntos de atención prioritaria detectados en la Red Vial Estatal.</p>
+                    <div class="avance-big-pct" id="kpi-avance-txt">0% Completado</div>
+                    <div class="avance-badges-row">
+                        <div class="avance-pill-box">
+                            Puntos Críticos Atendidos: <strong id="kpi-limpias-num" style="color:#60A5FA; font-size: 1.45rem; margin-left: 8px;">0</strong> <span id="kpi-criticas-total" style="color: #6B7280; font-size: 1.05rem; margin-left: 4px;">/ 188</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="avance-chart-container">
+                    <canvas id="graficoAvancePie"></canvas>
+                    <div style="position: absolute; text-align: center; pointer-events: none; margin-top: 5px;">
+                        <span style="display: block; font-size: 0.85rem; color: #9CA3AF; font-weight: bold; letter-spacing: 2px;">AVANCE</span>
+                        <strong id="kpi-avance-centro" style="font-size: 3rem; color: #10B981; line-height: 1; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">0%</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 3B: PANEL DE ANCHO COMPLETO — META GLOBAL RVE LOJA (3,473 ALCANTARILLAS) -->
+            <div class="panel-avance-general panel-avance-global">
+                <div class="avance-text-container">
+                    <h3 class="avance-titulo-banner" style="color: #60A5FA;">🌐 META GLOBAL — RED VIAL ESTATAL LOJA (<span id="lbl-meta-global-titulo">3,473</span> ALCANTARILLAS)</h3>
+                    <p id="desc-meta-global" class="avance-desc-banner">Avance integral de limpieza y desazolve ejecutado de forma articulada entre las microempresas de conservación vial y la maquinaria institucional en toda la Red Vial Estatal de Loja.</p>
+                    <div class="avance-big-pct" id="kpi-global-txt">0% Completado</div>
+                    <div class="avance-badges-row">
+                        <div class="avance-pill-box">
+                            Alcantarillas Limpias RVE: <strong id="kpi-global-num" style="color:#34D399; font-size: 1.45rem; margin-left: 8px;">0</strong> <span id="kpi-global-total" style="color: #6B7280; font-size: 1.05rem; margin-left: 4px;">/ 3,473</span>
+                        </div>
+                        <div class="avance-pill-box" style="border-left: 3px solid #3B82F6;">
+                            <div>
+                                <div style="font-size: 0.68rem; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.5px;">Rendimiento Actualizado</div>
+                                <div style="font-size: 1.05rem; font-weight: bold; color: #60A5FA; margin-top: 2px;" id="proy-rend-actual">— alc/día</div>
                             </div>
-                            <div class="avance-chart-container">
-                                <canvas id="graficoAvancePie"></canvas>
-                                <div style="position: absolute; text-align: center; pointer-events: none; margin-top: 5px;">
-                                    <span style="display: block; font-size: 0.8rem; color: #9CA3AF; font-weight: bold; letter-spacing: 2px;">AVANCE</span>
-                                    <strong id="kpi-avance-centro" style="font-size: 2.5rem; color: #10B981; line-height: 1; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">0%</strong>
-                                </div>
+                        </div>
+                        <div class="avance-pill-box" style="border-left: 3px solid #10B981;">
+                            <div>
+                                <div style="font-size: 0.68rem; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.5px;">Tiempo Transcurrido</div>
+                                <div style="font-size: 1.05rem; font-weight: bold; color: #34D399; margin-top: 2px;" id="proy-tiempo-trans">— días laborables</div>
                             </div>
                         </div>
                     </div>
-
-                    <!-- SUB-PANEL DERECHO: META GLOBAL RVE LOJA (3,473 ALCANTARILLAS) -->
-                    <div class="avance-card-half">
-                        <div class="avance-card-inner">
-                            <div class="avance-text-container">
-                                <h3 style="margin-top: 0; color: #3B82F6; border-bottom: none; padding-bottom: 0; font-size: 1.15rem; letter-spacing: 1px;">🌐 META GLOBAL – RVE LOJA (<span id="lbl-meta-global-titulo">3,473</span> ALCANTARILLAS)</h3>
-                                <p id="desc-meta-global" style="color: #9CA3AF; font-size: 0.88rem; margin-top: 8px; line-height: 1.4;">El trabajo conjunto de las microempresas y la logística de la Zonal 7 con su maquinaria ha permitido limpiar el 0.0% de las 3,473 alcantarillas de la Red Vial Estatal.</p>
-                                <div style="font-size: 2.8rem; font-weight: 800; color: #ffffff; text-shadow: 0 4px 6px rgba(0,0,0,0.4); margin: 12px 0; letter-spacing: -1px;" id="kpi-global-txt">0.0% Completado</div>
-                                <div style="font-size: 1.05rem; color: #D1D5DB; background: rgba(31, 41, 55, 0.8); padding: 8px 16px; border-radius: 8px; display: inline-block; border: 1px solid #374151;">Alcantarillas Limpias RVE: <strong id="kpi-global-num" style="color:#34D399; font-size: 1.35rem; margin-left: 6px;">0</strong> <span id="kpi-global-total" style="color: #6B7280; font-size: 1rem;">/ 3,473</span></div>
-                            </div>
-                            <div class="avance-chart-container">
-                                <canvas id="graficoGlobalPie"></canvas>
-                                <div style="position: absolute; text-align: center; pointer-events: none; margin-top: 5px;">
-                                    <span style="display: block; font-size: 0.8rem; color: #9CA3AF; font-weight: bold; letter-spacing: 2px;">GLOBAL</span>
-                                    <strong id="kpi-global-centro" style="font-size: 2.5rem; color: #3B82F6; line-height: 1; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">0.0%</strong>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Cuadro inferior con SOLO dos datos -->
-                        <div class="avance-proyeccion-box">
-                            <div class="proy-grid-dos">
-                                <div>
-                                    <div class="proy-item-lbl">Rendimiento Actualizado</div>
-                                    <div class="proy-item-val" id="proy-rend-actual">— alc/día</div>
-                                </div>
-                                <div>
-                                    <div class="proy-item-lbl">Tiempo Transcurrido</div>
-                                    <div class="proy-item-val" style="color: #34D399;" id="proy-tiempo-trans">— días laborables</div>
-                                </div>
-                            </div>
-                        </div>
+                </div>
+                <div class="avance-chart-container">
+                    <canvas id="graficoGlobalPie"></canvas>
+                    <div style="position: absolute; text-align: center; pointer-events: none; margin-top: 5px;">
+                        <span style="display: block; font-size: 0.85rem; color: #9CA3AF; font-weight: bold; letter-spacing: 2px;">GLOBAL</span>
+                        <strong id="kpi-global-centro" style="font-size: 3rem; color: #3B82F6; line-height: 1; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">0%</strong>
                     </div>
-
                 </div>
             </div>
 
@@ -548,8 +620,8 @@
                                 <th style="width: 130px;">Avance General</th>
                                 <th style="text-align: center;">Kilómetros Atendidos</th>
                                 <th style="width: 130px;">Progreso del Tramo</th>
-                                <th style="text-align: center; width: 125px; background-color: #1F2937;">Rendimiento Diario</th>
-                                <th style="text-align: center; background-color: #172033; color: #60A5FA;">Costo / Alc. (USD)</th>
+                                <th style="text-align: center; width: 125px;">Rendimiento Diario</th>
+                                <th style="text-align: center;">Costo / Alc. (USD)</th>
                             </tr>
                         </thead>
                         <tbody id="tabla-rendimiento-body">
@@ -677,9 +749,9 @@
         // =========================================================================
         // ENLACES CSV Y PARÁMETROS BASE
         // =========================================================================
-        const URL_GRUPOS      = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRiKv8b_aqemoRDqnpObERya2YtDl1YPLZreGuFoN3ODItctXixCAitBxUS-cDNN43Ef8v85hANnaXz/pub?gid=715116195&single=true&output=csv";
-        const URL_ALC_DRIVE   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRiKv8b_aqemoRDqnpObERya2YtDl1YPLZreGuFoN3ODItctXixCAitBxUS-cDNN43Ef8v85hANnaXz/pub?gid=353357775&single=true&output=csv";
-        const URL_PARAMETROS  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRiKv8b_aqemoRDqnpObERya2YtDl1YPLZreGuFoN3ODItctXixCAitBxUS-cDNN43Ef8v85hANnaXz/pub?gid=134870880&single=true&output=csv";
+        const URL_GRUPOS      = "PEGAR_ENLACE_CSV_GRUPOS";
+        const URL_ALC_DRIVE   = "PEGAR_ENLACE_CSV_ALCANTARILLAS";
+        const URL_PARAMETROS  = "PEGAR_ENLACE_CSV_PARAMETROS";
 
         const PLAN = {
             horas: { retro: 793, excavadora: 177, volquete: 303 },
@@ -732,13 +804,12 @@
         }
 
         // =========================================================================
-        // 0) CORRECCIÓN DE LECTURA DE DATOS (CONFIGURACIÓN REGIONAL ECUADOR)
+        // LECTURA DE DATOS (CONFIGURACIÓN REGIONAL ECUADOR)
         // =========================================================================
         function parseNumeroDrive(val) {
             if (val === null || val === undefined || val === '') return 0;
             if (typeof val === 'number') return isNaN(val) ? 0 : val;
 
-            // Quitar "$", "USD", espacios y cualquier símbolo ajeno a dígitos, punto, coma o signo menos
             let s = String(val)
                 .replace(/USD/gi, '')
                 .replace(/\$/g, '')
@@ -752,7 +823,6 @@
             let tieneComa = s.indexOf(',') > -1;
 
             if (tienePunto && tieneComa) {
-                // El último símbolo es el decimal y el otro se elimina
                 let lastDot = s.lastIndexOf('.');
                 let lastComma = s.lastIndexOf(',');
                 if (lastComma > lastDot) {
@@ -761,7 +831,6 @@
                     s = s.replace(/,/g, '');
                 }
             } else if (tieneComa) {
-                // Si solo tiene "," -> es decimal (ej. "$ 3,5" -> 3.5)
                 let partes = s.split(',');
                 if (partes.length > 2) {
                     let dec = partes.pop();
@@ -770,7 +839,6 @@
                     s = s.replace(',', '.');
                 }
             } else if (tienePunto) {
-                // Si solo tiene "." y después vienen exactamente 3 dígitos (ej. "1.273" o "36.934") -> separador de miles
                 if (/^-?\d{1,3}(\.\d{3})+$/.test(s)) {
                     s = s.replace(/\./g, '');
                 }
@@ -784,7 +852,6 @@
             if (val === null || val === undefined || val === '') return null;
             if (val instanceof Date && !isNaN(val.getTime())) return val;
 
-            // Si llega un número (serial de Excel), convertir con fecha = 30/12/1899 + n días
             if (typeof val === 'number' && !isNaN(val) && val > 1000) {
                 let baseExcel = new Date(1899, 11, 30);
                 baseExcel.setDate(baseExcel.getDate() + Math.floor(val));
@@ -794,7 +861,6 @@
             let s = String(val).trim();
             if (!s) return null;
 
-            // Si llega como texto numérico serial de Excel (ej. "46303")
             if (/^\d{4,6}([.,]\d+)?$/.test(s)) {
                 let serial = parseFloat(s.replace(',', '.'));
                 if (serial > 1000 && serial < 100000) {
@@ -804,7 +870,6 @@
                 }
             }
 
-            // "d/m/aaaa" siempre como DÍA/MES/AÑO
             let m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
             if (m) {
                 let dia = parseInt(m[1], 10);
@@ -815,7 +880,6 @@
                 return isNaN(dt.getTime()) ? null : dt;
             }
 
-            // Formato ISO aaaa-mm-dd
             let mIso = s.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
             if (mIso) {
                 let anio = parseInt(mIso[1], 10);
@@ -987,7 +1051,7 @@
         }
 
         // =========================================================================
-        // 4) RENDERIZADO DE TABLA "DESPLIEGUE TÉCNICO Y PROGRESO EN CAMPO"
+        // RENDERIZADO DE TABLA "DESPLIEGUE TÉCNICO Y PROGRESO EN CAMPO"
         // =========================================================================
         function renderizarTablaMonitorizacion(resumenEmpresas) {
             let tbody = document.getElementById('tabla-rendimiento-body');
@@ -1006,18 +1070,17 @@
                     porcAbs = Math.min(100, Math.round((info.kmTrabajados / info.distanciaTotalKm) * 100));
                 }
 
-                // Rendimiento diario calculado SOLO con las fechas únicas de esa microempresa en Reporte_Diario.xlsx
                 let totalDias = info.fechasUnicas.size > 0 ? info.fechasUnicas.size : 1;
                 let promAlcDiario = (info.limpiadasAcumuladas / totalDias).toFixed(1);
                 let promKmDiario = (info.kmTrabajados / totalDias).toFixed(2);
 
-                // Emparejar Costo / Alc. (USD) por microempresa con normalizarMicro()
+                // Emparejar Costo / Alc. (USD) con insignia esmeralda sobria y elegante
                 let claveMicro = normalizarMicro(info.nombreReal);
                 let datosComp = driveConectado ? driveGruposPorMicro[claveMicro] : null;
-                let colCostoAlc = '—';
+                let colCostoAlc = '<span style="color: #6B7280;">—</span>';
 
                 if (datosComp && datosComp.costoPorAlc > 0) {
-                    colCostoAlc = `<strong style="color:#FBBF24;">${formatearMoneda(datosComp.costoPorAlc)}</strong>`;
+                    colCostoAlc = `<span class="costo-alc-badge">${formatearMoneda(datosComp.costoPorAlc)}</span>`;
                 }
 
                 let tr = document.createElement('tr');
@@ -1120,11 +1183,9 @@
             if (!resp.ok) throw new Error("Error HTTP " + resp.status);
             const texto = await resp.text();
 
-            // Leemos con parser CSV propio en texto puro para evitar que SheetJS altere "36.934,56" o fechas "9/4/2026"
             const matriz = parsearTextoCSV(texto);
             if (!matriz || matriz.length === 0) return [];
 
-            // Buscar la fila de encabezados (la primera que contenga al menos 2 celdas no vacías)
             let idxHeader = 0;
             for (let i = 0; i < Math.min(10, matriz.length); i++) {
                 let noVacias = matriz[i].filter(c => String(c).trim() !== '').length;
@@ -1298,7 +1359,7 @@
         }
 
         // =========================================================================
-        // 1) "RESUMEN DE INVERSIÓN Y CAPACIDAD OPERATIVA": SOLO VALORES EJECUTADOS
+        // RESUMEN DE INVERSIÓN Y CAPACIDAD OPERATIVA: SOLO VALORES EJECUTADOS
         // =========================================================================
         function actualizarTarjetasResumenCapacidad() {
             const lista = Object.values(driveGruposPorMicro);
@@ -1322,13 +1383,9 @@
                 }
             });
 
-            // Inversión en maquinaria = suma de COSTO MAQUINARIA (USD)
             document.getElementById('card-inv-maq').innerText = formatearMoneda(sumaCostoMaq);
-
-            // Inversión microempresas = suma de MONTO TOTAL COBRADO (USD)
             document.getElementById('card-inv-micro').innerText = formatearMoneda(sumaMontoMicro);
 
-            // Plazo de ejecución = meses transcurridos (1 decimal) desde el menor INICIO DE GESTION hasta hoy
             let mesesTrans = 0;
             if (minFechaInicio) {
                 let hoy = new Date();
@@ -1339,19 +1396,16 @@
                 document.getElementById('card-plazo').innerText = '—';
             }
 
-            // Horas globales, Retroexcavadora, Excavadora, Volquetes = suma de horas ejecutadas de cada tipo
             let ejecHorasTotal = hRetro + hExc + hVolq;
             document.getElementById('card-h-global').innerText = `${ejecHorasTotal.toFixed(1)} h`;
             document.getElementById('card-h-retro').innerText = `${hRetro.toFixed(1)} h`;
             document.getElementById('card-h-exc').innerText = `${hExc.toFixed(1)} h`;
             document.getElementById('card-h-volq').innerText = `${hVolq.toFixed(1)} h`;
-
-            // Microempresas = "N Grupos"
             document.getElementById('card-micro-count').innerText = `${lista.length} Grupos`;
         }
 
         // =========================================================================
-        // 2) "FRENTES DE TRABAJO EN LA RVE" Y MODAL DE GRUPOS INTERVENIDOS
+        // FRENTES DE TRABAJO EN LA RVE Y MODAL DE GRUPOS INTERVENIDOS
         // =========================================================================
         window.abrirModalMaquinaria = function(tipoMaquina, tituloMaquina) {
             if (!driveConectado) return;
@@ -1415,21 +1469,18 @@
                 }
             }
 
-            // Fila 1: Retroexcavadora
             let stRetro = calcMaquina('horasRetro', PLAN.tarifa.retro);
             document.getElementById('frente-retro-horas').innerText = `${stRetro.horas.toFixed(1)} h`;
             document.getElementById('frente-retro-costo').innerText = formatearMoneda(stRetro.costo);
             renderizarCeldaGrupos('frente-retro-grupos', stRetro.grupos, 'horasRetro', 'Retroexcavadora');
             document.getElementById('frente-retro-rend').innerText = `${stRetro.rendHora.toFixed(2)} alc/h`;
 
-            // Fila 2: Volquete
             let stVolq = calcMaquina('horasVolq', PLAN.tarifa.volquete);
             document.getElementById('frente-volq-horas').innerText = `${stVolq.horas.toFixed(1)} h`;
             document.getElementById('frente-volq-costo').innerText = formatearMoneda(stVolq.costo);
             renderizarCeldaGrupos('frente-volq-grupos', stVolq.grupos, 'horasVolq', 'Volquete');
             document.getElementById('frente-volq-rend').innerText = `${stVolq.rendHora.toFixed(2)} alc/h`;
 
-            // Fila 3: Excavadora
             let stExc = calcMaquina('horasExc', PLAN.tarifa.excavadora);
             document.getElementById('frente-exc-horas').innerText = `${stExc.horas.toFixed(1)} h`;
             document.getElementById('frente-exc-costo').innerText = formatearMoneda(stExc.costo);
@@ -1437,19 +1488,15 @@
             document.getElementById('frente-exc-rend').innerText = `${stExc.rendHora.toFixed(2)} alc/h`;
         }
 
-        // Fila 4: Microempresas (Datos desde Reporte_Diario.xlsx + Costo prom. ponderado desde Google Sheets)
         function actualizarFilaMicroempresasFrentes() {
             const clavesMicrosDiario = Object.keys(ultimoResumenRegistroDiario);
             const numGruposDiario = clavesMicrosDiario.length;
 
-            // Número de grupos = microempresas distintas en Reporte_Diario.xlsx
             document.getElementById('frente-mic-grupos').innerText = numGruposDiario > 0 ? `${numGruposDiario} grupos` : '—';
 
-            // Alcantarillas limpiadas = códigos únicos de CODIGO_ALCANTARILLA con ESTADO "LIMPIO"
             const totalUnicasLimpias = setAlcantarillasAtendidas.size;
             document.getElementById('frente-mic-alc').innerText = numGruposDiario > 0 ? `${totalUnicasLimpias.toLocaleString()} alc.` : '—';
 
-            // Días de gestión prom. / Rend. prom. = promediado entre microempresas con el cálculo de la tabla
             if (numGruposDiario > 0) {
                 let sumaDiasMicro = 0;
                 let sumaRendMicro = 0;
@@ -1467,7 +1514,6 @@
                 document.getElementById('frente-mic-rend').innerText = '— días / — alc/día';
             }
 
-            // Costo prom. por alcantarilla = suma de COSTO TOTAL (USD) / suma de N° ALCANTARILLAS LIMPIADAS (grupos con alcantarillas > 0)
             if (driveConectado) {
                 let lista = Object.values(driveGruposPorMicro);
                 let sumaCostoTotal = 0;
@@ -1490,32 +1536,30 @@
         }
 
         // =========================================================================
-        // 3) SECCIÓN DE AVANCE: META GLOBAL Y DOS DATOS INFERIORES
+        // SECCIÓN DE AVANCE: META GLOBAL CON PORCENTAJE ENTERO REDONDEADO Y TEXTO EJECUTIVO
         // =========================================================================
         function actualizarSeccionMetaGlobalYProyeccion() {
             const metaGlobal = PLAN.metaGlobal || 3473;
             document.getElementById('lbl-meta-global-titulo').innerText = metaGlobal.toLocaleString();
             document.getElementById('kpi-global-total').innerText = '/ ' + metaGlobal.toLocaleString();
 
-            // El avance = códigos únicos limpios de Reporte_Diario.xlsx ÷ meta global (3,473)
             const avanceGlobal = setAlcantarillasAtendidas.size;
             const pendientesGlobal = Math.max(0, metaGlobal - avanceGlobal);
-            const pctGlobalNum = metaGlobal > 0 ? Math.min(100, (avanceGlobal / metaGlobal) * 100) : 0;
-            const pctGlobalTxt = pctGlobalNum.toFixed(1);
+            // Porcentaje entero redondeado para una presentación limpia y uniforme con el primer gráfico
+            const pctGlobalEntero = metaGlobal > 0 ? Math.min(100, Math.round((avanceGlobal / metaGlobal) * 100)) : 0;
 
-            document.getElementById('kpi-global-txt').innerText = `${pctGlobalTxt}% Completado`;
-            document.getElementById('kpi-global-centro').innerText = `${pctGlobalTxt}%`;
+            document.getElementById('kpi-global-txt').innerText = `${pctGlobalEntero}% Completado`;
+            document.getElementById('kpi-global-centro').innerText = `${pctGlobalEntero}%`;
             document.getElementById('kpi-global-num').innerText = avanceGlobal.toLocaleString();
 
             document.getElementById('desc-meta-global').innerText =
-                `El trabajo conjunto de las microempresas y la logística de la Zonal 7 con su maquinaria ha permitido limpiar el ${pctGlobalTxt}\% de las${metaGlobal.toLocaleString()} alcantarillas de la Red Vial Estatal.`;
+                `Avance integral de limpieza y desazolve ejecutado de forma articulada entre las microempresas de conservación vial y la maquinaria institucional en toda la Red Vial Estatal de Loja.`;
 
             if (globalPieChart) {
                 globalPieChart.data.datasets[0].data = [avanceGlobal, pendientesGlobal];
                 globalPieChart.update();
             }
 
-            // Cuadro inferior con SOLO dos datos desde las fechas únicas registradas
             const diasLaborablesReg = fechasUnicasGlobalesDiario.size;
             if (diasLaborablesReg > 0 && avanceGlobal > 0) {
                 const rendActualizado = avanceGlobal / diasLaborablesReg;
@@ -1579,7 +1623,6 @@
                 }
             });
 
-            // Iniciar carga complementaria
             cargarDatosDrive();
 
             fetch('Reporte_Diario.xlsx?v=' + new Date().getTime())
