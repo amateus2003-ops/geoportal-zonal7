@@ -114,7 +114,7 @@
         /* Modal oscuro para listado de grupos por máquina */
         .modal-maquinaria-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.75); z-index: 5000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px); padding: 20px; }
         .modal-maquinaria-overlay.activo { display: flex; }
-        .modal-maquinaria-box { background: #1F2937; border: 1px solid #4B5563; border-top: 4px solid #3B82F6; border-radius: 12px; max-width: 560px; width: 100%; padding: 22px 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.85); color: #F3F4F6; max-height: 80vh; display: flex; flex-direction: column; }
+        .modal-maquinaria-box { background: #1F2937; border: 1px solid #4B5563; border-top: 4px solid #3B82F6; border-radius: 12px; max-width: 580px; width: 100%; padding: 22px 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.85); color: #F3F4F6; max-height: 80vh; display: flex; flex-direction: column; }
         .modal-maquinaria-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #374151; padding-bottom: 12px; margin-bottom: 15px; }
         .modal-maquinaria-title { font-size: 1.05rem; font-weight: bold; color: #FBBF24; text-transform: uppercase; letter-spacing: 0.5px; }
         .modal-maquinaria-close { background: transparent; border: none; color: #9CA3AF; font-size: 1.4rem; cursor: pointer; line-height: 1; padding: 2px 6px; border-radius: 4px; }
@@ -761,7 +761,7 @@
         };
 
         // =========================================================================
-        // EMPAREJAMIENTO DE MICROEMPRESAS Y HOMOLOGACIÓN ESPACIAL DE TRAMOS
+        // EMPAREJAMIENTO DE MICROEMPRESAS Y HOMOLOGACIÓN ESPACIAL DE TRAMOS Y RUTAS
         // =========================================================================
         const ALIAS_MICROS = {
             "PALTENSES": "PALTENSES",
@@ -771,85 +771,121 @@
             "DIVINO NINO": "DIVINO NINO",
             "NINO DE POTRERILLOS": "NINO DE POTRERILLOS",
             "SABIANGO": "SABIANGO",
-            "PUYANGO": "PUYANGO"
+            "PUYANGO": "PUYANGO",
+            "LLANKAY TANTANAKUY": "LLANKAY TANTANAKUY",
+            "CAMINOS DEL SUR": "CAMINOS DEL SUR",
+            "VIRGEN DEL CISNE": "VIRGEN DEL CISNE",
+            "PORVENIR": "PORVENIR",
+            "TIGRES DEL CAMINO": "TIGRES DEL CAMINO",
+            "LARAMA": "LARAMA"
         };
 
+        // Homologación entre microempresa normalizada y el atributo TRAMO o SUBTRAMO real en alcantarillas.js
         const MAPA_MICRO_A_TRAMO_QGIS = {
-            "CAMINOS DEL SUR": "LOJA - CATAMAYO",
-            "NINO DE POTRERILLOS": "LÍMITE PROVINCIAL AZUAY/LOJA (OÑA) - SARAGURO",
-            "CANAVERALES": "SAN PEDRO DE LA BENDITA - VELACRUZ",
-            "AMERICA": "CATAMAYO - GONZANAMÁ",
-            "PALTENSES": "CATACOCHA - EL EMPALME",
-            "LLANKAY TANTANAKUY": "SAN LUCAS - LOJA",
-            "VIRGEN DEL CISNE": "PUENTE GUAYABAL - SAN PEDRO DE LA BENDITA",
-            "PORVENIR": "LOJA - VILCABAMBA",
-            "DIVINO NINO": "CÉLICA - EL EMPALME",
-            "TIGRES DEL CAMINO": "CARIAMANGA - SOZORANGA",
-            "LARAMA": "EL EMPALME - MACARÁ - PUENTE INTERNACIONAL",
-            "BUENAVISTA": "LÍMITE PROVINCIAL EL ORO/LOJA (RÍO PINDO) - CHAGUARPAMBA",
-            "SABIANGO": "SOZORANGA - MACARÁ",
-            "PUYANGO": "LÍMITE PROVINCIAL EL ORO/LOJA (RÍO PUYANGO) - Y DE ALAMOR"
+            "CAMINOS DEL SUR": ["LOJA - CATAMAYO"],
+            "NINO DE POTRERILLOS": ["LÍMITE PROVINCIAL AZUAY/LOJA (OÑA) - SARAGURO", "SARAGURO - SAN LUCAS"],
+            "CANAVERALES": ["SAN PEDRO DE LA BENDITA - VELACRUZ", "VELACRUZ - CATACOCHA"],
+            "AMERICA": ["CATAMAYO - GONZANAMÁ"],
+            "PALTENSES": ["CATACOCHA - EL EMPALME"],
+            "LLANKAY TANTANAKUY": ["SAN LUCAS - LOJA"],
+            "VIRGEN DEL CISNE": ["PUENTE GUAYABAL - SAN PEDRO DE LA BENDITA", "VARIANTE VÍA MIRAFLORES", "LOJA - CATAMAYO"],
+            "PORVENIR": ["LOJA - VILCABAMBA", "VILCABAMBA - YANGANA"],
+            "DIVINO NINO": ["CÉLICA - EL EMPALME", "Y DE ALAMOR - CÉLICA"],
+            "TIGRES DEL CAMINO": ["CARIAMANGA - SOZORANGA", "GONZANAMÁ - CARIAMANGA"],
+            "LARAMA": ["EL EMPALME - MACARÁ - PUENTE INTERNACIONAL"],
+            "BUENAVISTA": ["LÍMITE PROVINCIAL EL ORO/LOJA (RÍO PINDO) - CHAGUARPAMBA", "CHAGUARPAMBA - VELACRUZ"],
+            "SABIANGO": ["SOZORANGA - MACARÁ"],
+            "PUYANGO": ["LÍMITE PROVINCIAL EL ORO/LOJA (RÍO PUYANGO) - Y DE ALAMOR", "Y DE ALAMOR - PINDAL"]
+        };
+
+        // Homologación por palabras clave del nombre de ruta (ej. "Loja - Santiago", "Macandamine", "Capulí", "Nambacola")
+        const MAPA_TEXTO_RUTA_A_TRAMO_QGIS = {
+            "SANTIAGO": ["SAN LUCAS - LOJA"],
+            "MACANDAMINE": ["CATACOCHA - EL EMPALME"],
+            "EMPALME": ["CATACOCHA - EL EMPALME", "CÉLICA - EL EMPALME", "EL EMPALME - MACARÁ - PUENTE INTERNACIONAL"],
+            "NAMBACOLA": ["CATAMAYO - GONZANAMÁ"],
+            "GONZANAMA": ["CATAMAYO - GONZANAMÁ", "GONZANAMÁ - CARIAMANGA"],
+            "CAPULI": ["PUENTE GUAYABAL - SAN PEDRO DE LA BENDITA", "VARIANTE VÍA MIRAFLORES", "LOJA - CATAMAYO"],
+            "CARIGAN": ["VARIANTE VÍA MIRAFLORES", "LOJA - CATAMAYO", "SAN LUCAS - LOJA"],
+            "VERACRUZ": ["SAN PEDRO DE LA BENDITA - VELACRUZ", "CHAGUARPAMBA - VELACRUZ", "VELACRUZ - CATACOCHA"],
+            "VELACRUZ": ["SAN PEDRO DE LA BENDITA - VELACRUZ", "CHAGUARPAMBA - VELACRUZ", "VELACRUZ - CATACOCHA"],
+            "MALACATOS": ["LOJA - VILCABAMBA"],
+            "VILCABAMBA": ["LOJA - VILCABAMBA", "VILCABAMBA - YANGANA"],
+            "SARAGURO": ["LÍMITE PROVINCIAL AZUAY/LOJA (OÑA) - SARAGURO", "SARAGURO - SAN LUCAS"],
+            "ONA": ["LÍMITE PROVINCIAL AZUAY/LOJA (OÑA) - SARAGURO"],
+            "PINDO": ["LÍMITE PROVINCIAL EL ORO/LOJA (RÍO PINDO) - CHAGUARPAMBA"],
+            "CHAGUARPAMBA": ["LÍMITE PROVINCIAL EL ORO/LOJA (RÍO PINDO) - CHAGUARPAMBA", "CHAGUARPAMBA - VELACRUZ"],
+            "PUYANGO": ["LÍMITE PROVINCIAL EL ORO/LOJA (RÍO PUYANGO) - Y DE ALAMOR"],
+            "ALAMOR": ["LÍMITE PROVINCIAL EL ORO/LOJA (RÍO PUYANGO) - Y DE ALAMOR", "Y DE ALAMOR - CÉLICA", "Y DE ALAMOR - PINDAL"],
+            "SABIANGO": ["SOZORANGA - MACARÁ"],
+            "SOZORANGA": ["CARIAMANGA - SOZORANGA", "SOZORANGA - MACARÁ"],
+            "CARIAMANGA": ["GONZANAMÁ - CARIAMANGA", "CARIAMANGA - SOZORANGA"],
+            "LARAMA": ["EL EMPALME - MACARÁ - PUENTE INTERNACIONAL"],
+            "MACARA": ["EL EMPALME - MACARÁ - PUENTE INTERNACIONAL", "SOZORANGA - MACARÁ"],
+            "CELICA": ["CÉLICA - EL EMPALME", "Y DE ALAMOR - CÉLICA"],
+            "CATAMAYO": ["LOJA - CATAMAYO", "CATAMAYO - GONZANAMÁ", "CATAMAYO - PUENTE GUAYABAL"]
         };
 
         // =========================================================================
-        // BASE DE RESPALDO EN MEMORIA (GARANTIZA QUE NUNCA SALGA EN 0 O EN BLANCO)
+        // BASE DE RESPALDO COHERENTE CON LOS DATOS REALES DE MAQUINARIA DEL DRIVE
+        // (Incluye Loja - Santiago: 68h Retro, 64h Volquete, 0h Excavadora)
         // =========================================================================
         const DATOS_RESPALDO_DRIVE = {
+            "LLANKAY TANTANAKUY": {
+                nombreOriginal: "Llankay tantanakuy", tramo: "Loja - Santiago",
+                inicioGestionDate: new Date(2026, 3, 9), montoCobrado: 40218.00,
+                horasRetro: 68.0, horasExc: 0.0, horasVolq: 64.0, diasGestion: 25,
+                alcLimpiadas: 174, costoMaquinaria: (68.0 * 32.40) + (64.0 * 25.38), costoTotal: 44045.52
+            },
             "NINO DE POTRERILLOS": {
                 nombreOriginal: "Niño de Potrerillos", tramo: "Saraguro - Oña",
                 inicioGestionDate: new Date(2026, 3, 9), montoCobrado: 30778.88,
                 horasRetro: 95.0, horasExc: 0.0, horasVolq: 42.0, diasGestion: 28,
-                alcLimpiadas: 16, costoMaquinaria: 4143.96, costoTotal: 30778.88, costoPorAlc: 1923.68
+                alcLimpiadas: 16, costoMaquinaria: (95.0 * 32.40) + (42.0 * 25.38), costoTotal: 34922.84
             },
             "CANAVERALES": {
                 nombreOriginal: "Los Cañaverales", tramo: "San Pedro - Velacruz",
                 inicioGestionDate: new Date(2026, 3, 9), montoCobrado: 24956.00,
                 horasRetro: 120.0, horasExc: 0.0, horasVolq: 55.0, diasGestion: 25,
-                alcLimpiadas: 50, costoMaquinaria: 5283.90, costoTotal: 24956.00, costoPorAlc: 499.12
+                alcLimpiadas: 50, costoMaquinaria: (120.0 * 32.40) + (55.0 * 25.38), costoTotal: 30239.90
             },
             "AMERICA": {
-                nombreOriginal: "América", tramo: "Catamayo - Gonzanamá",
+                nombreOriginal: "América", tramo: "Catamayo - Nambacola",
                 inicioGestionDate: new Date(2026, 3, 15), montoCobrado: 36934.56,
                 horasRetro: 110.0, horasExc: 35.0, horasVolq: 48.0, diasGestion: 26,
-                alcLimpiadas: 111, costoMaquinaria: 6249.79, costoTotal: 36934.56, costoPorAlc: 332.74
+                alcLimpiadas: 111, costoMaquinaria: (110.0 * 32.40) + (35.0 * 41.93) + (48.0 * 25.38), costoTotal: 43184.35
             },
             "PALTENSES": {
-                nombreOriginal: "Paltenses", tramo: "Catacocha - El Empalme",
+                nombreOriginal: "Paltenses", tramo: "Macandamine - El Empalme",
                 inicioGestionDate: new Date(2026, 3, 9), montoCobrado: 37099.00,
                 horasRetro: 145.0, horasExc: 40.0, horasVolq: 60.0, diasGestion: 30,
-                alcLimpiadas: 100, costoMaquinaria: 7898.00, costoTotal: 37099.00, costoPorAlc: 370.99
-            },
-            "DIVINO NINO": {
-                nombreOriginal: "Divino Niño", tramo: "Célica - El Empalme",
-                inicioGestionDate: new Date(2026, 3, 20), montoCobrado: 48620.18,
-                horasRetro: 105.0, horasExc: 32.0, horasVolq: 38.0, diasGestion: 24,
-                alcLimpiadas: 85, costoMaquinaria: 5708.20, costoTotal: 48620.18, costoPorAlc: 572.00
+                alcLimpiadas: 100, costoMaquinaria: (145.0 * 32.40) + (40.0 * 41.93) + (60.0 * 25.38), costoTotal: 44997.00
             },
             "BUENAVISTA": {
                 nombreOriginal: "Conservación Vial Buenavista", tramo: "Río Pindo - Chaguarpamba",
                 inicioGestionDate: new Date(2026, 3, 10), montoCobrado: 52410.40,
                 horasRetro: 118.0, horasExc: 38.0, horasVolq: 32.0, diasGestion: 27,
-                alcLimpiadas: 92, costoMaquinaria: 6228.70, costoTotal: 52410.40, costoPorAlc: 569.68
+                alcLimpiadas: 92, costoMaquinaria: (118.0 * 32.40) + (38.0 * 41.93) + (32.0 * 25.38), costoTotal: 58639.10
             },
             "PUYANGO": {
                 nombreOriginal: "Conservación Vial Puyango", tramo: "Río Puyango - Y de Alamor",
                 inicioGestionDate: new Date(2026, 3, 12), montoCobrado: 50827.00,
                 horasRetro: 100.0, horasExc: 32.0, horasVolq: 28.0, diasGestion: 29,
-                alcLimpiadas: 106, costoMaquinaria: 5292.40, costoTotal: 50827.00, costoPorAlc: 479.50
+                alcLimpiadas: 106, costoMaquinaria: (100.0 * 32.40) + (32.0 * 41.93) + (28.0 * 25.38), costoTotal: 56119.40
             }
         };
 
         const RESUMEN_DIARIO_RESPALDO = {
-            "caminos del sur": { nombreReal: "Caminos del Sur", ruta: "Loja - Catamayo", obstruidasTotal: 139, limpiadasAcumuladas: 21, kmTrabajados: 34.50, distanciaTotalKm: 35.2, fechasUnicas: new Set(["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22"]) },
-            "nino de potrerillos": { nombreReal: "Niño de Potrerillos", ruta: "Saraguro - Oña", obstruidasTotal: 140, limpiadasAcumuladas: 16, kmTrabajados: 26.56, distanciaTotalKm: 38.0, fechasUnicas: new Set(["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28"]) },
-            "los canaverales": { nombreReal: "Los Cañaverales", ruta: "San Pedro - Velacruz", obstruidasTotal: 113, limpiadasAcumuladas: 50, kmTrabajados: 102.92, distanciaTotalKm: 102.92, fechasUnicas: new Set(["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25"]) },
-            "america": { nombreReal: "América", ruta: "Catamayo - Nambacola", obstruidasTotal: 53, limpiadasAcumuladas: 2, kmTrabajados: 21.00, distanciaTotalKm: 29.5, fechasUnicas: new Set(["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26"]) },
-            "paltenses": { nombreReal: "Paltenses", ruta: "Catacocha - El Empalme", obstruidasTotal: 231, limpiadasAcumuladas: 100, kmTrabajados: 59.90, distanciaTotalKm: 59.90, fechasUnicas: new Set(["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30"]) },
-            "llankay tantanakuy": { nombreReal: "Llankay tantanakuy", ruta: "Loja - Santiago", obstruidasTotal: 153, limpiadasAcumuladas: 174, kmTrabajados: 28.41, distanciaTotalKm: 41.8, fechasUnicas: new Set(["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24"]) },
-            "virgen del cisne": { nombreReal: "Virgen del Cisne", ruta: "Capulí - Redondel de Carigán", obstruidasTotal: 33, limpiadasAcumuladas: 20, kmTrabajados: 7.79, distanciaTotalKm: 15.0, fechasUnicas: new Set(["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21"]) },
-            "porvenir": { nombreReal: "Porvenir", ruta: "Loja - Malacatos - Vilcabamba", obstruidasTotal: 166, limpiadasAcumuladas: 68, kmTrabajados: 15.16, distanciaTotalKm: 40.0, fechasUnicas: new Set(["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25"]) },
-            "conservacion vial buenavista": { nombreReal: "Conservación Vial Buenavista", ruta: "Río Pindo - Chaguarpamba", obstruidasTotal: 165, limpiadasAcumuladas: 92, kmTrabajados: 16.09, distanciaTotalKm: 35.0, fechasUnicas: new Set(["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27"]) },
-            "conservacion vial puyango": { nombreReal: "Conservación Vial Puyango", ruta: "Río Puyango - Y de Alamor", obstruidasTotal: 125, limpiadasAcumuladas: 106, kmTrabajados: 17.10, distanciaTotalKm: 48.0, fechasUnicas: new Set(["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29"]) }
+            "caminos del sur": { nombreReal: "Caminos del Sur", ruta: "Loja - Catamayo", obstruidasTotal: 139, limpiadasAcumuladas: 21, kmTrabajados: 34.50, distanciaTotalKm: 35.2, fechasUnicas: new Set(["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22"]), codigosSet: new Set() },
+            "nino de potrerillos": { nombreReal: "Niño de Potrerillos", ruta: "Saraguro - Oña", obstruidasTotal: 140, limpiadasAcumuladas: 16, kmTrabajados: 26.56, distanciaTotalKm: 38.0, fechasUnicas: new Set(["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28"]), codigosSet: new Set() },
+            "los canaverales": { nombreReal: "Los Cañaverales", ruta: "San Pedro - Velacruz", obstruidasTotal: 113, limpiadasAcumuladas: 50, kmTrabajados: 102.92, distanciaTotalKm: 102.92, fechasUnicas: new Set(["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25"]), codigosSet: new Set() },
+            "america": { nombreReal: "América", ruta: "Catamayo - Nambacola", obstruidasTotal: 53, limpiadasAcumuladas: 2, kmTrabajados: 21.00, distanciaTotalKm: 29.5, fechasUnicas: new Set(["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26"]), codigosSet: new Set() },
+            "paltenses": { nombreReal: "Paltenses", ruta: "Macandamine - El Empalme", obstruidasTotal: 231, limpiadasAcumuladas: 100, kmTrabajados: 59.90, distanciaTotalKm: 59.90, fechasUnicas: new Set(["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30"]), codigosSet: new Set() },
+            "llankay tantanakuy": { nombreReal: "Llankay tantanakuy", ruta: "Loja - Santiago", obstruidasTotal: 153, limpiadasAcumuladas: 174, kmTrabajados: 28.41, distanciaTotalKm: 41.8, fechasUnicas: new Set(["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25"]), codigosSet: new Set() },
+            "virgen del cisne": { nombreReal: "Virgen del Cisne", ruta: "Capulí - Redondel de Carigán", obstruidasTotal: 33, limpiadasAcumuladas: 20, kmTrabajados: 7.79, distanciaTotalKm: 15.0, fechasUnicas: new Set(["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21"]), codigosSet: new Set() },
+            "porvenir": { nombreReal: "Porvenir", ruta: "Loja - Malacatos - Vilcabamba", obstruidasTotal: 166, limpiadasAcumuladas: 68, kmTrabajados: 15.16, distanciaTotalKm: 40.0, fechasUnicas: new Set(["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25"]), codigosSet: new Set() },
+            "conservacion vial buenavista": { nombreReal: "Conservación Vial Buenavista", ruta: "Río Pindo - Chaguarpamba", obstruidasTotal: 165, limpiadasAcumuladas: 92, kmTrabajados: 16.09, distanciaTotalKm: 35.0, fechasUnicas: new Set(["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27"]), codigosSet: new Set() },
+            "conservacion vial puyango": { nombreReal: "Conservación Vial Puyango", ruta: "Río Puyango - Y de Alamor", obstruidasTotal: 125, limpiadasAcumuladas: 106, kmTrabajados: 17.10, distanciaTotalKm: 48.0, fechasUnicas: new Set(["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29"]), codigosSet: new Set() }
         };
 
         function normalizarMicro(nombre) {
@@ -886,7 +922,7 @@
             const e1sq = 0.00673949674227643;
             const k0 = 0.9996;
             const x = este - 500000.0;
-            const y = norte - 10000000.0; // Hemisferio Sur
+            const y = norte - 10000000.0;
             const m = y / k0;
             const mu = m / (a * (1 - Math.pow(e, 2) / 4 - 3 * Math.pow(e, 4) / 64 - 5 * Math.pow(e, 6) / 256));
             const e1 = (1 - Math.sqrt(1 - Math.pow(e, 2))) / (1 + Math.sqrt(1 - Math.pow(e, 2)));
@@ -912,7 +948,6 @@
             return L.latLng(lat, lng);
         }
 
-        // Convierte automáticamente coordenadas GeoJSON tanto si vienen en WGS84 como en UTM 17S
         function coordsSegurasLatLng(coords) {
             if (!coords || coords.length < 2) return L.latLng(-4.0, -79.2);
             let x = Number(coords[0]);
@@ -923,41 +958,71 @@
             return L.latLng(y, x);
         }
 
-        // Función que lleva desde el botón de mapa de la tabla directamente al tramo en el Visor Geográfico
+        // =========================================================================
+        // MOTOR MEJORADO DE UBICACIÓN "VER RUTA" (3 NIVELES DE BÚSQUEDA ESPACIAL)
+        // =========================================================================
         window.irAlVisorRuta = function(nombreEmpresa, rutaTexto) {
             switchTab('geoportal');
             setTimeout(() => {
                 map.invalidateSize();
                 if (!capaAlcantarillas) return;
-                let claveMicro = normalizarMicro(nombreEmpresa);
-                let tramoObjetivo = MAPA_MICRO_A_TRAMO_QGIS[claveMicro] || '';
-                let normTramoObjetivo = normalizarEncabezado(tramoObjetivo);
-                let palabrasRuta = normalizarEncabezado(rutaTexto).split(/[\s\-]+/).filter(w => w.length > 3);
 
-                let latlngs = [];
+                let claveMicro = normalizarMicro(nombreEmpresa);
+                let empresaKeyDiario = normalizarTexto(nombreEmpresa);
+                let infoDiario = ultimoResumenRegistroDiario[empresaKeyDiario];
+                let codigosDeEstaMicro = (infoDiario && infoDiario.codigosSet) ? infoDiario.codigosSet : new Set();
+
+                // 1) Armar lista de tramos candidatos en QGIS según Microempresa y palabras clave de la Ruta
+                let tramosCandidatos = new Set();
+                if (MAPA_MICRO_A_TRAMO_QGIS[claveMicro]) {
+                    MAPA_MICRO_A_TRAMO_QGIS[claveMicro].forEach(t => tramosCandidatos.add(normalizarEncabezado(t)));
+                }
+
+                let rutaNorm = normalizarEncabezado(rutaTexto);
+                for (let palabraClave in MAPA_TEXTO_RUTA_A_TRAMO_QGIS) {
+                    if (rutaNorm.includes(palabraClave)) {
+                        MAPA_TEXTO_RUTA_A_TRAMO_QGIS[palabraClave].forEach(t => tramosCandidatos.add(normalizarEncabezado(t)));
+                    }
+                }
+
+                let palabrasSueltas = rutaNorm.split(/[\s\-\/]+/).filter(w => w.length >= 4 && w !== "LOJA" && w !== "PARA");
+
+                let latlngsPorCodigos = [];
+                let latlngsPorTramoHomologado = [];
+                let latlngsPorPalabras = [];
+
                 capaAlcantarillas.eachLayer(function(layer) {
                     if (!layer.feature || !layer.feature.properties) return;
                     let props = layer.feature.properties;
+                    let idUnico = String(props['OBJECTID'] || props['FID'] || props['ID'] || props['id'] || props['NUMERO'] || '').trim();
                     let tramoCapa = normalizarEncabezado(props['TRAMO'] || props['tramo'] || props['Tramo'] || '');
                     let subtramoCapa = normalizarEncabezado(props['SUBTRAMO'] || props['subtramo'] || '');
 
-                    let coincide = false;
-                    if (normTramoObjetivo && tramoCapa === normTramoObjetivo) {
-                        coincide = true;
-                    } else if (palabrasRuta.length > 0) {
-                        coincide = palabrasRuta.some(p => tramoCapa.includes(p) || subtramoCapa.includes(p));
-                    }
+                    let coord = typeof layer.getLatLng === 'function'
+                        ? layer.getLatLng()
+                        : (layer.getBounds ? layer.getBounds().getCenter() : null);
+                    if (!coord) return;
 
-                    if (coincide) {
-                        let coord = typeof layer.getLatLng === 'function'
-                            ? layer.getLatLng()
-                            : (layer.getBounds ? layer.getBounds().getCenter() : null);
-                        if (coord) latlngs.push(coord);
+                    // Nivel 1: Coincidencia exacta con los códigos limpiados por esta microempresa
+                    if (codigosDeEstaMicro.size > 0 && codigosDeEstaMicro.has(idUnico)) {
+                        latlngsPorCodigos.push(coord);
+                    }
+                    // Nivel 2: Coincidencia con el Tramo QGIS homologado
+                    if (tramosCandidatos.has(tramoCapa) || tramosCandidatos.has(subtramoCapa)) {
+                        latlngsPorTramoHomologado.push(coord);
+                    }
+                    // Nivel 3: Coincidencia por palabras clave en Tramo o Subtramo
+                    if (palabrasSueltas.some(p => tramoCapa.includes(p) || subtramoCapa.includes(p))) {
+                        latlngsPorPalabras.push(coord);
                     }
                 });
 
-                if (latlngs.length > 0) {
-                    map.flyToBounds(L.latLngBounds(latlngs), { padding: [50, 50], maxZoom: 13, duration: 1.5 });
+                let destinoCoords = latlngsPorTramoHomologado.length > 0
+                    ? latlngsPorTramoHomologado
+                    : (latlngsPorCodigos.length > 0 ? latlngsPorCodigos : latlngsPorPalabras);
+
+                if (destinoCoords.length > 0) {
+                    map.flyToBounds(L.latLngBounds(destinoCoords), { padding: [55, 55], maxZoom: 13, duration: 1.5 });
                 } else {
                     resetMapa();
                 }
@@ -1058,7 +1123,7 @@
             return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
-        // Estado global inicializado con los datos verificados para evitar pantalla en 0
+        // Estado global
         let driveConectado = true;
         let driveGruposPorMicro = Object.assign({}, DATOS_RESPALDO_DRIVE);
         let driveAlcantarillasRows = [];
@@ -1151,25 +1216,11 @@
                     rowData[key.trim().toUpperCase()] = row[key];
                 }
 
-                let estadoCelda = String(rowData['ESTADO'] || '').trim().toUpperCase();
-                let codigosStr = String(rowData['CODIGO_ALCANTARILLA'] || '').trim();
-                // Si tiene estado LIMPIA/ATENDIDA o si trae una lista de códigos asignados en la fila
-                if (estadoCelda.includes('LIMPI') || estadoCelda.includes('ATENDID') || codigosStr.length > 0) {
-                    let codigosArray = codigosStr.split(',');
-                    codigosArray.forEach(codigo => {
-                        let codLimpio = codigo.trim(); 
-                        if (codLimpio !== '' && codLimpio.toUpperCase() !== 'NAN') {
-                            setAlcantarillasAtendidas.add(codLimpio);
-                        }
-                    });
-                }
-
                 let rawEmpresa = rowData['MICROEMPRESA'] || '';
                 let empresa = String(rawEmpresa).trim();
                 let empresaKey = normalizarTexto(empresa);
-                if (!empresaKey) return;
 
-                if (!resumenEmpresas[empresaKey]) {
+                if (empresaKey && !resumenEmpresas[empresaKey]) {
                     resumenEmpresas[empresaKey] = {
                         nombreReal: empresa,
                         ruta: String(rowData['TRAMO_RUTA'] || 'Sin ruta').trim(),
@@ -1177,9 +1228,27 @@
                         limpiadasAcumuladas: 0,
                         kmTrabajados: 0,
                         distanciaTotalKm: 1, 
-                        fechasUnicas: new Set() 
+                        fechasUnicas: new Set(),
+                        codigosSet: new Set()
                     };
                 }
+
+                let estadoCelda = String(rowData['ESTADO'] || '').trim().toUpperCase();
+                let codigosStr = String(rowData['CODIGO_ALCANTARILLA'] || '').trim();
+                if (estadoCelda.includes('LIMPI') || estadoCelda.includes('ATENDID') || codigosStr.length > 0) {
+                    let codigosArray = codigosStr.split(',');
+                    codigosArray.forEach(codigo => {
+                        let codLimpio = codigo.trim(); 
+                        if (codLimpio !== '' && codLimpio.toUpperCase() !== 'NAN') {
+                            setAlcantarillasAtendidas.add(codLimpio);
+                            if (empresaKey && resumenEmpresas[empresaKey]) {
+                                resumenEmpresas[empresaKey].codigosSet.add(codLimpio);
+                            }
+                        }
+                    });
+                }
+
+                if (!empresaKey) return;
 
                 if (rowData['FECHA']) {
                     let fStr = String(rowData['FECHA']).trim();
@@ -1297,7 +1366,7 @@
         }
 
         // =========================================================================
-        // PARSER CSV PROPIO Y LECTURA CON SOPORTE ANTI-CORS
+        // PARSER CSV PROPIO, LECTURA DE DOS COLUMNAS DE MAQUINARIA Y ANTI-DUPLICADOS
         // =========================================================================
         function parsearTextoCSV(texto) {
             let filas = [];
@@ -1352,7 +1421,6 @@
                 const r1 = await fetch(url, { cache: "no-store" });
                 if (r1.ok) return await r1.text();
             } catch (e1) {}
-            // Puente CORS en caso de abrir desde file:// o bloqueo de redirección de Google
             const proxyUrl = "https://api.allorigins.win/raw?url=" + encodeURIComponent(url);
             const r2 = await fetch(proxyUrl, { cache: "no-store" });
             if (!r2.ok) throw new Error("Error HTTP " + r2.status);
@@ -1364,17 +1432,19 @@
             const matriz = parsearTextoCSV(texto);
             if (!matriz || matriz.length === 0) return [];
 
-            // Detector inteligente de la fila de encabezados real
             let idxHeader = 0;
             for (let i = 0; i < Math.min(15, matriz.length); i++) {
                 let filaTexto = matriz[i].map(c => normalizarEncabezado(c)).join(" ");
-                if (filaTexto.includes("MICROEMPRESA") || filaTexto.includes("GRUPO") || filaTexto.includes("RETROEXCAVADORA") || filaTexto.includes("ABSCISA")) {
+                if (filaTexto.includes("MICROEMPRESA") || filaTexto.includes("GRUPO") || filaTexto.includes("RETROEXCAVADORA") || filaTexto.includes("MAQUINARIA") || filaTexto.includes("ABSCISA")) {
                     idxHeader = i;
                     break;
                 }
             }
 
-            const encabezados = matriz[idxHeader].map(h => normalizarEncabezado(h));
+            const encabezados = matriz[idxHeader].map((h, idx) => {
+                let limpio = normalizarEncabezado(h);
+                return limpio || `COL_${idx}`;
+            });
             const resultado = [];
 
             for (let i = idxHeader + 1; i < matriz.length; i++) {
@@ -1382,8 +1452,13 @@
                 if (!fila || fila.every(celda => String(celda).trim() === '')) continue;
                 let obj = {};
                 for (let j = 0; j < encabezados.length; j++) {
-                    let key = encabezados[j] || `COL_${j}`;
-                    obj[key] = fila[j] !== undefined ? String(fila[j]).trim() : "";
+                    let key = encabezados[j];
+                    // Si hay encabezados repetidos, guardamos el primero o concatenamos sufijo
+                    if (obj[key] !== undefined && obj[key] !== "") {
+                        obj[`${key}_${j}`] = fila[j] !== undefined ? String(fila[j]).trim() : "";
+                    } else {
+                        obj[key] = fila[j] !== undefined ? String(fila[j]).trim() : "";
+                    }
                 }
                 resultado.push(obj);
             }
@@ -1400,7 +1475,7 @@
                 if (textoFila.includes("RETROEXCAVADORA")) {
                     if (nums[0]) PLAN.horas.retro = nums[0];
                     if (nums[1]) PLAN.tarifa.retro = nums[1];
-                } else if (textoFila.includes("EXCAVADORA")) {
+                } else if (textoFila.includes("EXCAVADORA") && !textoFila.includes("RETRO")) {
                     if (nums[0]) PLAN.horas.excavadora = nums[0];
                     if (nums[1]) PLAN.tarifa.excavadora = nums[1];
                 } else if (textoFila.includes("VOLQUETE")) {
@@ -1419,11 +1494,13 @@
             });
         }
 
-        function obtenerValorColumna(row, posiblesNombres) {
+        // Busca una columna evitando colisiones (ej. que "EXCAVADORA" no lea "RETROEXCAVADORA")
+        function obtenerValorColumnaEstricta(row, posiblesNombres, palabrasExcluidas = []) {
             for (let nombre of posiblesNombres) {
                 if (row[nombre] !== undefined && row[nombre] !== "") return row[nombre];
             }
             for (let k in row) {
+                if (palabrasExcluidas.some(ex => k.includes(ex))) continue;
                 for (let nombre of posiblesNombres) {
                     if (k.includes(nombre) && row[k] !== "") return row[k];
                 }
@@ -1431,46 +1508,135 @@
             return "";
         }
 
+        // Extrae horas de Retroexcavadora, Excavadora y Volquete tanto si vienen en 3 columnas como si vienen en 2 columnas (Tipo Maquinaria + Horas)
+        function extraerHorasMaquinariaDeFila(r) {
+            let hRetro = parseNumeroDrive(obtenerValorColumnaEstricta(r, ["HORAS RETROEXCAVADORA (H)", "HORAS RETROEXCAVADORA", "RETROEXCAVADORA", "HORAS RETRO"], []));
+            let hExc = parseNumeroDrive(obtenerValorColumnaEstricta(r, ["HORAS EXCAVADORA (H)", "HORAS EXCAVADORA", "EXCAVADORA"], ["RETRO"]));
+            let hVolq = parseNumeroDrive(obtenerValorColumnaEstricta(r, ["HORAS VOLQUETE (H)", "HORAS VOLQUETE", "VOLQUETE", "VOLQUETES"], []));
+
+            // Soporte para cuando el Drive tiene 2 columnas de maquinaria: [Tipo de Maquinaria] y [Horas]
+            if (hRetro === 0 && hExc === 0 && hVolq === 0) {
+                let tipoMaq = normalizarEncabezado(obtenerValorColumnaEstricta(r, ["TIPO DE MAQUINARIA", "TIPO MAQUINARIA", "MAQUINARIA", "EQUIPO"], ["INTERVINO", "COSTO", "DIAS", "ALCANTARILLAS", "RENDIMIENTO", "HORAS MAQUINA"]));
+                let valorHoras = parseNumeroDrive(obtenerValorColumnaEstricta(r, ["HORAS TRABAJADAS", "HORAS EJECUTADAS", "HORAS MAQUINA", "HORAS (H)", "HORAS"], ["RETRO", "EXCAVADORA", "VOLQUETE", "RENDIMIENTO"]));
+                if (tipoMaq && valorHoras > 0) {
+                    if (tipoMaq.includes("RETRO")) hRetro += valorHoras;
+                    else if (tipoMaq.includes("VOLQ")) hVolq += valorHoras;
+                    else if (tipoMaq.includes("EXCAV")) hExc += valorHoras;
+                }
+            }
+
+            return { hRetro, hExc, hVolq };
+        }
+
+        // =========================================================================
+        // FUNCIÓN DE PROCESAMIENTO DE GRUPOS CON DEDUPLICACIÓN AUTOMÁTICA
+        // Si se repiten (Tramo + Inicio de Gestión + Fin de Gestión + Monto Total)
+        // NO duplica el monto ni los días; solo consolida las horas reales de maquinaria.
+        // =========================================================================
         function procesarHojaGrupos(rows) {
             let nuevosGrupos = {};
+            let huellasGestionVistas = new Set();
+            let ultimaClaveGrupo = "";
+            let ultimoTramoVisto = "";
+
             rows.forEach(r => {
-                let rawNombre = obtenerValorColumna(r, ["GRUPO / MICROEMPRESA", "GRUPO", "MICROEMPRESA"]);
+                let rawNombre = obtenerValorColumnaEstricta(r, ["GRUPO / MICROEMPRESA", "GRUPO", "MICROEMPRESA"], []);
                 let nombreLimpio = String(rawNombre || "").trim();
                 let normNom = normalizarEncabezado(nombreLimpio);
-                if (!nombreLimpio || normNom === "TOTAL" || normNom.startsWith("TOTAL ") || normNom === "PROMEDIO" || normNom.includes("MICROEMPRESA")) return;
 
-                let clave = normalizarMicro(nombreLimpio);
+                if (normNom === "TOTAL" || normNom.startsWith("TOTAL ") || normNom === "PROMEDIO" || normNom.includes("RESUMEN")) return;
+
+                let tramoFila = String(obtenerValorColumnaEstricta(r, ["TRAMO", "RUTA"], []) || "").trim();
+                let iniRaw = String(obtenerValorColumnaEstricta(r, ["INICIO DE GESTION", "INICIO GESTION", "INICIO"], ["MAQUINARIA"]) || "").trim();
+                let finRaw = String(obtenerValorColumnaEstricta(r, ["FIN DE GESTION", "FIN GESTION", "FIN"], ["MAQUINARIA"]) || "").trim();
+                let montoRaw = parseNumeroDrive(obtenerValorColumnaEstricta(r, ["MONTO TOTAL COBRADO (USD)", "MONTO TOTAL COBRADO", "MONTO COBRADO", "MONTO TOTAL"], []));
+
+                // Si la fila viene con celda combinada en blanco para el nombre pero trae datos de maquinaria del mismo tramo
+                let clave = nombreLimpio ? normalizarMicro(nombreLimpio) : ultimaClaveGrupo;
+                if (!clave && tramoFila) {
+                    // Homologar por tramo si solo viene el tramo (ej. "Loja - Santiago" -> "LLANKAY TANTANAKUY")
+                    let tNorm = normalizarEncabezado(tramoFila);
+                    if (tNorm.includes("SANTIAGO")) clave = "LLANKAY TANTANAKUY";
+                    else if (tNorm.includes("SARAGURO") || tNorm.includes("ONA")) clave = "NINO DE POTRERILLOS";
+                    else if (tNorm.includes("VERACRUZ") || tNorm.includes("VELACRUZ")) clave = "CANAVERALES";
+                    else if (tNorm.includes("NAMBACOLA") || tNorm.includes("GONZANAMA")) clave = "AMERICA";
+                    else if (tNorm.includes("MACANDAMINE") || tNorm.includes("CATACOCHA")) clave = "PALTENSES";
+                    else if (tNorm.includes("PINDO") || tNorm.includes("CHAGUARPAMBA")) clave = "BUENAVISTA";
+                    else if (tNorm.includes("PUYANGO") || tNorm.includes("ALAMOR")) clave = "PUYANGO";
+                    else clave = tNorm;
+                }
                 if (!clave) return;
 
-                let iniRaw = String(obtenerValorColumna(r, ["INICIO DE GESTION", "INICIO GESTION", "INICIO"]) || "").trim();
-                let finRaw = String(obtenerValorColumna(r, ["FIN DE GESTION", "FIN GESTION", "FIN"]) || "").trim();
+                ultimaClaveGrupo = clave;
+                if (tramoFila) ultimoTramoVisto = tramoFila;
 
-                let hRetro = parseNumeroDrive(obtenerValorColumna(r, ["HORAS RETROEXCAVADORA (H)", "HORAS RETROEXCAVADORA", "RETROEXCAVADORA"]));
-                let hExc = parseNumeroDrive(obtenerValorColumna(r, ["HORAS EXCAVADORA (H)", "HORAS EXCAVADORA", "EXCAVADORA"]));
-                let hVolq = parseNumeroDrive(obtenerValorColumna(r, ["HORAS VOLQUETE (H)", "HORAS VOLQUETE", "VOLQUETE"]));
-                let cMaq = parseNumeroDrive(obtenerValorColumna(r, ["COSTO MAQUINARIA (USD)", "COSTO MAQUINARIA"]));
-                if (cMaq === 0 && (hRetro + hExc + hVolq) > 0) {
-                    cMaq = (hRetro * PLAN.tarifa.retro) + (hExc * PLAN.tarifa.excavadora) + (hVolq * PLAN.tarifa.volquete);
+                let { hRetro, hExc, hVolq } = extraerHorasMaquinariaDeFila(r);
+                let diasGest = parseNumeroDrive(obtenerValorColumnaEstricta(r, ["DIAS DE GESTION", "DIAS GESTION", "DIAS LABORABLES"], []));
+                let alcLimp = parseNumeroDrive(obtenerValorColumnaEstricta(r, ["N° ALCANTARILLAS LIMPIADAS", "ALCANTARILLAS LIMPIADAS"], ["MAQUINARIA"]));
+
+                // Huella única para detectar duplicados de (Tramo + Inicio de Gestión + Fin de Gestión + Monto Total)
+                let tramoEfectivo = normalizarEncabezado(tramoFila || ultimoTramoVisto || clave);
+                let huellaGestion = `${clave}|${tramoEfectivo}\vert{}${normalizarEncabezado(iniRaw)}|${normalizarEncabezado(finRaw)}\vert{}${montoRaw.toFixed(2)}`;
+                let esGestionDuplicada = huellasGestionVistas.has(huellaGestion);
+                if (iniRaw || finRaw || montoRaw > 0) {
+                    huellasGestionVistas.add(huellaGestion);
                 }
 
-                nuevosGrupos[clave] = {
-                    nombreOriginal: nombreLimpio,
-                    tramo: String(obtenerValorColumna(r, ["TRAMO", "RUTA"]) || "").trim(),
-                    inicioGestionRaw: iniRaw,
-                    finGestionRaw: finRaw,
-                    inicioGestionDate: parseFechaDrive(iniRaw),
-                    finGestionDate: parseFechaDrive(finRaw),
-                    montoCobrado: parseNumeroDrive(obtenerValorColumna(r, ["MONTO TOTAL COBRADO (USD)", "MONTO TOTAL COBRADO", "MONTO COBRADO"])),
-                    horasRetro: hRetro,
-                    horasExc: hExc,
-                    horasVolq: hVolq,
-                    diasGestion: parseNumeroDrive(obtenerValorColumna(r, ["DIAS DE GESTION", "DIAS GESTION", "DIAS LABORABLES"])),
-                    alcLimpiadas: parseNumeroDrive(obtenerValorColumna(r, ["N° ALCANTARILLAS LIMPIADAS", "ALCANTARILLAS LIMPIADAS"])),
-                    costoMaquinaria: cMaq,
-                    costoTotal: parseNumeroDrive(obtenerValorColumna(r, ["COSTO TOTAL (USD)", "COSTO TOTAL"])),
-                    costoPorAlc: parseNumeroDrive(obtenerValorColumna(r, ["COSTO POR ALCANTARILLA (USD/ALC)", "COSTO POR ALCANTARILLA"]))
-                };
+                if (!nuevosGrupos[clave]) {
+                    nuevosGrupos[clave] = {
+                        nombreOriginal: nombreLimpio || clave,
+                        tramo: tramoFila || ultimoTramoVisto || "—",
+                        inicioGestionRaw: iniRaw,
+                        finGestionRaw: finRaw,
+                        inicioGestionDate: parseFechaDrive(iniRaw),
+                        finGestionDate: parseFechaDrive(finRaw),
+                        montoCobrado: montoRaw,
+                        horasRetro: hRetro,
+                        horasExc: hExc,
+                        horasVolq: hVolq,
+                        diasGestion: diasGest,
+                        alcLimpiadas: alcLimp,
+                        costoMaquinaria: 0,
+                        costoTotal: 0
+                    };
+                } else {
+                    // Si el grupo ya existe:
+                    // 1) Si el Tramo, Inicio, Fin y Monto Total están repetidos (duplicados), NO se vuelve a sumar el monto ni los días.
+                    if (!esGestionDuplicada && nuevosGrupos[clave].montoCobrado === 0 && montoRaw > 0) {
+                        nuevosGrupos[clave].montoCobrado = montoRaw;
+                    }
+                    if (!nuevosGrupos[clave].inicioGestionDate && iniRaw) {
+                        nuevosGrupos[clave].inicioGestionRaw = iniRaw;
+                        nuevosGrupos[clave].inicioGestionDate = parseFechaDrive(iniRaw);
+                    }
+                    if (nuevosGrupos[clave].diasGestion === 0 && diasGest > 0) {
+                        nuevosGrupos[clave].diasGestion = diasGest;
+                    }
+                    if (nuevosGrupos[clave].alcLimpiadas === 0 && alcLimp > 0) {
+                        nuevosGrupos[clave].alcLimpiadas = alcLimp;
+                    }
+
+                    // 2) Para las horas de maquinaria: si la fila es completamente idéntica en todo (duplicado exacto de fila), no duplicar;
+                    // si es una sub-fila con nuevas horas de otra máquina (ej. 2 columnas), las acumula.
+                    if (!esGestionDuplicada) {
+                        nuevosGrupos[clave].horasRetro += hRetro;
+                        nuevosGrupos[clave].horasExc += hExc;
+                        nuevosGrupos[clave].horasVolq += hVolq;
+                    } else {
+                        // Si la fila tenía el mismo encabezado repetido pero aporta una máquina que estaba en 0, la asigna sin duplicar
+                        if (nuevosGrupos[clave].horasRetro === 0 && hRetro > 0) nuevosGrupos[clave].horasRetro = hRetro;
+                        if (nuevosGrupos[clave].horasExc === 0 && hExc > 0) nuevosGrupos[clave].horasExc = hExc;
+                        if (nuevosGrupos[clave].horasVolq === 0 && hVolq > 0) nuevosGrupos[clave].horasVolq = hVolq;
+                    }
+                }
             });
+
+            // Calcular siempre el costo de maquinaria exclusivamente a partir de las horas reales de cada máquina × su tarifa
+            for (let k in nuevosGrupos) {
+                let g = nuevosGrupos[k];
+                g.costoMaquinaria = (g.horasRetro * PLAN.tarifa.retro) + (g.horasExc * PLAN.tarifa.excavadora) + (g.horasVolq * PLAN.tarifa.volquete);
+                g.costoTotal = g.montoCobrado + g.costoMaquinaria;
+            }
 
             if (Object.keys(nuevosGrupos).length > 0) {
                 driveGruposPorMicro = nuevosGrupos;
@@ -1505,19 +1671,17 @@
         }
 
         // =========================================================================
-        // RESUMEN DE INVERSIÓN Y CAPACIDAD OPERATIVA: SOLO VALORES EJECUTADOS
+        // RESUMEN DE INVERSIÓN Y CAPACIDAD OPERATIVA: CALCULADO CON DATOS DE MAQUINARIA
         // =========================================================================
         function actualizarTarjetasResumenCapacidad() {
             const lista = Object.values(driveGruposPorMicro);
             if (lista.length === 0) return;
 
-            let sumaCostoMaq = 0;
             let sumaMontoMicro = 0;
             let hRetro = 0, hExc = 0, hVolq = 0;
             let minFechaInicio = null;
 
             lista.forEach(g => {
-                sumaCostoMaq += (g.costoMaquinaria || 0);
                 sumaMontoMicro += (g.montoCobrado || 0);
                 hRetro += (g.horasRetro || 0);
                 hExc += (g.horasExc || 0);
@@ -1528,6 +1692,9 @@
                     }
                 }
             });
+
+            // Costo total de maquinaria calculado directamente de las horas ejecutadas por máquina
+            let sumaCostoMaq = (hRetro * PLAN.tarifa.retro) + (hExc * PLAN.tarifa.excavadora) + (hVolq * PLAN.tarifa.volquete);
 
             document.getElementById('card-inv-maq').innerText = formatearMoneda(sumaCostoMaq);
             document.getElementById('card-inv-micro').innerText = formatearMoneda(sumaMontoMicro);
@@ -1683,7 +1850,6 @@
                 globalPieChart.update();
             }
 
-            // Tiempo en días tomado de la base de datos de Drive (DIAS DE GESTION)
             let diasLaborablesDrive = 0;
             let lista = Object.values(driveGruposPorMicro);
             let diasValidos = lista.map(g => g.diasGestion).filter(d => d > 0);
@@ -1751,7 +1917,6 @@
                 }
             });
 
-            // Pintar inmediatamente los datos en pantalla antes del fetch para que nunca quede vacío
             actualizarTarjetasResumenCapacidad();
             actualizarTarjetaFrentesRVE();
             actualizarFilaMicroempresasFrentes();
@@ -1759,7 +1924,6 @@
             actualizarSeccionMetaGlobalYProyeccion();
             actualizarMapaGeografico();
 
-            // Sincronizar con Drive y con Reporte_Diario.xlsx en segundo plano
             cargarDatosDrive();
 
             fetch('Reporte_Diario.xlsx?v=' + new Date().getTime())
