@@ -93,17 +93,18 @@
         .plan-item-val { font-size: 1.1rem; font-weight: bold; color: #FBBF24; margin-top: 6px; line-height: 1.25; }
         .plan-item-lbl { font-size: 0.65rem; color: #9CA3AF; text-transform: uppercase; line-height: 1.2; letter-spacing: 0.5px; }
 
-        /* ESTILO: TARJETA ÚNICA DE FRENTES DE TRABAJO EN LA RVE (4 FILAS) */
+        /* ESTILO REACOMODADO: TARJETA ÚNICA DE FRENTES DE TRABAJO EN LA RVE (4 COLUMNAS SIMÉTRICAS) */
         .frentes-rve-card { background: #1F2937; border-radius: 12px; padding: 22px 25px; border: 1px solid #374151; box-shadow: 0 4px 10px rgba(0,0,0,0.4); margin-bottom: 25px; }
         .frentes-rve-title { font-size: 0.95rem; color: #FBBF24; font-weight: bold; text-transform: uppercase; margin-bottom: 16px; letter-spacing: 0.5px; border-bottom: 1px solid #374151; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .frente-fila { display: flex; align-items: center; gap: 18px; background: #27303F; padding: 14px 18px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #374151; transition: transform 0.2s; }
+        .frente-fila { display: flex; align-items: center; gap: 22px; background: #27303F; padding: 16px 22px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #374151; transition: transform 0.2s, border-color 0.2s; }
+        .frente-fila:hover { border-color: #4B5563; }
         .frente-fila:last-child { margin-bottom: 0; }
         .frente-icon-box { width: 58px; height: 58px; min-width: 58px; background: #1F2937; border-radius: 10px; border: 1px solid #4B5563; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); }
         .frente-icon-box img { max-width: 44px; max-height: 44px; object-fit: contain; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.6)); }
-        .frente-stats-inline { display: grid; grid-template-columns: 1.2fr repeat(4, 1fr); gap: 15px; flex-grow: 1; align-items: center; }
-        .frente-stat-block { display: flex; flex-direction: column; gap: 3px; }
-        .frente-stat-title { font-size: 0.7rem; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.4px; }
-        .frente-stat-num { font-size: 1.05rem; font-weight: bold; color: #F3F4F6; }
+        .frente-stats-inline { display: grid; grid-template-columns: 1.3fr repeat(3, 1fr); gap: 20px; flex-grow: 1; align-items: center; }
+        .frente-stat-block { display: flex; flex-direction: column; gap: 4px; }
+        .frente-stat-title { font-size: 0.72rem; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.5px; }
+        .frente-stat-num { font-size: 1.15rem; font-weight: bold; color: #F3F4F6; }
 
         /* Enlace clicable para Grupos intervenidos */
         .grupos-clicable { cursor: pointer; color: #60A5FA; transition: color 0.2s; display: inline-block; }
@@ -207,17 +208,27 @@
         th { background-color: #111827; color: #FBBF24; text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.3px; }
         tr:hover { background-color: #27303F; }
 
-        /* Estilo elegante y sobrio para los valores de Costo / Alc. en la tabla */
-        .costo-alc-badge {
-            display: inline-block;
-            padding: 5px 12px;
-            border-radius: 6px;
-            background: rgba(16, 185, 129, 0.12);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            color: #A7F3D0;
-            font-weight: 700;
-            font-size: 0.88rem;
-            letter-spacing: 0.2px;
+        /* Botón de ícono de mapa para ir directamente al Visor en la ruta correspondiente */
+        .btn-ir-mapa {
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.45);
+            color: #60A5FA;
+            padding: 7px 13px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.25s ease;
+        }
+        .btn-ir-mapa:hover {
+            background: #3B82F6;
+            color: #FFFFFF;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4);
         }
 
         .progress-bar-container { background-color: #374151; border-radius: 6px; height: 16px; width: 100%; position: relative; overflow: hidden; margin-top: 5px; }
@@ -376,11 +387,11 @@
                 </div>
             </div>
 
-            <!-- SECCIÓN 2: FRENTES DE TRABAJO EN LA RVE -->
+            <!-- SECCIÓN 2: FRENTES DE TRABAJO EN LA RVE (REACOMODADO SIN REND. HORA MÁQUINA NI COSTO PROM. ALC.) -->
             <div class="frentes-rve-card">
                 <div class="frentes-rve-title">
                     <span>🚜 FRENTES DE TRABAJO EN LA RVE</span>
-                    <span style="font-size: 0.75rem; color: #9CA3AF; font-weight: normal;">Rendimiento operativo de maquinaria y grupos de conservación</span>
+                    <span style="font-size: 0.75rem; color: #9CA3AF; font-weight: normal;">Capacidad operativa desplegada por maquinaria y grupos de conservación</span>
                 </div>
 
                 <!-- Fila 1: Retroexcavadora -->
@@ -391,7 +402,8 @@
                     </div>
                     <div class="frente-stats-inline">
                         <div class="frente-stat-block">
-                            <span style="color: #10B981; font-weight: bold; font-size: 0.95rem; text-transform: uppercase;">Retroexcavadora</span>
+                            <span style="color: #10B981; font-weight: bold; font-size: 1rem; text-transform: uppercase;">Retroexcavadora</span>
+                            <span class="frente-stat-title">Equipo Pesado RVE</span>
                         </div>
                         <div class="frente-stat-block">
                             <span class="frente-stat-title">Horas Ejecutadas</span>
@@ -405,10 +417,6 @@
                             <span class="frente-stat-title">Grupos Intervenidos</span>
                             <span class="frente-stat-num" style="color: #60A5FA;" id="frente-retro-grupos">—</span>
                         </div>
-                        <div class="frente-stat-block">
-                            <span class="frente-stat-title">Rendimiento Hora Máquina</span>
-                            <span class="frente-stat-num" style="color: #FBBF24;" id="frente-retro-rend">— alc/h</span>
-                        </div>
                     </div>
                 </div>
 
@@ -420,7 +428,8 @@
                     </div>
                     <div class="frente-stats-inline">
                         <div class="frente-stat-block">
-                            <span style="color: #3B82F6; font-weight: bold; font-size: 0.95rem; text-transform: uppercase;">Volquete</span>
+                            <span style="color: #3B82F6; font-weight: bold; font-size: 1rem; text-transform: uppercase;">Volquete</span>
+                            <span class="frente-stat-title">Desalojo de Material</span>
                         </div>
                         <div class="frente-stat-block">
                             <span class="frente-stat-title">Horas Ejecutadas</span>
@@ -434,10 +443,6 @@
                             <span class="frente-stat-title">Grupos Intervenidos</span>
                             <span class="frente-stat-num" style="color: #60A5FA;" id="frente-volq-grupos">—</span>
                         </div>
-                        <div class="frente-stat-block">
-                            <span class="frente-stat-title">Rendimiento Hora Máquina</span>
-                            <span class="frente-stat-num" style="color: #FBBF24;" id="frente-volq-rend">— alc/h</span>
-                        </div>
                     </div>
                 </div>
 
@@ -449,7 +454,8 @@
                     </div>
                     <div class="frente-stats-inline">
                         <div class="frente-stat-block">
-                            <span style="color: #F59E0B; font-weight: bold; font-size: 0.95rem; text-transform: uppercase;">Excavadora</span>
+                            <span style="color: #F59E0B; font-weight: bold; font-size: 1rem; text-transform: uppercase;">Excavadora</span>
+                            <span class="frente-stat-title">Limpieza Profunda</span>
                         </div>
                         <div class="frente-stat-block">
                             <span class="frente-stat-title">Horas Ejecutadas</span>
@@ -463,10 +469,6 @@
                             <span class="frente-stat-title">Grupos Intervenidos</span>
                             <span class="frente-stat-num" style="color: #60A5FA;" id="frente-exc-grupos">—</span>
                         </div>
-                        <div class="frente-stat-block">
-                            <span class="frente-stat-title">Rendimiento Hora Máquina</span>
-                            <span class="frente-stat-num" style="color: #FBBF24;" id="frente-exc-rend">— alc/h</span>
-                        </div>
                     </div>
                 </div>
 
@@ -477,7 +479,7 @@
                     </div>
                     <div class="frente-stats-inline">
                         <div class="frente-stat-block">
-                            <span style="color: #38BDF8; font-weight: bold; font-size: 0.95rem; text-transform: uppercase;">Microempresas</span>
+                            <span style="color: #38BDF8; font-weight: bold; font-size: 1rem; text-transform: uppercase;">Microempresas</span>
                             <span class="frente-stat-title">Conservación Vial RVE</span>
                         </div>
                         <div class="frente-stat-block">
@@ -491,10 +493,6 @@
                         <div class="frente-stat-block">
                             <span class="frente-stat-title">Días Gestión Prom. / Rend. Prom.</span>
                             <span class="frente-stat-num" style="color: #34D399;" id="frente-mic-rend">— días / — alc/día</span>
-                        </div>
-                        <div class="frente-stat-block">
-                            <span class="frente-stat-title">Costo Prom. por Alcantarilla</span>
-                            <span class="frente-stat-num" style="color: #FBBF24;" id="frente-mic-costo">—</span>
                         </div>
                     </div>
                 </div>
@@ -575,7 +573,7 @@
                 </div>
             </div>
 
-            <!-- SECCIÓN 4: TABLA DE DESPLIEGUE TÉCNICO Y PROGRESO EN CAMPO -->
+            <!-- SECCIÓN 4: TABLA DE DESPLIEGUE TÉCNICO Y PROGRESO EN CAMPO (CON BOTÓN DE VISOR DE RUTA) -->
             <div class="panel">
                 <h3>📋 Despliegue Técnico y Progreso en Campo</h3>
                 
@@ -620,7 +618,7 @@
                                 <th style="text-align: center;">Kilómetros Atendidos</th>
                                 <th style="width: 130px;">Progreso del Tramo</th>
                                 <th style="text-align: center; width: 125px;">Rendimiento Diario</th>
-                                <th style="text-align: center;">Costo / Alc. (USD)</th>
+                                <th style="text-align: center; width: 120px;">Ver en Mapa</th>
                             </tr>
                         </thead>
                         <tbody id="tabla-rendimiento-body">
@@ -762,7 +760,7 @@
         };
 
         // =========================================================================
-        // EMPAREJAMIENTO DE MICROEMPRESAS
+        // EMPAREJAMIENTO DE MICROEMPRESAS Y HOMOLOGACIÓN ESPACIAL DE TRAMOS
         // =========================================================================
         const ALIAS_MICROS = {
             "PALTENSES": "PALTENSES",
@@ -773,6 +771,24 @@
             "NINO DE POTRERILLOS": "NINO DE POTRERILLOS",
             "SABIANGO": "SABIANGO",
             "PUYANGO": "PUYANGO"
+        };
+
+        // Homologación entre microempresa normalizada y el atributo TRAMO en alcantarillas.js
+        const MAPA_MICRO_A_TRAMO_QGIS = {
+            "CAMINOS DEL SUR": "LOJA - CATAMAYO",
+            "NINO DE POTRERILLOS": "LÍMITE PROVINCIAL AZUAY/LOJA (OÑA) - SARAGURO",
+            "CANAVERALES": "SAN PEDRO DE LA BENDITA - VELACRUZ",
+            "AMERICA": "CATAMAYO - GONZANAMÁ",
+            "PALTENSES": "CATACOCHA - EL EMPALME",
+            "LLANKAY TANTANAKUY": "SAN LUCAS - LOJA",
+            "VIRGEN DEL CISNE": "PUENTE GUAYABAL - SAN PEDRO DE LA BENDITA",
+            "PORVENIR": "LOJA - VILCABAMBA",
+            "DIVINO NINO": "CÉLICA - EL EMPALME",
+            "TIGRES DEL CAMINO": "CARIAMANGA - SOZORANGA",
+            "LARAMA": "EL EMPALME - MACARÁ - PUENTE INTERNACIONAL",
+            "BUENAVISTA": "LÍMITE PROVINCIAL EL ORO/LOJA (RÍO PINDO) - CHAGUARPAMBA",
+            "SABIANGO": "SOZORANGA - MACARÁ",
+            "PUYANGO": "LÍMITE PROVINCIAL EL ORO/LOJA (RÍO PUYANGO) - Y DE ALAMOR"
         };
 
         function normalizarMicro(nombre) {
@@ -801,6 +817,46 @@
                 .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
                 .trim().replace(/\s+/g, ' ');
         }
+
+        // Función para ir desde el ícono de mapa de la tabla directamente al tramo en el Visor Geográfico
+        window.irAlVisorRuta = function(nombreEmpresa, rutaTexto) {
+            switchTab('geoportal');
+            setTimeout(() => {
+                if (!capaAlcantarillas) return;
+                let claveMicro = normalizarMicro(nombreEmpresa);
+                let tramoObjetivo = MAPA_MICRO_A_TRAMO_QGIS[claveMicro] || '';
+                let normTramoObjetivo = normalizarEncabezado(tramoObjetivo);
+                let palabrasRuta = normalizarEncabezado(rutaTexto).split(/[\s\-]+/).filter(w => w.length > 3);
+
+                let latlngs = [];
+                capaAlcantarillas.eachLayer(function(layer) {
+                    if (!layer.feature || !layer.feature.properties) return;
+                    let props = layer.feature.properties;
+                    let tramoCapa = normalizarEncabezado(props['TRAMO'] || props['tramo'] || props['Tramo'] || '');
+                    let subtramoCapa = normalizarEncabezado(props['SUBTRAMO'] || props['subtramo'] || '');
+
+                    let coincide = false;
+                    if (normTramoObjetivo && tramoCapa === normTramoObjetivo) {
+                        coincide = true;
+                    } else if (!normTramoObjetivo && palabrasRuta.length > 0) {
+                        coincide = palabrasRuta.some(p => tramoCapa.includes(p) || subtramoCapa.includes(p));
+                    }
+
+                    if (coincide) {
+                        let coord = typeof layer.getLatLng === 'function'
+                            ? layer.getLatLng()
+                            : (layer.getBounds ? layer.getBounds().getCenter() : null);
+                        if (coord) latlngs.push(coord);
+                    }
+                });
+
+                if (latlngs.length > 0) {
+                    map.flyToBounds(L.latLngBounds(latlngs), { padding: [50, 50], maxZoom: 13, duration: 1.5 });
+                } else {
+                    resetMapa();
+                }
+            }, 200);
+        };
 
         // =========================================================================
         // LECTURA DE DATOS (CONFIGURACIÓN REGIONAL ECUADOR)
@@ -963,6 +1019,16 @@
             return parseFloat(val) || 0;
         }
 
+        // Obtiene los días de gestión desde el Drive para una microempresa; si no existe en Drive, usa las fechas únicas del Excel
+        function obtenerDiasGestionMicro(nombreReal, fechasUnicasSet) {
+            let claveMicro = normalizarMicro(nombreReal);
+            let datosComp = driveConectado ? driveGruposPorMicro[claveMicro] : null;
+            if (datosComp && datosComp.diasGestion > 0) {
+                return datosComp.diasGestion;
+            }
+            return (fechasUnicasSet && fechasUnicasSet.size > 0) ? fechasUnicasSet.size : 1;
+        }
+
         // =========================================================================
         // PROCESAMIENTO DE REPORTE_DIARIO.XLSX (GUÍA OFICIAL)
         // =========================================================================
@@ -1069,18 +1135,13 @@
                     porcAbs = Math.min(100, Math.round((info.kmTrabajados / info.distanciaTotalKm) * 100));
                 }
 
-                let totalDias = info.fechasUnicas.size > 0 ? info.fechasUnicas.size : 1;
+                // Tiempo en días tomado desde el Drive (DIAS DE GESTION) cuando exista
+                let totalDias = obtenerDiasGestionMicro(info.nombreReal, info.fechasUnicas);
                 let promAlcDiario = (info.limpiadasAcumuladas / totalDias).toFixed(1);
                 let promKmDiario = (info.kmTrabajados / totalDias).toFixed(2);
 
-                // Emparejar Costo / Alc. (USD) con insignia esmeralda sobria y elegante
-                let claveMicro = normalizarMicro(info.nombreReal);
-                let datosComp = driveConectado ? driveGruposPorMicro[claveMicro] : null;
-                let colCostoAlc = '<span style="color: #6B7280;">—</span>';
-
-                if (datosComp && datosComp.costoPorAlc > 0) {
-                    colCostoAlc = `<span class="costo-alc-badge">${formatearMoneda(datosComp.costoPorAlc)}</span>`;
-                }
+                let nombreEscapado = info.nombreReal.replace(/'/g, "\\'");
+                let rutaEscapada = info.ruta.replace(/'/g, "\\'");
 
                 let tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -1114,7 +1175,11 @@
                         <div style="color: #34D399; font-weight: bold;">${promKmDiario} <span style="font-size: 0.65rem; color: #9CA3AF;">Km/día</span></div>
                         <div style="font-size: 0.65rem; color: #FBBF24; margin-top: 4px; border-top: 1px solid #4B5563; padding-top: 2px;">en ${totalDias} días lab.</div>
                     </td>
-                    <td style="text-align: center;">${colCostoAlc}</td>
+                    <td style="text-align: center;">
+                        <button class="btn-ir-mapa" onclick="irAlVisorRuta('${nombreEscapado}', '${rutaEscapada}')" title="Enfocar tramo ${info.ruta} en el Visor Geográfico">
+                            🗺️ Ver Ruta
+                        </button>
+                    </td>
                 `;
                 tbody.appendChild(tr);
             }
@@ -1445,18 +1510,15 @@
             function calcMaquina(propHoras, tarifaH) {
                 let horas = 0;
                 let grupos = 0;
-                let alcConMaqSuma = 0;
                 lista.forEach(g => {
                     let h = g[propHoras] || 0;
                     if (h > 0) {
                         horas += h;
                         grupos++;
-                        alcConMaqSuma += g.alcConMaq;
                     }
                 });
                 let costo = horas * tarifaH;
-                let rendHora = horas > 0 ? (alcConMaqSuma / horas) : 0;
-                return { horas, costo, grupos, rendHora };
+                return { horas, costo, grupos };
             }
 
             function renderizarCeldaGrupos(elId, numGrupos, propHoras, nombreMaq) {
@@ -1472,19 +1534,16 @@
             document.getElementById('frente-retro-horas').innerText = `${stRetro.horas.toFixed(1)} h`;
             document.getElementById('frente-retro-costo').innerText = formatearMoneda(stRetro.costo);
             renderizarCeldaGrupos('frente-retro-grupos', stRetro.grupos, 'horasRetro', 'Retroexcavadora');
-            document.getElementById('frente-retro-rend').innerText = `${stRetro.rendHora.toFixed(2)} alc/h`;
 
             let stVolq = calcMaquina('horasVolq', PLAN.tarifa.volquete);
             document.getElementById('frente-volq-horas').innerText = `${stVolq.horas.toFixed(1)} h`;
             document.getElementById('frente-volq-costo').innerText = formatearMoneda(stVolq.costo);
             renderizarCeldaGrupos('frente-volq-grupos', stVolq.grupos, 'horasVolq', 'Volquete');
-            document.getElementById('frente-volq-rend').innerText = `${stVolq.rendHora.toFixed(2)} alc/h`;
 
             let stExc = calcMaquina('horasExc', PLAN.tarifa.excavadora);
             document.getElementById('frente-exc-horas').innerText = `${stExc.horas.toFixed(1)} h`;
             document.getElementById('frente-exc-costo').innerText = formatearMoneda(stExc.costo);
             renderizarCeldaGrupos('frente-exc-grupos', stExc.grupos, 'horasExc', 'Excavadora');
-            document.getElementById('frente-exc-rend').innerText = `${stExc.rendHora.toFixed(2)} alc/h`;
         }
 
         function actualizarFilaMicroempresasFrentes() {
@@ -1501,7 +1560,7 @@
                 let sumaRendMicro = 0;
                 clavesMicrosDiario.forEach(k => {
                     let info = ultimoResumenRegistroDiario[k];
-                    let dias = info.fechasUnicas.size > 0 ? info.fechasUnicas.size : 1;
+                    let dias = obtenerDiasGestionMicro(info.nombreReal, info.fechasUnicas);
                     let rend = info.limpiadasAcumuladas / dias;
                     sumaDiasMicro += dias;
                     sumaRendMicro += rend;
@@ -1512,30 +1571,10 @@
             } else {
                 document.getElementById('frente-mic-rend').innerText = '— días / — alc/día';
             }
-
-            if (driveConectado) {
-                let lista = Object.values(driveGruposPorMicro);
-                let sumaCostoTotal = 0;
-                let sumaAlcLimpias = 0;
-                lista.forEach(g => {
-                    if (g.alcLimpiadas > 0) {
-                        sumaCostoTotal += g.costoTotal;
-                        sumaAlcLimpias += g.alcLimpiadas;
-                    }
-                });
-                if (sumaAlcLimpias > 0) {
-                    let costoPromPonderado = sumaCostoTotal / sumaAlcLimpias;
-                    document.getElementById('frente-mic-costo').innerText = formatearMoneda(costoPromPonderado);
-                } else {
-                    document.getElementById('frente-mic-costo').innerText = '—';
-                }
-            } else {
-                document.getElementById('frente-mic-costo').innerText = '—';
-            }
         }
 
         // =========================================================================
-        // SECCIÓN DE AVANCE: META GLOBAL CON PORCENTAJE ENTERO REDONDEADO Y TÍTULO ALINEADO
+        // SECCIÓN DE AVANCE: META GLOBAL CON TIEMPO EN DÍAS DESDE EL DRIVE
         // =========================================================================
         function actualizarSeccionMetaGlobalYProyeccion() {
             const metaGlobal = PLAN.metaGlobal || 3473;
@@ -1547,505 +1586,4 @@
 
             document.getElementById('kpi-global-txt').innerText = `${pctGlobalEntero}% Completado`;
             document.getElementById('kpi-global-centro').innerText = `${pctGlobalEntero}%`;
-            document.getElementById('kpi-global-num').innerText = avanceGlobal.toLocaleString();
-
-            document.getElementById('desc-meta-global').innerText =
-                `Avance integral de limpieza y desazolve ejecutado de forma articulada entre las microempresas de conservación vial y la maquinaria institucional en toda la Red Vial Estatal de la Zonal 7.`;
-
-            if (globalPieChart) {
-                globalPieChart.data.datasets[0].data = [avanceGlobal, pendientesGlobal];
-                globalPieChart.update();
-            }
-
-            const diasLaborablesReg = fechasUnicasGlobalesDiario.size;
-            if (diasLaborablesReg > 0 && avanceGlobal > 0) {
-                const rendActualizado = avanceGlobal / diasLaborablesReg;
-                document.getElementById('proy-rend-actual').innerText = `${rendActualizado.toFixed(2)} alc/día`;
-                document.getElementById('proy-tiempo-trans').innerText = `${diasLaborablesReg} días laborables`;
-            } else if (diasLaborablesReg > 0) {
-                document.getElementById('proy-rend-actual').innerText = `0.00 alc/día`;
-                document.getElementById('proy-tiempo-trans').innerText = `${diasLaborablesReg} días laborables`;
-            } else {
-                document.getElementById('proy-rend-actual').innerText = '— alc/día';
-                document.getElementById('proy-tiempo-trans').innerText = '— días laborables';
-            }
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            ejecutarDiagnosticoConsola();
-
-            // Donut Meta Específica (188 prioritarias)
-            const ctxPie = document.getElementById('graficoAvancePie').getContext('2d');
-            avancePieChart = new Chart(ctxPie, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Críticas Limpias', 'Críticas Pendientes'],
-                    datasets: [{
-                        data: [0, 188],
-                        backgroundColor: ['#10B981', '#374151'],
-                        borderWidth: 0,
-                        cutout: '80%' 
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        datalabels: { display: false }
-                    }
-                }
-            });
-
-            // Donut Meta Global (3,473 alcantarillas RVE Zonal 7)
-            const ctxGlobal = document.getElementById('graficoGlobalPie').getContext('2d');
-            globalPieChart = new Chart(ctxGlobal, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Alcantarillas Limpias RVE', 'Pendientes RVE'],
-                    datasets: [{
-                        data: [0, PLAN.metaGlobal],
-                        backgroundColor: ['#3B82F6', '#374151'],
-                        borderWidth: 0,
-                        cutout: '80%'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        datalabels: { display: false }
-                    }
-                }
-            });
-
-            cargarDatosDrive();
-
-            fetch('Reporte_Diario.xlsx?v=' + new Date().getTime())
-                .then(response => {
-                    if (!response.ok) throw new Error("Archivo no encontrado en el servidor");
-                    return response.arrayBuffer();
-                })
-                .then(data => {
-                    let workbook = XLSX.read(new Uint8Array(data), {type: 'array'});
-                    let firstSheet = workbook.SheetNames[0];
-                    let excelRows = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
-                    
-                    procesarDatosExcel(excelRows);
-
-                    let badge = document.getElementById('conexion-estado');
-                    badge.innerHTML = '<div class="status-dot"></div> Conectado a Servidor';
-                    badge.style.background = 'rgba(16, 185, 129, 0.2)';
-                    badge.style.color = '#10B981';
-                    badge.style.border = '1px solid rgba(16, 185, 129, 0.4)';
-                })
-                .catch(error => {
-                    console.warn("Modo servidor falló:", error);
-                    let badge = document.getElementById('conexion-estado');
-                    badge.innerHTML = '⚠️ Modo Local Activo';
-                    badge.style.background = 'rgba(245, 158, 11, 0.2)';
-                    badge.style.color = '#F59E0B';
-                    badge.style.border = '1px solid rgba(245, 158, 11, 0.4)';
-                    
-                    document.getElementById('tabla-rendimiento-body').innerHTML = `<tr><td colspan="9" style="text-align: center; color: #F59E0B; padding: 20px;"><b>No se detectó el archivo en el servidor.</b><br>Por favor, usa el botón de "Carga Local" abajo para leer el archivo desde tu computadora.</td></tr>`;
-                    document.getElementById('manual-upload-container').style.display = 'flex';
-                    
-                    actualizarMapaGeografico();
-                });
-        });
-
-        document.getElementById('excel-file').addEventListener('change', function(e) {
-            let files = e.target.files;
-            if (files.length === 0) return;
-            let f = files[0];
-            let reader = new FileReader();
-
-            reader.onload = function(e) {
-                try {
-                    let data = new Uint8Array(e.target.result);
-                    let workbook = XLSX.read(data, {type: 'array'});
-                    let firstSheet = workbook.SheetNames[0];
-                    let excelRows = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
-                    
-                    procesarDatosExcel(excelRows);
-
-                    let successMsg = document.getElementById('success-msg');
-                    successMsg.style.display = 'block';
-                    setTimeout(() => { successMsg.style.display = 'none'; }, 5000);
-                } catch (error) {
-                    alert("Error al procesar el Excel. Revisa la consola.");
-                    console.error(error);
-                }
-            };
-            reader.readAsArrayBuffer(f);
-        });
-
-        Chart.register(ChartDataLabels);
-        const centroZonal = [-4.0, -79.2];
-        const zoomOriginal = 9;
-        
-        var map = L.map('map', {zoomControl: false}).setView(centroZonal, zoomOriginal);
-        L.control.zoom({ position: 'bottomleft' }).addTo(map);
-
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors',
-            className: 'mapa-oscuro-osm',
-            maxZoom: 19
-        }).addTo(map);
-
-        function resetMapa() {
-            map.flyTo(centroZonal, zoomOriginal, { duration: 1.5 });
-        }
-
-        let grupoRutas = L.layerGroup().addTo(map);
-        let grupoLimpias = L.layerGroup().addTo(map); 
-        let grupoInmediata = L.layerGroup().addTo(map);
-        let grupoAlta = L.layerGroup().addTo(map);
-        let grupoAltaInmediata = L.layerGroup().addTo(map);
-        let grupoMedia = L.layerGroup().addTo(map);
-        let grupoPrioritaria = L.layerGroup().addTo(map);
-        let grupoAtendidas = L.layerGroup().addTo(map); 
-
-        if (typeof rutasRVEData !== 'undefined') {
-            L.geoJSON(rutasRVEData, {
-                style: function(feature) { return { color: "#2563EB", weight: 4, opacity: 1 }; }
-            }).addTo(grupoRutas);
-        }
-
-        let capaAlcantarillas;
-
-        function actualizarMapaGeografico() {
-            grupoLimpias.clearLayers();
-            grupoInmediata.clearLayers();
-            grupoAlta.clearLayers();
-            grupoAltaInmediata.clearLayers();
-            grupoMedia.clearLayers();
-            grupoPrioritaria.clearLayers();
-            grupoAtendidas.clearLayers();
-
-            if (capaAlcantarillas) {
-                map.removeLayer(capaAlcantarillas);
-            }
-
-            let criticasCount = 0;
-            let criticasAtendidasCount = 0; 
-            let countInm = 0, countAlt = 0, countAltInm = 0, countMed = 0, countPrio = 0;
-            let conteoTramos = {};
-
-            if (typeof alcantarillasData !== 'undefined') {
-                capaAlcantarillas = L.geoJSON(alcantarillasData, {
-                    pointToLayer: function (feature, latlng) {
-                        if (!feature.properties) {
-                            return L.circleMarker(latlng, { radius: 5, fillColor: "#cccccc", weight: 1, color: "#ffffff", opacity: 1, fillOpacity: 0.8 });
-                        }
-
-                        let idUnico = feature.properties['OBJECTID'] || feature.properties['FID'] || feature.properties['ID'] || feature.properties['id'] || feature.properties['NUMERO'] || feature.properties['numero'] || 'S/N';
-                        let esAtendida = setAlcantarillasAtendidas.has(String(idUnico));
-
-                        let nivelRaw = feature.properties['PRIORIDAD'] || feature.properties['prioridad'] || feature.properties['Prioridad'] || 
-                                       feature.properties['PRIORIDA'] || feature.properties['priorida'] || feature.properties['Priorida'] ||
-                                       feature.properties['NIVEL'] || feature.properties['nivel'] || feature.properties['Nivel'] ||
-                                       feature.properties['PRIORIDA_1'] || feature.properties['PRIORIDAD_'] || '';
-
-                        let nivel = String(nivelRaw).toLowerCase().replace(/\s+/g, ''); 
-                        let tramoRaw = feature.properties['TRAMO'] || feature.properties['tramo'] || feature.properties['Tramo'] || 'Desconocido';
-                        let tramo = String(tramoRaw).trim().toUpperCase(); 
-                        let codigoD = feature.properties['CÓDIGO_D_'] || feature.properties['CODIGO_D_'] || feature.properties['codigo'] || feature.properties['CODIGO'] || 'N/A';
-                        let estadoFisico = feature.properties['ESTADO DE'] || feature.properties['ESTADO_DE'] || feature.properties['estado'] || feature.properties['ESTADO'] || 'N/A';
-
-                        let colorPunto = '#8B4513'; 
-                        let esCritica = false;
-
-                        if (nivel.includes('inmediata') && !nivel.includes('alta')) { colorPunto = '#FF0000'; esCritica = true; countInm++; } 
-                        else if (nivel.includes('altainm') || (nivel.includes('alta') && nivel.includes('inmediata'))) { colorPunto = '#FF7F00'; esCritica = true; countAltInm++; } 
-                        else if (nivel.includes('alta') && !nivel.includes('inmediata')) { colorPunto = '#FFFF00'; esCritica = true; countAlt++; } 
-                        else if (nivel.includes('media')) { colorPunto = '#008000'; esCritica = true; countMed++; } 
-                        else if (nivel.includes('prioritaria')) { colorPunto = '#00FF00'; esCritica = true; countPrio++; }
-
-                        let marcadorBase = L.circleMarker(latlng, { radius: 5, fillColor: colorPunto, color: "#ffffff", weight: 1, opacity: 1, fillOpacity: 0.9 });
-                        let popupContent = '';
-                        
-                        if (!esCritica) {
-                            let badgeEstadoLimpias = esAtendida 
-                                ? `<div style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10B981; color: #10B981; padding: 6px 10px; border-radius: 6px; font-weight: bold; text-align: center; margin-bottom: 15px; letter-spacing: 0.5px;">✅ ESTADO: LIMPIA / ATENDIDA</div>`
-                                : '';
-
-                            popupContent = `
-                                <div style="font-family: 'Segoe UI', Tahoma, sans-serif;">
-                                    <h4 style="margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 1px solid #374151; color: #F59E0B; font-size: 1.15rem; font-weight: bold;">${tramoRaw}</h4>
-                                    <div style="margin-bottom: 8px; font-size: 0.95rem;"><b style="color: #ffffff;">ID Único:</b> <span style="color: #9CA3AF;">${idUnico}</span></div>
-                                    <div style="margin-bottom: 8px; font-size: 0.95rem;"><b style="color: #ffffff;">Código:</b> <span style="color: #9CA3AF;">${codigoD}</span></div>
-                                    ${badgeEstadoLimpias}${esAtendida ? `
-                                    <div style="display:flex; gap:15px; margin-top:15px;">
-                                        <div style="flex:1; text-align:center;">
-                                            <div style="font-size:0.8rem; color:#EF4444; font-weight:bold; margin-bottom:5px;">ANTES</div>
-                                            <select onchange="cambiarFoto('antes', '${idUnico}', this.value)" style="width: 100%; margin-bottom: 10px; background: #374151; color: white; border: 1px solid #4B5563; border-radius: 4px; padding: 5px; font-size: 0.8rem; cursor: pointer;">
-                                                <option value="1">📸 Fotografía 1</option><option value="2">📸 Fotografía 2</option><option value="3">📸 Fotografía 3</option>
-                                            </select>
-                                            <div style="position: relative; width: 100%; height: 160px; background-color: #1F2937; border-radius: 6px; border: 1px dashed #4B5563; overflow: hidden; display: flex; align-items: center; justify-content: center;">
-                                                <div style="position: absolute; color: #6B7280; font-size: 0.75rem; text-align: center; font-weight: bold; z-index: 0;">🚫<br>FOTO NO<br>DISPONIBLE</div>
-                                                <img id="img-antes-${idUnico}" src="fotos/${idUnico}antes.jpg" style="position: relative; z-index: 1; width:100%; height:100%; object-fit:cover; transition: opacity 0.3s ease;" onerror="this.style.opacity='0';" onload="this.style.opacity='1';" alt="">
-                                            </div>
-                                        </div>
-                                        <div style="flex:1; text-align:center;">
-                                            <div style="font-size:0.8rem; color:#10B981; font-weight:bold; margin-bottom:5px;">DESPUÉS</div>
-                                            <select onchange="cambiarFoto('despues', '${idUnico}', this.value)" style="width: 100%; margin-bottom: 10px; background: #374151; color: white; border: 1px solid #4B5563; border-radius: 4px; padding: 5px; font-size: 0.8rem; cursor: pointer;">
-                                                <option value="1">📸 Fotografía 1</option><option value="2">📸 Fotografía 2</option><option value="3">📸 Fotografía 3</option>
-                                            </select>
-                                            <div style="position: relative; width: 100%; height: 160px; background-color: #1F2937; border-radius: 6px; border: 1px dashed #4B5563; overflow: hidden; display: flex; align-items: center; justify-content: center;">
-                                                <div style="position: absolute; color: #6B7280; font-size: 0.75rem; text-align: center; font-weight: bold; z-index: 0;">🚫<br>FOTO NO<br>DISPONIBLE</div>
-                                                <img id="img-despues-${idUnico}" src="fotos/${idUnico}despues.jpg" style="position: relative; z-index: 1; width:100%; height:100%; object-fit:cover; transition: opacity 0.3s ease;" onerror="this.style.opacity='0';" onload="this.style.opacity='1';" alt="">
-                                            </div>
-                                        </div>
-                                    </div>` : ''}
-                                </div>
-                            `;
-                        } else {
-                            let badgeEstado = esAtendida 
-                                ? `<div style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10B981; color: #10B981; padding: 6px 10px; border-radius: 6px; font-weight: bold; text-align: center; margin-bottom: 15px; letter-spacing: 0.5px;">✅ ESTADO: LIMPIA / ATENDIDA</div>`
-                                : ``;
-
-                            let atencionHtml = `<div style="font-size: 0.95rem; margin-bottom: 15px;"><b style="color: #ffffff;">Nivel de Atención Primario:</b> <span style="color: #9CA3AF; font-weight:bold;">${nivelRaw || 'N/A'}</span></div>`;
-
-                            popupContent = `
-                                <div style="font-family: 'Segoe UI', Tahoma, sans-serif;">
-                                    <h4 style="margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 1px solid #374151; color: #F59E0B; font-size: 1.25rem; font-weight: bold;">${tramoRaw}</h4>
-                                    <div style="margin-bottom: 8px; font-size: 0.95rem;"><b style="color: #ffffff;">ID Único:</b> <span style="color: #9CA3AF;">${idUnico}</span></div>
-                                    <div style="margin-bottom: 8px; font-size: 0.95rem;"><b style="color: #ffffff;">Código:</b> <span style="color: #9CA3AF;">${codigoD}</span></div>
-                                    <div style="margin-bottom: 8px; font-size: 0.95rem;"><b style="color: #ffffff;">Diagnóstico Inicial:</b> <span style="color: #9CA3AF;">${estadoFisico}</span></div>
-                                    ${atencionHtml}
-                                    ${badgeEstado}
-                                    <div style="display:flex; gap:15px; margin-top:15px;">
-                                        <div style="flex:1; text-align:center;">
-                                            <div style="font-size:0.8rem; color:#EF4444; font-weight:bold; margin-bottom:5px;">ANTES</div>
-                                            <select onchange="cambiarFoto('antes', '${idUnico}', this.value)" style="width: 100%; margin-bottom: 10px; background: #374151; color: white; border: 1px solid #4B5563; border-radius: 4px; padding: 5px; font-size: 0.8rem; cursor: pointer;">
-                                                <option value="1">📸 Fotografía 1</option><option value="2">📸 Fotografía 2</option><option value="3">📸 Fotografía 3</option>
-                                            </select>
-                                            <div style="position: relative; width: 100%; height: 160px; background-color: #1F2937; border-radius: 6px; border: 1px dashed #4B5563; overflow: hidden; display: flex; align-items: center; justify-content: center;">
-                                                <div style="position: absolute; color: #6B7280; font-size: 0.75rem; text-align: center; font-weight: bold; z-index: 0;">🚫<br>FOTO NO<br>DISPONIBLE</div>
-                                                <img id="img-antes-${idUnico}" src="fotos/${idUnico}antes.jpg" style="position: relative; z-index: 1; width:100%; height:100%; object-fit:cover; transition: opacity 0.3s ease;" onerror="this.style.opacity='0';" onload="this.style.opacity='1';" alt="">
-                                            </div>
-                                        </div>
-                                        <div style="flex:1; text-align:center;">
-                                            <div style="font-size:0.8rem; color:#10B981; font-weight:bold; margin-bottom:5px;">DESPUÉS</div>
-                                            <select onchange="cambiarFoto('despues', '${idUnico}', this.value)" style="width: 100%; margin-bottom: 10px; background: #374151; color: white; border: 1px solid #4B5563; border-radius: 4px; padding: 5px; font-size: 0.8rem; cursor: pointer;">
-                                                <option value="1">📸 Fotografía 1</option><option value="2">📸 Fotografía 2</option><option value="3">📸 Fotografía 3</option>
-                                            </select>
-                                            <div style="position: relative; width: 100%; height: 160px; background-color: #1F2937; border-radius: 6px; border: 1px dashed #4B5563; overflow: hidden; display: flex; align-items: center; justify-content: center;">
-                                                <div style="position: absolute; color: #6B7280; font-size: 0.75rem; text-align: center; font-weight: bold; z-index: 0;">🚫<br>FOTO NO<br>DISPONIBLE</div>
-                                                <img id="img-despues-${idUnico}" src="fotos/${idUnico}despues.jpg" style="position: relative; z-index: 1; width:100%; height:100%; object-fit:cover; transition: opacity 0.3s ease;" onerror="this.style.opacity='0';" onload="this.style.opacity='1';" alt="">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-                        }
-                        
-                        marcadorBase.bindPopup(popupContent, { minWidth: esAtendida ? 460 : 300 });
-                        return marcadorBase;
-                    },
-                    onEachFeature: function (feature, layer) {
-                        if (!feature.properties) return;
-                        
-                        let idUnico = feature.properties['OBJECTID'] || feature.properties['FID'] || feature.properties['ID'] || feature.properties['id'] || feature.properties['NUMERO'] || feature.properties['numero'] || 'S/N';
-                        let esAtendida = setAlcantarillasAtendidas.has(String(idUnico));
-
-                        let nivelRaw = feature.properties['PRIORIDAD'] || feature.properties['prioridad'] || feature.properties['Prioridad'] || 
-                                       feature.properties['PRIORIDA'] || feature.properties['priorida'] || feature.properties['Priorida'] ||
-                                       feature.properties['NIVEL'] || feature.properties['nivel'] || feature.properties['Nivel'] ||
-                                       feature.properties['PRIORIDA_1'] || feature.properties['PRIORIDAD_'] || '';
-                                       
-                        let nivel = String(nivelRaw).toLowerCase().replace(/\s+/g, '');
-                        
-                        let esCritica = false;
-                        if (nivel.includes('inmediata') && !nivel.includes('alta')) { grupoInmediata.addLayer(layer); esCritica = true; } 
-                        else if (nivel.includes('altainm') || (nivel.includes('alta') && nivel.includes('inmediata'))) { grupoAltaInmediata.addLayer(layer); esCritica = true; } 
-                        else if (nivel.includes('alta') && !nivel.includes('inmediata')) { grupoAlta.addLayer(layer); esCritica = true; } 
-                        else if (nivel.includes('media')) { grupoMedia.addLayer(layer); esCritica = true; } 
-                        else if (nivel.includes('prioritaria')) { grupoPrioritaria.addLayer(layer); esCritica = true; } 
-                        else { grupoLimpias.addLayer(layer); }
-
-                        if (esCritica) {
-                            criticasCount++;
-                            if (esAtendida) {
-                                criticasAtendidasCount++;
-                            }
-                            let tramoRaw = feature.properties['TRAMO'] || feature.properties['tramo'] || feature.properties['Tramo'] || 'Desconocido';
-                            let tramo = String(tramoRaw).trim().toUpperCase();
-                            if (tramo && tramo !== "DESCONOCIDO" && tramo !== "") {
-                                conteoTramos[tramo] = (conteoTramos[tramo] || 0) + 1;
-                            }
-                        }
-
-                        if (esAtendida) {
-                            let latlng = typeof layer.getLatLng === 'function' 
-                                ? layer.getLatLng() 
-                                : (layer.getBounds ? layer.getBounds().getCenter() : null);
-
-                            if (latlng) {
-                                let marcadorAura = L.circleMarker(latlng, {
-                                    radius: 8, color: "#00FFFF", weight: 3, opacity: 0.9, fillColor: "#00FFFF", fillOpacity: 0.35, interactive: false 
-                                });
-                                grupoAtendidas.addLayer(marcadorAura);
-                            }
-                        }
-                    }
-                }); 
-
-                // ACTUALIZACIÓN DE GRÁFICA DE PASTEL ESTRICTAMENTE PARA PUNTOS CRÍTICOS
-                if (avancePieChart) {
-                    let pendientes = Math.max(0, criticasCount - criticasAtendidasCount);
-                    avancePieChart.data.datasets[0].data = [criticasAtendidasCount, pendientes];
-                    avancePieChart.update();
-                    
-                    let porcentajeAvance = criticasCount > 0 ? Math.min(100, Math.round((criticasAtendidasCount / criticasCount) * 100)) : 0;
-                    document.getElementById('kpi-avance-txt').innerText = `${porcentajeAvance}% Completado`;
-                    document.getElementById('kpi-avance-centro').innerText = `${porcentajeAvance}%`;
-                    document.getElementById('kpi-limpias-num').innerText = criticasAtendidasCount;
-                    document.getElementById('kpi-criticas-total').innerText = '/ ' + criticasCount;
-                }
-
-                document.getElementById('kpi-total').innerText = criticasCount;
-                document.getElementById('val-inmediata').innerText = countInm;
-                document.getElementById('val-alta').innerText = countAlt;
-                document.getElementById('val-altainm').innerText = countAltInm;
-                document.getElementById('val-media').innerText = countMed;
-                document.getElementById('val-prioritaria').innerText = countPrio;
-
-                let tramosOrdenados = Object.keys(conteoTramos).sort((a, b) => conteoTramos[b] - conteoTramos[a]);
-                let valoresOrdenados = tramosOrdenados.map(t => conteoTramos[t]);
-
-                let cantidadTramos = tramosOrdenados.length;
-                let alturaIdeal = Math.max(300, (cantidadTramos * 32) + 20); 
-                document.getElementById('graficoTramosWrapper').style.height = alturaIdeal + 'px';
-
-                let chartElement = document.getElementById('graficoTramos');
-                let chartInstance = Chart.getChart(chartElement);
-                if (chartInstance) chartInstance.destroy();
-
-                const ctx = chartElement.getContext('2d');
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: tramosOrdenados,
-                        datasets: [{
-                            label: 'Puntos Prioritarios',
-                            data: valoresOrdenados,
-                            backgroundColor: '#3B82F6', 
-                            borderRadius: 4,
-                            barPercentage: 0.6,
-                            categoryPercentage: 0.8
-                        }]
-                    },
-                    options: {
-                        indexAxis: 'y',
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        onClick: (event, activeElements) => {
-                            if (activeElements.length > 0 && capaAlcantarillas) {
-                                const dataIndex = activeElements[0].index;
-                                const tramoSeleccionado = tramosOrdenados[dataIndex];
-                                let latlngs = [];
-                                capaAlcantarillas.eachLayer(function(layer) {
-                                    if (!layer.feature || !layer.feature.properties) return;
-                                    let tramoRaw = layer.feature.properties['TRAMO'] || layer.feature.properties['tramo'] || layer.feature.properties['Tramo'] || '';
-                                    let tramoActual = String(tramoRaw).trim().toUpperCase();
-                                    if (tramoActual === tramoSeleccionado) {
-                                        let coord = typeof layer.getLatLng === 'function' 
-                                            ? layer.getLatLng() 
-                                            : (layer.getBounds ? layer.getBounds().getCenter() : null);
-                                        if (coord) latlngs.push(coord);
-                                    }
-                                });
-                                if (latlngs.length > 0) {
-                                    map.flyToBounds(L.latLngBounds(latlngs), { padding: [50, 50], maxZoom: 13, duration: 1.5 });
-                                }
-                            }
-                        },
-                        layout: { padding: { left: 0, right: 30, top: 10, bottom: 10 } },
-                        plugins: { 
-                            legend: { display: false },
-                            datalabels: { 
-                                color: '#ffffff', anchor: 'start', align: 'right', offset: 8, backgroundColor: '#60A5FA', 
-                                borderRadius: 4, font: { weight: 'bold', size: 11 }, padding: { left: 6, right: 6, top: 3, bottom: 3 }
-                            }
-                        },
-                        scales: {
-                            x: { display: false, max: Math.max(...valoresOrdenados) * 1.2 },
-                            y: { ticks: { color: '#D1D5DB', font: { weight: 'bold', size: 9 }, autoSkip: false, padding: 8 }, grid: { display: false, drawBorder: false }, border: { display: false } }
-                        }
-                    }
-                });
-            }
-        }
-
-        const toggleCapa = (idCheck, grupoCapa) => {
-            document.getElementById(idCheck).addEventListener('change', function(e) {
-                e.target.checked ? map.addLayer(grupoCapa) : map.removeLayer(grupoCapa);
-            });
-        };
-
-        toggleCapa('chk-rutas', grupoRutas);
-        toggleCapa('chk-inmediata', grupoInmediata);
-        toggleCapa('chk-alta', grupoAlta);
-        toggleCapa('chk-altainmediata', grupoAltaInmediata);
-        toggleCapa('chk-media', grupoMedia);
-        toggleCapa('chk-prioritaria', grupoPrioritaria);
-        toggleCapa('chk-limpias', grupoLimpias);
-        toggleCapa('chk-atendidas', grupoAtendidas);
-        // ==========================================
-        // MOTOR DE BÚSQUEDA ESPACIAL
-        // ==========================================
-        function buscarAlcantarilla() {
-            let inputElement = document.getElementById('buscador-id');
-            let termino = inputElement.value.trim().toLowerCase();
-            
-            if (!termino) return; // Si está vacío, no hace nada
-
-            let encontrada = false;
-
-            if (capaAlcantarillas) {
-                // Recorremos todos los puntos del mapa
-                capaAlcantarillas.eachLayer(function(layer) {
-                    if (!layer.feature || !layer.feature.properties) return;
-
-                    let props = layer.feature.properties;
-                    
-                    // Extraemos los posibles IDs o códigos exportados por QGIS
-                    let idUnico = String(props['OBJECTID'] || props['FID'] || props['ID'] || props['id'] || props['NUMERO'] || props['numero'] || '').toLowerCase();
-                    let codigoD = String(props['CÓDIGO_D_'] || props['CODIGO_D_'] || props['codigo'] || props['CODIGO'] || '').toLowerCase();
-
-                    // Verificamos si el texto buscado coincide con el ID o el Código
-                    if (idUnico === termino || codigoD === termino || idUnico.includes(termino) || codigoD.includes(termino)) {
-                        
-                        // Extraemos la coordenada segura (Punto o Polígono)
-                        let coord = typeof layer.getLatLng === 'function' 
-                            ? layer.getLatLng() 
-                            : (layer.getBounds ? layer.getBounds().getCenter() : null);
-
-                        if (coord) {
-                            encontrada = true;
-                            
-                            // 1. Volar al punto con zoom cercano
-                            map.flyTo(coord, 18, { duration: 1.5 });
-                            
-                            // 2. Esperar a que termine el vuelo para abrir la ventana de fotos (Popup)
-                            setTimeout(() => {
-                                layer.openPopup();
-                            }, 1500);
-                            
-                            // Limpiamos el buscador tras el éxito
-                            inputElement.value = '';
-                        }
-                    }
-                });
-            }
-
-            if (!encontrada) {
-                alert("No se encontró ninguna alcantarilla registrada con el ID o Código: " + termino.toUpperCase());
-            }
-        }
-    </script>
-</body>
-</html>
+            document.getElementById('kpi-
