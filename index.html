@@ -659,12 +659,21 @@
         <div id="sidebar">
             <!-- BUSCADOR DE ALCANTARILLAS -->
             <div class="search-container">
+                <!-- FILTRO DE ORDENAMIENTO TERRITORIAL POR CANTÓN DE LOJA -->
+                <div style="background-color: #27303F; padding: 15px 18px; border-radius: 8px; margin-bottom: 18px; border-left: 4px solid #FBBF24;">
+                  <div style="font-size: 0.8rem; color: #FBBF24; margin-bottom: 8px; font-weight: bold; text-transform: uppercase;">🏛️ Ordenamiento Territorial — Cantones</div>
+                  <select id="select-canton-filtro" onchange="filtrarPorCanton(this.value)" style="width: 100%; background: #1F2937; color: #FFFFFF; border: 1px solid #4B5563; padding: 9px 12px; border-radius: 6px; font-size: 0.88rem; font-weight: bold; cursor: pointer; outline: none;">
+                      <option value="TODOS">📍 Ver Todos los Cantones de Loja</option>
+                  </select>
+                  <div id="resumen-canton-seleccionado" style="display: none; margin-top: 12px; padding-top: 10px; border-top: 1px solid #374151; font-size: 0.82rem; line-height: 1.5; color: #D1D5DB;"></div>
+            </div>
                 <input type="text" id="buscador-id" class="search-input" placeholder="Buscar ID o Código (ej. 1820)..." onkeypress="if(event.key === 'Enter') buscarAlcantarilla()">
                 <button class="search-btn" onclick="buscarAlcantarilla()">🔍</button>
             </div>
             <h3>🗺️ Control de Capas de Prevención</h3>
             
             <div style="background-color: #27303F; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                <label class="capa-label"><input type="checkbox" id="chk-cantones" checked style="accent-color: #FBBF24; width: 16px; height: 16px;"> <span style="color: #FBBF24; margin-left: 8px; font-weight: bold;">▢</span> Límites Cantonales (Loja)</label>
                 <label class="capa-label"><input type="checkbox" id="chk-rutas" checked style="accent-color: #2563EB; width: 16px; height: 16px;"> <span style="color: #60A5FA; margin-left: 8px; font-weight: bold;">—</span> Red Vial Estatal</label>
                 <hr style="border: 0; border-top: 1px solid #4B5563; margin: 15px 0;">
                 
@@ -740,6 +749,7 @@
         </div>
     </div>
 
+    <script src="cantonesLoja.js"></script>
     <script src="alcantarillas.js"></script>
     <script src="rutasRVE.js"></script>
 
@@ -2333,6 +2343,216 @@
 
             if (!encontrada) {
                 alert("No se encontró ninguna alcantarilla registrada con el ID o Código: " + termino.toUpperCase());
+                // =========================================================================
+        // MÓDULO DE ORDENAMIENTO TERRITORIAL: CANTONES DE LOJA Y MAQUINARIA PERTINENTE
+        // =========================================================================
+        let grupoCantones = L.layerGroup().addTo(map);
+        let estadisticasPorCanton = {};
+
+        // Relación técnica entre Tramos de la RVE, Cantón de Loja y Maquinaria Pertinente
+        const INFO_TERRITORIAL_TRAMOS = {
+            "LOJA - CATAMAYO": { canton: "LOJA / CATAMAYO", maquinaria: "Retroexcavadora + Volquete" },
+            "SAN LUCAS - LOJA": { canton: "LOJA", maquinaria: "Retroexcavadora (68 h) + Volquete (64 h)" },
+            "SARAGURO - SAN LUCAS": { canton: "SARAGURO", maquinaria: "Retroexcavadora + Volquete" },
+            "LÍMITE PROVINCIAL AZUAY/LOJA (OÑA) - SARAGURO": { canton: "SARAGURO", maquinaria: "Retroexcavadora (95 h) + Volquete (42 h)" },
+            "LOJA - VILCABAMBA": { canton: "LOJA", maquinaria: "Retroexcavadora + Volquete" },
+            "VILCABAMBA - YANGANA": { canton: "LOJA", maquinaria: "Retroexcavadora + Volquete" },
+            "YANGANA - LÍMITE PROVINCIAL LOJA/ZAMORA (SABANILLA)": { canton: "LOJA", maquinaria: "Retroexcavadora + Volquete" },
+            "LOJA - LÍMITE PROVINCIAL LOJA/ZAMORA CHINCHIPE (EL TIRO)": { canton: "LOJA", maquinaria: "Retroexcavadora + Volquete" },
+            "VARIANTE VÍA MIRAFLORES": { canton: "LOJA", maquinaria: "Retroexcavadora + Volquete" },
+            "CATAMAYO - PUENTE GUAYABAL": { canton: "CATAMAYO", maquinaria: "Retroexcavadora + Volquete" },
+            "PUENTE GUAYABAL - SAN PEDRO DE LA BENDITA": { canton: "CATAMAYO", maquinaria: "Retroexcavadora + Volquete" },
+            "SAN PEDRO DE LA BENDITA - VELACRUZ": { canton: "CATAMAYO", maquinaria: "Retroexcavadora (120 h) + Volquete (55 h)" },
+            "CATAMAYO - GONZANAMÁ": { canton: "GONZANAMÁ", maquinaria: "Retroexcavadora (110 h) + Excavadora (35 h) + Volquete (48 h)" },
+            "GONZANAMÁ - CARIAMANGA": { canton: "CALVAS", maquinaria: "Retroexcavadora + Volquete" },
+            "CARIAMANGA - SOZORANGA": { canton: "SOZORANGA", maquinaria: "Retroexcavadora + Volquete" },
+            "SOZORANGA - MACARÁ": { canton: "MACARÁ", maquinaria: "Retroexcavadora + Volquete" },
+            "VELACRUZ - CATACOCHA": { canton: "PALTAS", maquinaria: "Retroexcavadora + Volquete" },
+            "CATACOCHA - EL EMPALME": { canton: "PALTAS", maquinaria: "Retroexcavadora (145 h) + Excavadora (40 h) + Volquete (60 h)" },
+            "CHAGUARPAMBA - VELACRUZ": { canton: "CHAGUARPAMBA", maquinaria: "Retroexcavadora + Excavadora + Volquete" },
+            "LÍMITE PROVINCIAL EL ORO/LOJA (RÍO PINDO) - CHAGUARPAMBA": { canton: "CHAGUARPAMBA", maquinaria: "Retroexcavadora (118 h) + Excavadora (38 h) + Volquete (32 h)" },
+            "LÍMITE PROVINCIAL EL ORO/LOJA (RÍO PUYANGO) - Y DE ALAMOR": { canton: "PUYANGO", maquinaria: "Retroexcavadora (100 h) + Excavadora (32 h) + Volquete (28 h)" },
+            "Y DE ALAMOR - CÉLICA": { canton: "CELICA", maquinaria: "Retroexcavadora + Excavadora + Volquete" },
+            "CÉLICA - EL EMPALME": { canton: "CELICA", maquinaria: "Retroexcavadora (105 h) + Excavadora (32 h) + Volquete (38 h)" },
+            "EL EMPALME - MACARÁ - PUENTE INTERNACIONAL": { canton: "MACARÁ", maquinaria: "Retroexcavadora + Volquete" },
+            "Y DE ALAMOR - PINDAL": { canton: "PINDAL", maquinaria: "Retroexcavadora + Volquete" },
+            "PINDAL - ZAPOTILLO": { canton: "ZAPOTILLO", maquinaria: "Retroexcavadora + Volquete" },
+            "ZAPOTILLO - LALAMOR": { canton: "ZAPOTILLO", maquinaria: "Retroexcavadora + Volquete" }
+        };
+
+        // Determina el cantón de cada alcantarilla (desde el atributo de QGIS o inferido por el tramo)
+        function obtenerCantonDeAlcantarilla(props) {
+            let cantonAttr = props['CANTON'] || props['canton'] || props['DPA_DESCAN'] || props['NOMBRE_CAN'] || '';
+            if (cantonAttr && String(cantonAttr).trim() !== '') {
+                return String(cantonAttr).trim().toUpperCase();
+            }
+            let tramo = String(props['TRAMO'] || props['tramo'] || '').trim().toUpperCase();
+            let subtramo = String(props['SUBTRAMO'] || props['subtramo'] || '').trim().toUpperCase();
+
+            if (tramo === "LOJA - CATAMAYO" || tramo === "CATAMAYO - GONZANAMÁ") {
+                if (subtramo.includes("NAMBACOLA") && !subtramo.includes("CATAMAYO")) return "GONZANAMÁ";
+                return "CATAMAYO";
+            }
+            if (INFO_TERRITORIAL_TRAMOS[tramo]) {
+                return INFO_TERRITORIAL_TRAMOS[tramo].canton;
+            }
+            return "LOJA";
+        }
+
+        function obtenerMaquinariaDeTramo(tramo) {
+            let t = String(tramo || '').trim().toUpperCase();
+            return INFO_TERRITORIAL_TRAMOS[t] ? INFO_TERRITORIAL_TRAMOS[t].maquinaria : "Retroexcavadora + Volquete + Cuadrilla";
+        }
+
+        // Calcula cuántas alcantarillas limpias y pendientes por limpiar tiene cada Cantón de Loja
+        function calcularEstadisticasCantonales() {
+            estadisticasPorCanton = {};
+            if (typeof alcantarillasData === 'undefined' || !alcantarillasData.features) return;
+
+            alcantarillasData.features.forEach(f => {
+                if (!f.properties) return;
+                let props = f.properties;
+                let idUnico = String(props['OBJECTID'] || props['FID'] || props['ID'] || props['id'] || props['NUMERO'] || '').trim();
+                let canton = obtenerCantonDeAlcantarilla(props);
+                let tramo = String(props['TRAMO'] || props['tramo'] || 'Sin tramo').trim().toUpperCase();
+                let esLimpia = setAlcantarillasAtendidas.has(idUnico);
+
+                let nivelRaw = props['PRIORIDAD'] || props['prioridad'] || props['PRIORIDA'] || props['NIVEL'] || '';
+                let nivel = String(nivelRaw).toLowerCase().replace(/\s+/g, '');
+                let esPrioritaria = nivel.includes('inmediata') || nivel.includes('alta') || nivel.includes('media') || nivel.includes('prioritaria');
+
+                if (!estadisticasPorCanton[canton]) {
+                    estadisticasPorCanton[canton] = {
+                        total: 0,
+                        limpias: 0,
+                        faltanPorLimpiar: 0,
+                        prioritariasPendientes: 0,
+                        maquinarias: new Set(),
+                        coords: []
+                    };
+                }
+
+                let st = estadisticasPorCanton[canton];
+                st.total++;
+                if (esLimpia) {
+                    st.limpias++;
+                } else {
+                    st.faltanPorLimpiar++;
+                    if (esPrioritaria) st.prioritariasPendientes++;
+                }
+                st.maquinarias.add(obtenerMaquinariaDeTramo(tramo));
+
+                if (f.geometry && f.geometry.coordinates) {
+                    let rawC = f.geometry.type === "MultiPoint" ? f.geometry.coordinates[0] : f.geometry.coordinates;
+                    if (rawC && rawC.length >= 2) {
+                        st.coords.push(coordsSegurasLatLng(rawC));
+                    }
+                }
+            });
+
+            // Poblar el selector de cantones en el sidebar
+            const sel = document.getElementById('select-canton-filtro');
+            if (sel) {
+                let valorActual = sel.value || 'TODOS';
+                sel.innerHTML = `<option value="TODOS">📍 Todos los Cantones (${alcantarillasData.features.length} alc.)</option>`;
+                Object.keys(estadisticasPorCanton).sort().forEach(c => {
+                    let info = estadisticasPorCanton[c];
+                    let opt = document.createElement('option');
+                    opt.value = c;
+                    opt.textContent = `${c} — Limpias: ${info.limpias} | Faltan: ${info.faltanPorLimpiar}`;
+                    sel.appendChild(opt);
+                });
+                sel.value = valorActual;
+            }
+
+            dibujarPoligonosCantones();
+        }
+
+        // Dibuja los polígonos cantonales si existe cantonesLoja.js exportado desde QGIS
+        function dibujarPoligonosCantones() {
+            grupoCantones.clearLayers();
+            if (typeof cantonesLojaData === 'undefined' || !cantonesLojaData) return;
+
+            L.geoJSON(cantonesLojaData, {
+                coordsToLatLng: function(coords) { return coordsSegurasLatLng(coords); },
+                style: function(feature) {
+                    return {
+                        color: "#FBBF24",
+                        weight: 2,
+                        dashArray: "5, 5",
+                        fillColor: "#1E293B",
+                        fillOpacity: 0.18
+                    };
+                },
+                onEachFeature: function(feature, layer) {
+                    let props = feature.properties || {};
+                    let nomCanton = String(props['DPA_DESCAN'] || props['CANTON'] || props['NOMBRE'] || 'Cantón').trim().toUpperCase();
+                    let st = estadisticasPorCanton[nomCanton] || { total: 0, limpias: 0, faltanPorLimpiar: 0, prioritariasPendientes: 0, maquinarias: new Set(["Retroexcavadora + Volquete"]) };
+                    let maqTxt = Array.from(st.maquinarias).join(" / ");
+
+                    layer.bindPopup(`
+                        <div style="font-family: 'Segoe UI', sans-serif;">
+                            <h4 style="margin:0 0 10px 0; color:#FBBF24; border-bottom:1px solid #374151; padding-bottom:6px;">🏛️ CANTÓN ${nomCanton}</h4>
+                            <div><b>Total Alcantarillas RVE:</b> ${st.total}</div>
+                            <div style="color:#10B981; font-weight:bold;">✅ Limpias: ${st.limpias}</div>
+                            <div style="color:#F87171; font-weight:bold;">⏳ Faltan por limpiar: ${st.faltanPorLimpiar} (${st.prioritariasPendientes} prioritarias)</div>
+                            <div style="margin-top:8px; font-size:0.85rem; color:#60A5FA;"><b>🚜 Maquinaria Pertinente:</b><br>${maqTxt}</div>
+                        </div>
+                    `);
+                }
+            }).addTo(grupoCantones);
+        }
+
+        // Filtra el mapa al elegir un Cantón y muestra su ficha de Ordenamiento Territorial
+        window.filtrarPorCanton = function(cantonSeleccionado) {
+            const boxResumen = document.getElementById('resumen-canton-seleccionado');
+            if (cantonSeleccionado === 'TODOS') {
+                if (boxResumen) boxResumen.style.display = 'none';
+                resetMapa();
+                return;
+            }
+
+            let st = estadisticasPorCanton[cantonSeleccionado];
+            if (!st) return;
+
+            let porcLimpio = st.total > 0 ? Math.round((st.limpias / st.total) * 100) : 0;
+            let maqTxt = Array.from(st.maquinarias)[0] || "Retroexcavadora + Volquete";
+
+            if (boxResumen) {
+                boxResumen.style.display = 'block';
+                boxResumen.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                        <span>Total en Jurisdicción:</span><strong style="color:#FFF;">${st.total} alc.</strong>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                        <span>✅ Limpias (Atendidas):</span><strong style="color:#10B981;">${st.limpias} (${porcLimpio}%)</strong>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                        <span>⏳ Faltan por Limpiar:</span><strong style="color:#F87171;">${st.faltanPorLimpiar} (${st.prioritariasPendientes} críticas)</strong>
+                    </div>
+                    <div style="background:#1F2937; padding:6px 10px; border-radius:6px; border:1px solid #374151; font-size:0.76rem;">
+                        <span style="color:#9CA3AF; display:block; text-transform:uppercase; font-size:0.65rem;">🚜 Maquinaria Asignada al Cantón:</span>
+                        <strong style="color:#60A5FA;">${maqTxt}</strong>
+                    </div>
+                `;
+            }
+
+            if (st.coords && st.coords.length > 0) {
+                map.flyToBounds(L.latLngBounds(st.coords), { padding: [50, 50], maxZoom: 12, duration: 1.5 });
+            }
+        };
+
+        if (document.getElementById('chk-cantones')) {
+            toggleCapa('chk-cantones', grupoCantones);
+        }
+
+        // Ejecutar el cálculo cantonal cada vez que se actualice el mapa o el Excel
+        const _originalActualizarMapa = actualizarMapaGeografico;
+        actualizarMapaGeografico = function() {
+            _originalActualizarMapa();
+            calcularEstadisticasCantonales();
+        };
+        setTimeout(calcularEstadisticasCantonales, 400);
             }
         }
     </script>
