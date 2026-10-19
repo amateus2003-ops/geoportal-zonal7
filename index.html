@@ -164,7 +164,7 @@
         .btn-ir-mapa:hover { background: #3B82F6; color: #FFFFFF; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4); }
 
         .progress-bar-container { background-color: #374151; border-radius: 6px; height: 16px; width: 100%; position: relative; overflow: hidden; margin-top: 5px; }
-        /* BARRA DE AVANCE CANTONAL AGRANDADA Y DESTACADA */
+        /* BARRA DE AVANCE CANTONAL AMPLIADA Y DESTACADA */
         .progress-bar-canton {
             background-color: #374151;
             border-radius: 8px;
@@ -186,7 +186,7 @@
         .progress-bar-fill-abs { background-color: #10B981; height: 100%; width: 0%; transition: width 0.6s ease-in-out; }
         .progress-text { position: absolute; width: 100%; text-align: center; font-size: 0.7rem; color: #FFFFFF; font-weight: bold; top: 0; line-height: 16px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
 
-        /* PIE DE PÁGINA INSTITUCIONAL DE AUTORÍA */
+        /* PIE DE PÁGINA DE AUTORÍA */
         .footer-autoria {
             margin-top: 10px;
             padding: 18px 25px;
@@ -300,7 +300,6 @@
             .overlay-stats { width: 100%; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
         }
 
-        /* Vista para Tablets (hasta 1024px) */
         @media (max-width: 1024px) {
             #cronograma-view { padding: 20px 15px; }
             .panel-avance-general { padding: 28px 25px; gap: 20px; }
@@ -308,7 +307,6 @@
             #sidebar { width: 340px; min-width: 340px; }
         }
 
-        /* Vista para Celulares y Tablets verticales (hasta 850px) */
         @media (max-width: 850px) {
             body { height: 100dvh; }
             header { flex-direction: column; height: auto; padding: 10px 12px; gap: 8px; text-align: center; }
@@ -589,7 +587,7 @@
                 </div>
             </div>
 
-            <!-- SECCIÓN DIDÁCTICA: ORDENAMIENTO TERRITORIAL POR CANTONES DE LOJA (CON BARRA DE AVANCE CANTONAL AMPLIADA) -->
+            <!-- SECCIÓN DIDÁCTICA: ORDENAMIENTO TERRITORIAL POR CANTONES DE LOJA -->
             <div class="panel" style="border-left: 6px solid #FBBF24;">
                 <h3 style="color: #FBBF24;">🏛️ Ordenamiento Territorial por Cantones de Loja — Distribución de Alcantarillas</h3>
                 <p style="font-size: 0.85rem; color: #9CA3AF; margin-top: -5px; margin-bottom: 14px;">Distribución espacial por jurisdicción cantonal de las alcantarillas limpias y las que faltan por limpiar en la Red Vial Estatal.</p>
@@ -854,6 +852,7 @@
             "SABIANGO": "SABIANGO",
             "PUYANGO": "PUYANGO",
             "LLANKAY TANTANAKUY": "LLANKAY TANTANAKUY",
+            "LLANKAY": "LLANKAY TANTANAKUY",
             "CAMINOS DEL SUR": "CAMINOS DEL SUR",
             "VIRGEN DEL CISNE": "VIRGEN DEL CISNE",
             "PORVENIR": "PORVENIR",
@@ -1017,6 +1016,7 @@
                     }
                 }
             }
+            if (s.includes("LLANKAY")) return "LLANKAY TANTANAKUY";
             return ALIAS_MICROS[s] || s;
         }
 
@@ -1633,11 +1633,13 @@
             return "";
         }
 
+        // Extrae las horas dinámicas de Retroexcavadora, Excavadora y Volquete de cada fila
         function extraerHorasMaquinariaDeFila(r) {
             let hRetro = parseNumeroDrive(obtenerValorColumnaEstricta(r, ["HORAS RETROEXCAVADORA (H)", "HORAS RETROEXCAVADORA", "RETROEXCAVADORA", "HORAS RETRO"], []));
             let hExc = parseNumeroDrive(obtenerValorColumnaEstricta(r, ["HORAS EXCAVADORA (H)", "HORAS EXCAVADORA", "EXCAVADORA"], ["RETRO"]));
             let hVolq = parseNumeroDrive(obtenerValorColumnaEstricta(r, ["HORAS VOLQUETE (H)", "HORAS VOLQUETE", "VOLQUETE", "VOLQUETES"], []));
 
+            // Soporte adicional si en la fila se especifica el nombre de la máquina en una celda y las horas al lado
             for (let k in r) {
                 let valStr = normalizarEncabezado(r[k]);
                 if (valStr === "RETROEXCAVADORA" || valStr === "VOLQUETE" || valStr === "EXCAVADORA") {
@@ -1653,24 +1655,14 @@
             return { hRetro, hExc, hVolq };
         }
 
-        function esRegistroDuplicadoGestion(setHuellas, tramo, inicio, fin, monto) {
-            let t = normalizarEncabezado(tramo);
-            let i = normalizarEncabezado(inicio);
-            let f = normalizarEncabezado(fin);
-            let m = Number(monto || 0).toFixed(2);
-            if (!t && !i && !f && Number(m) === 0) return false;
-
-            let huella = `${t}||${i}||${f}||${m}`;
-            if (setHuellas.has(huella)) {
-                return true;
-            }
-            setHuellas.add(huella);
-            return false;
-        }
-
+        // =========================================================================
+        // PROCESAMIENTO DE LA HOJA GRUPOS DEL DRIVE:
+        // - DATOS ESTÁTICOS REPETIDOS (Grupo/Microempresa, Tramo, Monto Total Cobrado, Fechas, Días): NO SE SUMAN.
+        // - DATOS DINÁMICOS DE MAQUINARIA (Horas Retro, Horas Excavadora, Horas Volquete): SÍ SE SUMAN SIEMPRE
+        //   (por ejemplo, suma las dos filas de LLANKAY para reflejar 68 h de Retro y 64 h de Volquete).
+        // =========================================================================
         function procesarHojaGrupos(rows) {
             let nuevosGrupos = {};
-            let huellasGestionVistas = new Set();
             let ultimaClaveGrupo = "";
             let ultimoTramoVisto = "";
 
@@ -1679,6 +1671,7 @@
                 let nombreLimpio = String(rawNombre || "").trim();
                 let normNom = normalizarEncabezado(nombreLimpio);
 
+                // Ignorar filas de totales o promedios al final de la hoja
                 if (normNom === "TOTAL" || normNom.startsWith("TOTAL ") || normNom === "PROMEDIO" || normNom.includes("RESUMEN")) return;
 
                 let tramoFila = String(obtenerValorColumnaEstricta(r, ["TRAMO", "RUTA"], []) || "").trim();
@@ -1686,18 +1679,18 @@
                 let finRaw = String(obtenerValorColumnaEstricta(r, ["FIN DE GESTION", "FIN GESTION", "FIN"], ["MAQUINARIA"]) || "").trim();
                 let montoRaw = parseNumeroDrive(obtenerValorColumnaEstricta(r, ["MONTO TOTAL COBRADO (USD)", "MONTO TOTAL COBRADO", "MONTO COBRADO", "MONTO TOTAL"], []));
 
-                let clave = nombreLimpio ? normalizarMicro(nombreLimpio) : ultimaClaveGrupo;
+                let clave = nombreLimpio ? normalizarMicro(nombreLimpio) : "";
                 if (!clave && tramoFila) {
                     let tNorm = normalizarEncabezado(tramoFila);
-                    if (tNorm.includes("SANTIAGO")) clave = "LLANKAY TANTANAKUY";
+                    if (tNorm.includes("SANTIAGO") || tNorm.includes("SAN LUCAS")) clave = "LLANKAY TANTANAKUY";
                     else if (tNorm.includes("SARAGURO") || tNorm.includes("ONA")) clave = "NINO DE POTRERILLOS";
                     else if (tNorm.includes("VERACRUZ") || tNorm.includes("VELACRUZ")) clave = "CANAVERALES";
                     else if (tNorm.includes("NAMBACOLA") || tNorm.includes("GONZANAMA")) clave = "AMERICA";
                     else if (tNorm.includes("MACANDAMINE") || tNorm.includes("CATACOCHA")) clave = "PALTENSES";
                     else if (tNorm.includes("PINDO") || tNorm.includes("CHAGUARPAMBA")) clave = "BUENAVISTA";
                     else if (tNorm.includes("PUYANGO") || tNorm.includes("ALAMOR")) clave = "PUYANGO";
-                    else clave = tNorm;
                 }
+                if (!clave) clave = ultimaClaveGrupo;
                 if (!clave) return;
 
                 ultimaClaveGrupo = clave;
@@ -1707,10 +1700,8 @@
                 let diasGest = parseNumeroDrive(obtenerValorColumnaEstricta(r, ["DIAS DE GESTION", "DIAS GESTION", "DIAS LABORABLES"], []));
                 let alcLimp = parseNumeroDrive(obtenerValorColumnaEstricta(r, ["N° ALCANTARILLAS LIMPIADAS", "ALCANTARILLAS LIMPIADAS"], ["MAQUINARIA"]));
 
-                let tramoEfectivo = tramoFila || ultimoTramoVisto || clave;
-                let duplicado = esRegistroDuplicadoGestion(huellasGestionVistas, tramoEfectivo, iniRaw, finRaw, montoRaw);
-
                 if (!nuevosGrupos[clave]) {
+                    // Primera vez que aparece el grupo: registramos sus datos estáticos e inicializamos sus horas dinámicas
                     nuevosGrupos[clave] = {
                         nombreOriginal: nombreLimpio || clave,
                         tramo: tramoFila || ultimoTramoVisto || "—",
@@ -1728,31 +1719,38 @@
                         costoTotal: 0
                     };
                 } else {
-                    if (!duplicado) {
-                        if (nuevosGrupos[clave].montoCobrado === 0 && montoRaw > 0) {
-                            nuevosGrupos[clave].montoCobrado = montoRaw;
-                        }
-                        if (!nuevosGrupos[clave].inicioGestionDate && iniRaw) {
-                            nuevosGrupos[clave].inicioGestionRaw = iniRaw;
-                            nuevosGrupos[clave].inicioGestionDate = parseFechaDrive(iniRaw);
-                        }
-                        if (nuevosGrupos[clave].diasGestion === 0 && diasGest > 0) {
-                            nuevosGrupos[clave].diasGestion = diasGest;
-                        }
-                        if (nuevosGrupos[clave].alcLimpiadas === 0 && alcLimp > 0) {
-                            nuevosGrupos[clave].alcLimpiadas = alcLimp;
-                        }
-                        nuevosGrupos[clave].horasRetro += hRetro;
-                        nuevosGrupos[clave].horasExc += hExc;
-                        nuevosGrupos[clave].horasVolq += hVolq;
-                    } else {
-                        if (nuevosGrupos[clave].horasRetro === 0 && hRetro > 0) nuevosGrupos[clave].horasRetro = hRetro;
-                        if (nuevosGrupos[clave].horasExc === 0 && hExc > 0) nuevosGrupos[clave].horasExc = hExc;
-                        if (nuevosGrupos[clave].horasVolq === 0 && hVolq > 0) nuevosGrupos[clave].horasVolq = hVolq;
+                    // Segunda o más filas del MISMO grupo (ej. segunda fila de LLANKAY):
+                    // 1) Los datos estáticos repetidos (Grupo, Tramo, Monto Total Cobrado, Fechas, Días) NO SE SUMAN;
+                    //    solo se rellenan si estaban vacíos en la primera fila.
+                    if (nuevosGrupos[clave].montoCobrado === 0 && montoRaw > 0) {
+                        nuevosGrupos[clave].montoCobrado = montoRaw;
                     }
+                    if ((!nuevosGrupos[clave].tramo || nuevosGrupos[clave].tramo === "—") && tramoFila) {
+                        nuevosGrupos[clave].tramo = tramoFila;
+                    }
+                    if (!nuevosGrupos[clave].inicioGestionDate && iniRaw) {
+                        nuevosGrupos[clave].inicioGestionRaw = iniRaw;
+                        nuevosGrupos[clave].inicioGestionDate = parseFechaDrive(iniRaw);
+                    }
+                    if (!nuevosGrupos[clave].finGestionDate && finRaw) {
+                        nuevosGrupos[clave].finGestionRaw = finRaw;
+                        nuevosGrupos[clave].finGestionDate = parseFechaDrive(finRaw);
+                    }
+                    if (nuevosGrupos[clave].diasGestion === 0 && diasGest > 0) {
+                        nuevosGrupos[clave].diasGestion = diasGest;
+                    }
+                    if (nuevosGrupos[clave].alcLimpiadas === 0 && alcLimp > 0) {
+                        nuevosGrupos[clave].alcLimpiadas = alcLimp;
+                    }
+
+                    // 2) Los datos dinámicos (Horas de Retroexcavadora, Excavadora y Volquete) SÍ SE SUMAN SIEMPRE
+                    nuevosGrupos[clave].horasRetro += hRetro;
+                    nuevosGrupos[clave].horasExc   += hExc;
+                    nuevosGrupos[clave].horasVolq  += hVolq;
                 }
             });
 
+            // Recalcular el costo ejecutado de maquinaria con el total acumulado de horas por grupo
             for (let k in nuevosGrupos) {
                 let g = nuevosGrupos[k];
                 g.costoMaquinaria = (g.horasRetro * PLAN.tarifa.retro) + (g.horasExc * PLAN.tarifa.excavadora) + (g.horasVolq * PLAN.tarifa.volquete);
