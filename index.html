@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>Transparencia y Control - GeoPortal RVE Zonal 7</title>
     <link rel="icon" href="data:,">
     
@@ -16,24 +16,24 @@
     <style>
         body { margin: 0; padding: 0; background-color: #111827; color: #ffffff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         
-        header { background-color: #1F2937; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #374151; height: 60px; box-sizing: border-box; z-index: 3000; }
+        header { background-color: #1F2937; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #374151; min-height: 60px; box-sizing: border-box; z-index: 3000; }
         h1 { margin: 0; font-size: 1.2rem; color: #FBBF24; text-transform: uppercase; letter-spacing: 1px; }
         .nav-tabs { display: flex; gap: 10px; }
-        .tab-btn { background-color: #374151; color: #D1D5DB; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: all 0.3s; }
+        .tab-btn { background-color: #374151; color: #D1D5DB; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: all 0.3s; font-size: 0.88rem; }
         .tab-btn.active, .tab-btn:hover { background-color: #3B82F6; color: #FFFFFF; }
 
-        .view-container { display: none; flex-grow: 1; height: calc(100vh - 60px); overflow-y: auto; }
+        .view-container { display: none; flex-grow: 1; height: calc(100vh - 60px); overflow-y: auto; -webkit-overflow-scrolling: touch; }
         .view-container.active { display: flex; flex-direction: column; }
 
         #geoportal-view.active { display: flex; flex-direction: row; }
         
-        /* SIDEBAR AJUSTADO SIN DESBORDAMIENTO HORIZONTAL */
-        #sidebar { width: 370px; min-width: 370px; background-color: #1F2937; padding: 18px 16px; box-shadow: 2px 0 10px rgba(0,0,0,0.6); overflow-y: auto; overflow-x: hidden; z-index: 1000; box-sizing: border-box; height: 100%; display: flex; flex-direction: column; }
-        #sidebar::-webkit-scrollbar, .view-container::-webkit-scrollbar { width: 6px; }
+        /* SIDEBAR DEL VISOR GEOGRÁFICO */
+        #sidebar { width: 380px; min-width: 380px; background-color: #1F2937; padding: 18px 16px; box-shadow: 2px 0 10px rgba(0,0,0,0.6); overflow-y: auto; overflow-x: hidden; z-index: 1000; box-sizing: border-box; height: 100%; display: flex; flex-direction: column; }
+        #sidebar::-webkit-scrollbar, .view-container::-webkit-scrollbar { width: 6px; height: 6px; }
         #sidebar::-webkit-scrollbar-track, .view-container::-webkit-scrollbar-track { background: #1F2937; }
         #sidebar::-webkit-scrollbar-thumb, .view-container::-webkit-scrollbar-thumb { background: #4B5563; border-radius: 4px; }
         
-        #sidebar h3 { font-size: 0.95rem; color: #D1D5DB; margin-top: 0; text-transform: uppercase; line-height: 1.3; margin-bottom: 10px; }
+        #sidebar h3 { font-size: 0.95rem; color: #F3F4F6; margin-top: 0; text-transform: uppercase; line-height: 1.3; margin-bottom: 10px; letter-spacing: 0.4px; }
         
         #map-wrapper { position: relative; flex-grow: 1; height: 100%; display: flex; flex-direction: column; }
         #map { flex-grow: 1; width: 100%; height: 100%; z-index: 1; background: #0f172a; }
@@ -57,12 +57,12 @@
             gap: 15px;
         }
         .overlay-total { display: flex; align-items: center; gap: 12px; border-right: 2px solid #4B5563; padding-right: 20px; min-width: max-content; }
-        .overlay-stats { display: flex; gap: 10px; flex-grow: 1; justify-content: space-around; overflow: hidden;}
-        .overlay-stat-item { text-align: center; background: rgba(17, 24, 39, 0.6); padding: 8px 10px; border-radius: 8px; flex: 1; border: 1px solid #374151; min-width: 95px; }
+        .overlay-stats { display: flex; gap: 10px; flex-grow: 1; justify-content: space-around; overflow-x: auto; }
+        .overlay-stat-item { text-align: center; background: rgba(17, 24, 39, 0.65); padding: 8px 10px; border-radius: 8px; flex: 1; border: 1px solid #374151; min-width: 92px; }
         .overlay-stat-value { font-size: 1.5rem; font-weight: bold; color: #fff; line-height: 1.2; }
-        .overlay-stat-label { font-size: 0.7rem; color: #9CA3AF; text-transform: uppercase; margin-top: 4px; display: flex; align-items: center; justify-content: center; gap: 5px; font-weight: bold; white-space: nowrap; }
+        .overlay-stat-label { font-size: 0.7rem; color: #D1D5DB; text-transform: uppercase; margin-top: 4px; display: flex; align-items: center; justify-content: center; gap: 5px; font-weight: bold; white-space: nowrap; }
 
-        .capa-label { display: flex; align-items: center; margin-bottom: 9px; cursor: pointer; font-size: 0.85rem; }
+        .capa-label { display: flex; align-items: center; margin-bottom: 9px; cursor: pointer; font-size: 0.86rem; color: #E5E7EB; }
         /* FILTRO MATEMÁTICO PARA MODO OSCURO EN OSM */
         .mapa-oscuro-osm {
             filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
@@ -72,7 +72,7 @@
 
         /* Etiqueta de nombre de Cantón directamente en el mapa */
         .etiqueta-canton-mapa {
-            background: rgba(17, 24, 39, 0.85);
+            background: rgba(17, 24, 39, 0.88);
             border: 1px solid #FBBF24;
             color: #FBBF24;
             font-weight: 800;
@@ -87,17 +87,16 @@
         }
 
         .leaflet-popup-content-wrapper, .leaflet-popup-tip { background-color: #1F2937 !important; color: #ffffff !important; box-shadow: 0 4px 15px rgba(0,0,0,0.8) !important; }
-        .leaflet-popup-content { margin: 18px 22px !important; line-height: 1.5 !important; width: 420px !important; }
+        .leaflet-popup-content { margin: 18px 22px !important; line-height: 1.5 !important; width: 410px !important; max-width: 82vw !important; }
         .leaflet-container a.leaflet-popup-close-button { color: #9CA3AF !important; padding: 10px !important; }
         
-        .btn-reset-zoom { background-color: #3B82F6; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 14px; transition: background-color 0.3s; text-transform: uppercase; font-size: 0.82rem; letter-spacing: 0.5px; box-sizing: border-box; }
+        .btn-reset-zoom { background-color: #3B82F6; color: white; border: none; padding: 11px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 14px; transition: background-color 0.3s; text-transform: uppercase; font-size: 0.82rem; letter-spacing: 0.5px; box-sizing: border-box; flex-shrink: 0; }
         .btn-reset-zoom:hover { background-color: #2563EB; }
 
         #cronograma-view { padding: 30px; box-sizing: border-box; background-color: #111827; }
         
         .planificacion-banner { background: #1F2937; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.4); margin-bottom: 25px; border: 1px solid #374151; }
         .planificacion-grid { display: grid; grid-template-columns: 1.35fr 2.65fr; gap: 20px; }
-        @media (max-width: 1100px) { .planificacion-grid { grid-template-columns: 1fr; } }
         
         .plan-box-left { background: #27303F; border-radius: 10px; padding: 18px 12px; border-top: 4px solid #10B981; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; align-items: center; text-align: center; }
         .plan-box-right { background: #27303F; border-radius: 10px; padding: 18px 10px; border-top: 4px solid #3B82F6; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; align-items: center; text-align: center; }
@@ -108,7 +107,7 @@
         .plan-item-val { font-size: 1.1rem; font-weight: bold; color: #FBBF24; margin-top: 6px; line-height: 1.25; }
         .plan-item-lbl { font-size: 0.65rem; color: #9CA3AF; text-transform: uppercase; line-height: 1.2; letter-spacing: 0.5px; }
 
-        /* ESTILO REACOMODADO: TARJETA ÚNICA DE FRENTES DE TRABAJO EN LA RVE (4 COLUMNAS SIMÉTRICAS) */
+        /* TARJETA ÚNICA DE FRENTES DE TRABAJO EN LA RVE (4 COLUMNAS SIMÉTRICAS) */
         .frentes-rve-card { background: #1F2937; border-radius: 12px; padding: 22px 25px; border: 1px solid #374151; box-shadow: 0 4px 10px rgba(0,0,0,0.4); margin-bottom: 25px; }
         .frentes-rve-title { font-size: 0.95rem; color: #FBBF24; font-weight: bold; text-transform: uppercase; margin-bottom: 16px; letter-spacing: 0.5px; border-bottom: 1px solid #374151; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
         .frente-fila { display: flex; align-items: center; gap: 22px; background: #27303F; padding: 16px 24px; border-radius: 10px; margin-bottom: 12px; border: 1px solid #374151; transition: transform 0.2s, border-color 0.2s; }
@@ -134,33 +133,33 @@
         .modal-maquinaria-close:hover { color: #FFFFFF; background: #374151; }
         .modal-maquinaria-body { overflow-y: auto; }
 
-        /* ESTILOS SECCIÓN AVANCE */
+        /* SECCIÓN AVANCE */
         .panel-avance-general {
             display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 35px;
             border-left: 6px solid #10B981; padding: 38px 50px; background: linear-gradient(145deg, #1F2937 0%, #171F2E 100%);
             box-shadow: 0 6px 15px rgba(0,0,0,0.35), inset 0 0 20px rgba(0,0,0,0.2); border-radius: 12px; margin-bottom: 25px; box-sizing: border-box;
         }
         .panel-avance-global { border-left-color: #3B82F6; }
-        .avance-text-container { flex: 1; min-width: 320px; max-width: 780px; }
+        .avance-text-container { flex: 1; min-width: 280px; max-width: 780px; }
         .avance-titulo-banner { margin: 0; border-bottom: none; padding-bottom: 0; font-size: 1.35rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; display: block; line-height: 1.3; }
         .avance-desc-banner { color: #9CA3AF; font-size: 0.98rem; margin-top: 10px; margin-bottom: 0; line-height: 1.55; }
         .avance-big-pct { font-size: 3.6rem; font-weight: 800; color: #ffffff; text-shadow: 0 4px 8px rgba(0,0,0,0.45); margin: 16px 0 20px 0; letter-spacing: -1px; white-space: nowrap; line-height: 1.05; }
         .avance-badges-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
-        .avance-pill-box { font-size: 1.1rem; color: #D1D5DB; background: rgba(31, 41, 55, 0.85); padding: 11px 22px; border-radius: 8px; display: inline-flex; align-items: center; border: 1px solid #374151; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
-        .avance-chart-container { width: 260px; height: 260px; position: relative; display: flex; justify-content: center; align-items: center; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.35)); flex-shrink: 0; margin: 0 auto; }
+        .avance-pill-box { font-size: 1.05rem; color: #D1D5DB; background: rgba(31, 41, 55, 0.85); padding: 11px 20px; border-radius: 8px; display: inline-flex; align-items: center; border: 1px solid #374151; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+        .avance-chart-container { width: 250px; height: 250px; position: relative; display: flex; justify-content: center; align-items: center; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.35)); flex-shrink: 0; margin: 0 auto; }
 
         .panel { background-color: #1F2937; border-radius: 12px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); margin-bottom: 25px; }
         .panel h3 { margin-top: 0; border-bottom: 1px solid #374151; padding-bottom: 12px; color: #9CA3AF; font-size: 1.1rem; text-transform: uppercase; }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.82rem; }
-        th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid #374151; }
-        th { background-color: #111827; color: #FBBF24; text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.3px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.84rem; }
+        th, td { padding: 13px 12px; text-align: left; border-bottom: 1px solid #374151; }
+        th { background-color: #111827; color: #FBBF24; text-transform: uppercase; font-size: 0.73rem; letter-spacing: 0.4px; }
         tr:hover { background-color: #27303F; }
 
         .btn-ir-mapa {
             background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.45); color: #60A5FA;
             padding: 7px 14px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: bold;
-            display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.25s ease;
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.25s ease; white-space: nowrap;
         }
         .btn-ir-mapa:hover { background: #3B82F6; color: #FFFFFF; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(59, 130, 246, 0.4); }
 
@@ -174,12 +173,12 @@
         .status-dot { width: 8px; height: 8px; background-color: #10B981; border-radius: 50%; box-shadow: 0 0 8px #10B981; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
-        .upload-wrapper { display: flex; justify-content: space-between; align-items: center; background: #27303F; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; border: 1px dashed #4B5563; }
+        .upload-wrapper { display: flex; justify-content: space-between; align-items: center; background: #27303F; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; border: 1px dashed #4B5563; flex-wrap: wrap; gap: 10px; }
         .upload-btn { background-color: #3B82F6; color: white; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.9rem; transition: background 0.3s; display: inline-block; }
         .upload-btn:hover { background-color: #2563EB; }
         #excel-file { display: none; }
 
-        /* ESTILOS COMPACTOS DEL BUSCADOR Y DEL BLOQUE DE ORDENAMIENTO TERRITORIAL EN EL SIDEBAR */
+        /* BUSCADOR Y BLOQUE DE ORDENAMIENTO TERRITORIAL EN EL SIDEBAR */
         .search-container { 
             display: flex; 
             gap: 8px; 
@@ -249,43 +248,59 @@
             box-sizing: border-box;
         }
         .canton-select:focus { border-color: #FBBF24; }
-        .maq-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            background: rgba(59, 130, 246, 0.16);
-            border: 1px solid rgba(96, 165, 250, 0.4);
-            color: #93C5FD;
-            padding: 3px 8px;
-            border-radius: 5px;
-            font-size: 0.72rem;
-            font-weight: 700;
-            margin: 2px 3px 2px 0;
-        }
 
+        /* =========================================================================
+           ADAPTABILIDAD RESPONSIVA: PC, TABLET Y CELULAR
+           ========================================================================= */
         @media (max-width: 1250px) {
-            .map-header-overlay { flex-wrap: wrap; gap: 10px; }
+            .planificacion-grid { grid-template-columns: 1fr; }
+            .map-header-overlay { flex-wrap: wrap; gap: 10px; padding: 10px 14px; }
             .overlay-total { border-right: none; padding-right: 0; margin: 0 auto; }
-            .overlay-stats { width: 100%; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 5px; }
+            .overlay-stats { width: 100%; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
         }
 
-        @media (max-width: 850px) {
-            header { flex-direction: column; height: auto; padding: 15px; gap: 15px; text-align: center; }
-            .nav-tabs { flex-wrap: wrap; justify-content: center; }
-            .view-container { height: calc(100vh - 110px); }
-            
-            #geoportal-view.active { flex-direction: column; }
-            #map-wrapper { height: 50vh; order: 1; flex: none; width: 100%; }
-            #sidebar { height: 50vh; order: 2; flex: none; width: 100%; min-width: 100%; border-top: 2px solid #374151; border-right: none; }
-            
-            .overlay-stats { flex-wrap: wrap; }
-            .leaflet-popup-content { width: 300px !important; }
+        /* Vista para Tablets (hasta 1024px) */
+        @media (max-width: 1024px) {
+            #cronograma-view { padding: 20px 15px; }
+            .panel-avance-general { padding: 28px 25px; gap: 20px; }
+            .frente-stats-inline { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            #sidebar { width: 340px; min-width: 340px; }
+        }
 
-            .plan-box-left, .plan-box-right { grid-template-columns: 1fr 1fr; }
-            .frente-fila { flex-direction: column; align-items: flex-start; }
-            .frente-stats-inline { grid-template-columns: 1fr; width: 100%; gap: 10px; }
-            .panel-avance-general { padding: 25px 20px; }
-            .avance-big-pct { font-size: 2.6rem; }
+        /* Vista para Celulares y Tablets verticales (hasta 850px) */
+        @media (max-width: 850px) {
+            body { height: 100dvh; }
+            header { flex-direction: column; height: auto; padding: 10px 12px; gap: 8px; text-align: center; }
+            h1 { font-size: 0.98rem; line-height: 1.3; }
+            .nav-tabs { width: 100%; justify-content: center; flex-wrap: wrap; gap: 6px; }
+            .tab-btn { flex: 1; min-width: 145px; padding: 8px 10px; font-size: 0.78rem; }
+            .view-container { height: calc(100dvh - 95px); }
+            
+            #geoportal-view.active { flex-direction: column; overflow-y: auto; }
+            #map-wrapper { height: 52dvh; min-height: 320px; order: 1; flex: none; width: 100%; }
+            #sidebar { height: auto; max-height: none; order: 2; flex: none; width: 100%; min-width: 100%; border-top: 3px solid #374151; border-right: none; overflow-y: visible; padding: 16px 14px 30px 14px; }
+            
+            .map-header-overlay { top: 8px; left: 8px; right: 8px; padding: 8px 10px; gap: 6px; }
+            .overlay-total div:first-child div:first-child { font-size: 0.62rem; }
+            #kpi-total { font-size: 1.7rem !important; }
+            .overlay-total div:last-child { font-size: 2rem !important; }
+            .overlay-stat-item { padding: 5px 6px; min-width: 72px; }
+            .overlay-stat-value { font-size: 1.1rem; }
+            .overlay-stat-label { font-size: 0.58rem; }
+
+            .plan-box-left { grid-template-columns: 1fr; gap: 14px; }
+            .plan-box-right { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .frentes-rve-card { padding: 16px 14px; }
+            .frente-fila { flex-direction: column; align-items: flex-start; padding: 14px; gap: 12px; }
+            .frente-stats-inline { grid-template-columns: 1fr; width: 100%; gap: 8px; }
+            .panel-avance-general { padding: 22px 16px; text-align: left; }
+            .avance-titulo-banner { font-size: 1.05rem; }
+            .avance-big-pct { font-size: 2.35rem; white-space: normal; }
+            .avance-pill-box { width: 100%; box-sizing: border-box; font-size: 0.92rem; padding: 10px 14px; }
+            .avance-chart-container { width: 210px; height: 210px; }
+            .panel { padding: 16px 14px; }
+            th, td { padding: 10px 8px; font-size: 0.78rem; }
+            .leaflet-popup-content { width: 290px !important; margin: 14px 16px !important; }
         }
     </style>
 </head>
@@ -531,28 +546,49 @@
                 </div>
             </div>
 
-            <!-- NUEVA SECCIÓN DIDÁCTICA: ORDENAMIENTO TERRITORIAL POR CANTONES DE LOJA (ALCANTARILLAS Y MAQUINARIAS) -->
+            <!-- SECCIÓN DIDÁCTICA: ORDENAMIENTO TERRITORIAL POR CANTONES DE LOJA (SIN COLUMNA DE MAQUINARIA) -->
             <div class="panel" style="border-left: 6px solid #FBBF24;">
-                <h3 style="color: #FBBF24;">🏛️ Ordenamiento Territorial por Cantones de Loja — Alcantarillas y Maquinaria Pertinente</h3>
-                <p style="font-size: 0.84rem; color: #9CA3AF; margin-top: -5px; margin-bottom: 12px;">Distribución espacial cantonal de las alcantarillas limpias, pendientes por limpiar y equipo caminero asignado en la Red Vial Estatal.</p>
+                <h3 style="color: #FBBF24;">🏛️ Ordenamiento Territorial por Cantones de Loja — Distribución de Alcantarillas</h3>
+                <p style="font-size: 0.85rem; color: #9CA3AF; margin-top: -5px; margin-bottom: 14px;">Distribución espacial por jurisdicción cantonal de las alcantarillas limpias y las que faltan por limpiar en la Red Vial Estatal.</p>
                 <div style="overflow-x: auto;">
                     <table>
                         <thead>
                             <tr>
-                                <th>Cantón (Provincia de Loja)</th>
-                                <th>Corredor / Ejes Viales RVE</th>
-                                <th style="text-align: center;">Total Alcantarillas</th>
-                                <th style="text-align: center;">✅ Limpias</th>
-                                <th style="text-align: center;">⏳ Faltan por Limpiar</th>
-                                <th style="width: 140px;">Avance Cantonal</th>
-                                <th>🚜 Maquinaria Pertinente y Horas Desplegadas</th>
-                                <th style="text-align: center; width: 115px;">Enfocar Cantón</th>
+                                <th style="width: 18%;">Cantón (Provincia de Loja)</th>
+                                <th style="width: 30%;">Corredor / Ejes Viales RVE</th>
+                                <th style="text-align: center; width: 12%;">Total Alcantarillas</th>
+                                <th style="text-align: center; width: 11%;">✅ Limpias</th>
+                                <th style="text-align: center; width: 14%;">⏳ Faltan por Limpiar</th>
+                                <th style="width: 150px;">Avance Cantonal</th>
+                                <th style="text-align: center; width: 120px;">Enfocar Cantón</th>
                             </tr>
                         </thead>
                         <tbody id="tabla-cantones-body">
-                            <tr><td colspan="8" style="text-align: center; color: #9CA3AF; padding: 18px;">Calculando distribución espacial por cantones...</td></tr>
+                            <tr><td colspan="7" style="text-align: center; color: #9CA3AF; padding: 18px;">Calculando distribución espacial por cantones...</td></tr>
                         </tbody>
                     </table>
+                </div>
+            </div>
+
+            <!-- SECCIÓN BENEFICIOS -->
+            <div class="panel" style="border-left: 6px solid #3B82F6; padding: 30px;">
+                <h3 style="color: #60A5FA; margin-top: 0; font-size: 1.2rem; text-align: center; border-bottom: none; margin-bottom: 25px;">🌟 BENEFICIOS DEL MANTENIMIENTO PREVENTIVO</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                    <div style="background: #27303F; padding: 20px; border-radius: 8px; text-align: center; border-top: 3px solid #60A5FA; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+                        <div style="font-size: 2.5rem; margin-bottom: 12px;">🌊</div>
+                        <strong style="color: #F3F4F6; font-size: 1rem; text-transform: uppercase;">Correcto funcionamiento hidráulico</strong>
+                        <p style="color: #9CA3AF; font-size: 0.85rem; margin-top: 8px; line-height: 1.4;">De cunetas y drenajes transversales.</p>
+                    </div>
+                    <div style="background: #27303F; padding: 20px; border-radius: 8px; text-align: center; border-top: 3px solid #F59E0B; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+                        <div style="font-size: 2.5rem; margin-bottom: 12px;">🛣️</div>
+                        <strong style="color: #F3F4F6; font-size: 1rem; text-transform: uppercase;">Previene socavones, grietas y fisuras</strong>
+                        <p style="color: #9CA3AF; font-size: 0.85rem; margin-top: 8px; line-height: 1.4;">Manteniendo la estabilidad del asfalto en la vía.</p>
+                    </div>
+                    <div style="background: #27303F; padding: 20px; border-radius: 8px; text-align: center; border-top: 3px solid #10B981; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+                        <div style="font-size: 2.5rem; margin-bottom: 12px;">⏳</div>
+                        <strong style="color: #F3F4F6; font-size: 1rem; text-transform: uppercase;">Mayor vida útil de las carreteras</strong>
+                        <p style="color: #9CA3AF; font-size: 0.85rem; margin-top: 8px; line-height: 1.4;">Optimizando y protegiendo la inversión estatal.</p>
+                    </div>
                 </div>
             </div>
 
@@ -639,13 +675,13 @@
     <div id="geoportal-view" class="view-container">
         
         <div id="sidebar">
-            <!-- 1) BUSCADOR DE ALCANTARILLAS (ARRIBA, ANCHO 100%, SIN APLASTAR NADA) -->
+            <!-- 1) BUSCADOR DE ALCANTARILLAS -->
             <div class="search-container">
                 <input type="text" id="buscador-id" class="search-input" placeholder="Buscar ID o Código (ej. 1820)..." onkeypress="if(event.key === 'Enter') buscarAlcantarilla()">
                 <button class="search-btn" onclick="buscarAlcantarilla()" title="Buscar Alcantarilla">🔍</button>
             </div>
 
-            <!-- 2) BLOQUE DE ORDENAMIENTO TERRITORIAL POR CANTONES (DEBAJO DEL BUSCADOR, ANCHO 100% COMPACTO) -->
+            <!-- 2) BLOQUE DE ORDENAMIENTO TERRITORIAL POR CANTONES (SIN MAQUINARIA ASIGNADA) -->
             <div class="canton-sidebar-box">
                 <div class="canton-sidebar-header">
                     <span>🏛️</span>
@@ -654,8 +690,8 @@
                 <select id="select-canton-filtro" class="canton-select" onchange="filtrarPorCanton(this.value)">
                     <option value="TODOS">📍 Ver Todos los Cantones de Loja</option>
                 </select>
-                <!-- Ficha Didáctica de Alcantarillas y Maquinaria del Cantón seleccionado -->
-                <div id="resumen-canton-seleccionado" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #374151; font-size: 0.8rem; line-height: 1.45; color: #D1D5DB;"></div>
+                <!-- Ficha Didáctica de Alcantarillas del Cantón seleccionado -->
+                <div id="resumen-canton-seleccionado" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid #374151; font-size: 0.82rem; line-height: 1.5; color: #E5E7EB;"></div>
             </div>
 
             <h3>🗺️ Control de Capas de Prevención</h3>
@@ -665,7 +701,7 @@
                 <label class="capa-label"><input type="checkbox" id="chk-rutas" checked style="accent-color: #2563EB; width: 15px; height: 15px;"> <span style="color: #60A5FA; margin-left: 8px; font-weight: bold;">—</span> Red Vial Estatal</label>
                 <hr style="border: 0; border-top: 1px solid #4B5563; margin: 10px 0;">
                 
-                <div style="font-size: 0.75rem; color: #9CA3AF; margin-bottom: 8px; font-weight: bold; border-bottom: 1px solid #4B5563; padding-bottom: 4px; text-transform: uppercase;">⏳ Alcantarillas que Faltan por Limpiar</div>
+                <div style="font-size: 0.75rem; color: #D1D5DB; margin-bottom: 8px; font-weight: bold; border-bottom: 1px solid #4B5563; padding-bottom: 4px; text-transform: uppercase;">⏳ Alcantarillas que Faltan por Limpiar</div>
                 <label class="capa-label"><input type="checkbox" id="chk-inmediata" checked style="accent-color: #FF0000; width: 15px; height: 15px;"> <span style="color: #FF0000; margin-left: 8px;">●</span> Intervención Inmediata</label>
                 <label class="capa-label"><input type="checkbox" id="chk-alta" checked style="accent-color: #FFFF00; width: 15px; height: 15px;"> <span style="color: #FFFF00; margin-left: 8px;">●</span> Atención Alta</label>
                 <label class="capa-label"><input type="checkbox" id="chk-altainmediata" checked style="accent-color: #FF7F00; width: 15px; height: 15px;"> <span style="color: #FF7F00; margin-left: 8px;">●</span> Alta / Inmediata</label>
@@ -686,10 +722,10 @@
                 </div>
             </div>
 
-            <h3 style="margin-bottom: 6px;"><span style="color: #EC4899;">📍</span> PUNTOS PRIORITARIOS POR VÍA ESTATAL</h3>
-            <p style="font-size: 0.76rem; color: #9CA3AF; margin-top: 0; margin-bottom: 8px;"><i>Haz clic en una barra para enfocar el tramo</i></p>
+            <h3 style="margin-bottom: 6px; color: #FFFFFF;"><span style="color: #EC4899;">📍</span> PUNTOS PRIORITARIOS POR VÍA ESTATAL</h3>
+            <p style="font-size: 0.78rem; color: #D1D5DB; margin-top: 0; margin-bottom: 8px;"><i>Haz clic en una barra para enfocar el tramo</i></p>
             
-            <div style="background-color: #1a2234; padding: 15px 12px; border-radius: 8px; flex-grow: 1;">
+            <div style="background-color: #111827; border: 1px solid #374151; padding: 14px 10px; border-radius: 8px; flex-grow: 1;">
                 <div id="graficoTramosWrapper" style="position: relative; width: 100%;">
                     <canvas id="graficoTramos"></canvas>
                 </div>
@@ -703,7 +739,7 @@
             <div class="map-header-overlay">
                 <div class="overlay-total">
                     <div>
-                        <div style="font-size: 0.72rem; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;" id="titulo-overlay-mapa">Puntos de Atención Prioritaria</div>
+                        <div style="font-size: 0.72rem; color: #D1D5DB; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;" id="titulo-overlay-mapa">Puntos de Atención Prioritaria</div>
                         <div id="kpi-total" style="font-size: 2.5rem; color: #EF4444; font-weight: bold; line-height: 1;">0</div>
                     </div>
                     <div style="font-size: 3.2rem; opacity: 0.9; margin-left: 8px;">🚧</div>
@@ -825,36 +861,36 @@
         };
 
         // =========================================================================
-        // RELACIÓN TERRITORIAL: TRAMO RVE -> CANTÓN DE LOJA Y MAQUINARIA PERTINENTE
+        // RELACIÓN TERRITORIAL: TRAMO RVE -> CANTÓN DE LOJA Y FRENTE VIAL
         // =========================================================================
         const INFO_TERRITORIAL_TRAMOS = {
-            "LOJA - CATAMAYO": { canton: "LOJA", eje: "E50 (Loja - Catamayo)", maq: "Retroexcavadora + Volquete", micro: "Caminos del Sur" },
-            "SAN LUCAS - LOJA": { canton: "LOJA", eje: "E35 (Loja - Santiago - San Lucas)", maq: "Retroexcavadora (68 h) + Volquete (64 h)", micro: "Llankay tantanakuy" },
-            "SARAGURO - SAN LUCAS": { canton: "SARAGURO", eje: "E35 (Saraguro - San Lucas)", maq: "Retroexcavadora (95 h) + Volquete (42 h)", micro: "Niño de Potrerillos" },
-            "LÍMITE PROVINCIAL AZUAY/LOJA (OÑA) - SARAGURO": { canton: "SARAGURO", eje: "E35 (Oña - Saraguro)", maq: "Retroexcavadora (95 h) + Volquete (42 h)", micro: "Niño de Potrerillos" },
-            "LOJA - VILCABAMBA": { canton: "LOJA", eje: "E682 (Loja - Malacatos - Vilcabamba)", maq: "Retroexcavadora + Volquete", micro: "Porvenir" },
-            "VILCABAMBA - YANGANA": { canton: "LOJA", eje: "E682 (Vilcabamba - Yangana)", maq: "Retroexcavadora + Volquete", micro: "Porvenir" },
-            "YANGANA - LÍMITE PROVINCIAL LOJA/ZAMORA (SABANILLA)": { canton: "LOJA", eje: "E682 (Yangana - Sabanilla)", maq: "Retroexcavadora + Volquete", micro: "Porvenir" },
-            "LOJA - LÍMITE PROVINCIAL LOJA/ZAMORA CHINCHIPE (EL TIRO)": { canton: "LOJA", eje: "E50 (Loja - El Tiro)", maq: "Retroexcavadora + Volquete", micro: "Caminos del Sur" },
-            "VARIANTE VÍA MIRAFLORES": { canton: "LOJA", eje: "Paso Lateral / Capulí - Carigán", maq: "Retroexcavadora + Volquete", micro: "Virgen del Cisne" },
-            "CATAMAYO - PUENTE GUAYABAL": { canton: "CATAMAYO", eje: "E35 (Catamayo - Guayabal)", maq: "Retroexcavadora + Volquete", micro: "Virgen del Cisne" },
-            "PUENTE GUAYABAL - SAN PEDRO DE LA BENDITA": { canton: "CATAMAYO", eje: "E35 (Guayabal - San Pedro)", maq: "Retroexcavadora + Volquete", micro: "Virgen del Cisne" },
-            "SAN PEDRO DE LA BENDITA - VELACRUZ": { canton: "CATAMAYO", eje: "E35 / E50 (San Pedro - Velacruz)", maq: "Retroexcavadora (120 h) + Volquete (55 h)", micro: "Los Cañaverales" },
-            "CATAMAYO - GONZANAMÁ": { canton: "GONZANAMA", eje: "E69 (Catamayo - Nambacola - Gonzanamá)", maq: "Retroexcavadora (110 h) + Excavadora (35 h) + Volquete (48 h)", micro: "América" },
-            "GONZANAMÁ - CARIAMANGA": { canton: "CALVAS", eje: "E69 (Gonzanamá - Cariamanga)", maq: "Retroexcavadora + Volquete", micro: "Tigres del camino" },
-            "CARIAMANGA - SOZORANGA": { canton: "SOZORANGA", eje: "E69 (Cariamanga - Sozoranga)", maq: "Retroexcavadora + Volquete", micro: "Tigres del camino" },
-            "SOZORANGA - MACARÁ": { canton: "SOZORANGA", eje: "E69 (Sozoranga - Sabiango - Macará)", maq: "Retroexcavadora + Volquete", micro: "Sabiango" },
-            "VELACRUZ - CATACOCHA": { canton: "PALTAS", eje: "E35 (Velacruz - Catacocha)", maq: "Retroexcavadora (145 h) + Excavadora (40 h) + Volquete (60 h)", micro: "Paltenses" },
-            "CATACOCHA - EL EMPALME": { canton: "PALTAS", eje: "E35 (Catacocha - Macandamine - El Empalme)", maq: "Retroexcavadora (145 h) + Excavadora (40 h) + Volquete (60 h)", micro: "Paltenses" },
-            "CHAGUARPAMBA - VELACRUZ": { canton: "CHAGUARPAMBA", eje: "E50 (Chaguarpamba - Olmedo - Velacruz)", maq: "Retroexcavadora (118 h) + Excavadora (38 h) + Volquete (32 h)", micro: "Conservación Vial Buenavista" },
-            "LÍMITE PROVINCIAL EL ORO/LOJA (RÍO PINDO) - CHAGUARPAMBA": { canton: "CHAGUARPAMBA", eje: "E50 (Río Pindo - Buenavista - Chaguarpamba)", maq: "Retroexcavadora (118 h) + Excavadora (38 h) + Volquete (32 h)", micro: "Conservación Vial Buenavista" },
-            "LÍMITE PROVINCIAL EL ORO/LOJA (RÍO PUYANGO) - Y DE ALAMOR": { canton: "PUYANGO", eje: "E25 (Río Puyango - Alamor)", maq: "Retroexcavadora (100 h) + Excavadora (32 h) + Volquete (28 h)", micro: "Conservación Vial Puyango" },
-            "Y DE ALAMOR - CÉLICA": { canton: "CELICA", eje: "E68 (Y de Alamor - Celica)", maq: "Retroexcavadora (105 h) + Excavadora (32 h) + Volquete (38 h)", micro: "Divino niño" },
-            "CÉLICA - EL EMPALME": { canton: "CELICA", eje: "E68 (Celica - El Empalme)", maq: "Retroexcavadora (105 h) + Excavadora (32 h) + Volquete (38 h)", micro: "Divino niño" },
-            "EL EMPALME - MACARÁ - PUENTE INTERNACIONAL": { canton: "MACARA", eje: "E35 (El Empalme - Larama - Macará)", maq: "Retroexcavadora + Volquete", micro: "Larama" },
-            "Y DE ALAMOR - PINDAL": { canton: "PINDAL", eje: "E25 (Y de Alamor - Pindal)", maq: "Retroexcavadora + Volquete", micro: "Conservación Vial Puyango" },
-            "PINDAL - ZAPOTILLO": { canton: "ZAPOTILLO", eje: "E25 (Pindal - Zapotillo)", maq: "Retroexcavadora + Volquete", micro: "Frente Zonal 7" },
-            "ZAPOTILLO - LALAMOR": { canton: "ZAPOTILLO", eje: "E25 (Zapotillo - Lalamor)", maq: "Retroexcavadora + Volquete", micro: "Frente Zonal 7" }
+            "LOJA - CATAMAYO": { canton: "LOJA", eje: "E50 (Loja - Catamayo)", micro: "Caminos del Sur" },
+            "SAN LUCAS - LOJA": { canton: "LOJA", eje: "E35 (Loja - Santiago - San Lucas)", micro: "Llankay tantanakuy" },
+            "SARAGURO - SAN LUCAS": { canton: "SARAGURO", eje: "E35 (Saraguro - San Lucas)", micro: "Niño de Potrerillos" },
+            "LÍMITE PROVINCIAL AZUAY/LOJA (OÑA) - SARAGURO": { canton: "SARAGURO", eje: "E35 (Oña - Saraguro)", micro: "Niño de Potrerillos" },
+            "LOJA - VILCABAMBA": { canton: "LOJA", eje: "E682 (Loja - Malacatos - Vilcabamba)", micro: "Porvenir" },
+            "VILCABAMBA - YANGANA": { canton: "LOJA", eje: "E682 (Vilcabamba - Yangana)", micro: "Porvenir" },
+            "YANGANA - LÍMITE PROVINCIAL LOJA/ZAMORA (SABANILLA)": { canton: "LOJA", eje: "E682 (Yangana - Sabanilla)", micro: "Porvenir" },
+            "LOJA - LÍMITE PROVINCIAL LOJA/ZAMORA CHINCHIPE (EL TIRO)": { canton: "LOJA", eje: "E50 (Loja - El Tiro)", micro: "Caminos del Sur" },
+            "VARIANTE VÍA MIRAFLORES": { canton: "LOJA", eje: "Paso Lateral / Capulí - Carigán", micro: "Virgen del Cisne" },
+            "CATAMAYO - PUENTE GUAYABAL": { canton: "CATAMAYO", eje: "E35 (Catamayo - Guayabal)", micro: "Virgen del Cisne" },
+            "PUENTE GUAYABAL - SAN PEDRO DE LA BENDITA": { canton: "CATAMAYO", eje: "E35 (Guayabal - San Pedro)", micro: "Virgen del Cisne" },
+            "SAN PEDRO DE LA BENDITA - VELACRUZ": { canton: "CATAMAYO", eje: "E35 / E50 (San Pedro - Velacruz)", micro: "Los Cañaverales" },
+            "CATAMAYO - GONZANAMÁ": { canton: "GONZANAMA", eje: "E69 (Catamayo - Nambacola - Gonzanamá)", micro: "América" },
+            "GONZANAMÁ - CARIAMANGA": { canton: "CALVAS", eje: "E69 (Gonzanamá - Cariamanga)", micro: "Tigres del camino" },
+            "CARIAMANGA - SOZORANGA": { canton: "SOZORANGA", eje: "E69 (Cariamanga - Sozoranga)", micro: "Tigres del camino" },
+            "SOZORANGA - MACARÁ": { canton: "SOZORANGA", eje: "E69 (Sozoranga - Sabiango - Macará)", micro: "Sabiango" },
+            "VELACRUZ - CATACOCHA": { canton: "PALTAS", eje: "E35 (Velacruz - Catacocha)", micro: "Paltenses" },
+            "CATACOCHA - EL EMPALME": { canton: "PALTAS", eje: "E35 (Catacocha - Macandamine - El Empalme)", micro: "Paltenses" },
+            "CHAGUARPAMBA - VELACRUZ": { canton: "CHAGUARPAMBA", eje: "E50 (Chaguarpamba - Olmedo - Velacruz)", micro: "Conservación Vial Buenavista" },
+            "LÍMITE PROVINCIAL EL ORO/LOJA (RÍO PINDO) - CHAGUARPAMBA": { canton: "CHAGUARPAMBA", eje: "E50 (Río Pindo - Buenavista - Chaguarpamba)", micro: "Conservación Vial Buenavista" },
+            "LÍMITE PROVINCIAL EL ORO/LOJA (RÍO PUYANGO) - Y DE ALAMOR": { canton: "PUYANGO", eje: "E25 (Río Puyango - Alamor)", micro: "Conservación Vial Puyango" },
+            "Y DE ALAMOR - CÉLICA": { canton: "CELICA", eje: "E68 (Y de Alamor - Celica)", micro: "Divino niño" },
+            "CÉLICA - EL EMPALME": { canton: "CELICA", eje: "E68 (Celica - El Empalme)", micro: "Divino niño" },
+            "EL EMPALME - MACARÁ - PUENTE INTERNACIONAL": { canton: "MACARA", eje: "E35 (El Empalme - Larama - Macará)", micro: "Larama" },
+            "Y DE ALAMOR - PINDAL": { canton: "PINDAL", eje: "E25 (Y de Alamor - Pindal)", micro: "Conservación Vial Puyango" },
+            "PINDAL - ZAPOTILLO": { canton: "ZAPOTILLO", eje: "E25 (Pindal - Zapotillo)", micro: "Frente Zonal 7" },
+            "ZAPOTILLO - LALAMOR": { canton: "ZAPOTILLO", eje: "E25 (Zapotillo - Lalamor)", micro: "Frente Zonal 7" }
         };
 
         const DATOS_RESPALDO_DRIVE = {
@@ -942,6 +978,20 @@
                 .trim().replace(/\s+/g, ' ');
         }
 
+        // Acorta nombres muy largos de tramos para que se lean nítidos y completos en el gráfico lateral
+        function formatearEtiquetaTramoCorta(tramo) {
+            if (!tramo) return '';
+            let s = String(tramo).toUpperCase().trim();
+            s = s.replace("LÍMITE PROVINCIAL AZUAY/LOJA (OÑA)", "OÑA")
+                 .replace("LÍMITE PROVINCIAL EL ORO/LOJA (RÍO PINDO)", "RÍO PINDO")
+                 .replace("LÍMITE PROVINCIAL EL ORO/LOJA (RÍO PUYANGO)", "RÍO PUYANGO")
+                 .replace("LÍMITE PROVINCIAL LOJA/ZAMORA CHINCHIPE (EL TIRO)", "EL TIRO")
+                 .replace("LÍMITE PROVINCIAL LOJA/ZAMORA (SABANILLA)", "SABANILLA")
+                 .replace("SAN PEDRO DE LA BENDITA", "SAN PEDRO")
+                 .replace(" - PUENTE INTERNACIONAL", "");
+            return s;
+        }
+
         function convertirUTM17SaLatLng(este, norte) {
             const a = 6378137.0;
             const e = 0.081819190842622;
@@ -989,6 +1039,15 @@
             setTimeout(() => {
                 map.invalidateSize();
                 if (!capaAlcantarillas) return;
+
+                if (cantonFiltroActivo !== 'TODOS') {
+                    cantonFiltroActivo = 'TODOS';
+                    const sel = document.getElementById('select-canton-filtro');
+                    if (sel) sel.value = 'TODOS';
+                    const boxResumen = document.getElementById('resumen-canton-seleccionado');
+                    if (boxResumen) boxResumen.style.display = 'none';
+                    actualizarMapaGeografico();
+                }
 
                 let claveMicro = normalizarMicro(nombreEmpresa);
                 let empresaKeyDiario = normalizarTexto(nombreEmpresa);
@@ -1048,7 +1107,6 @@
             }, 250);
         };
 
-        // Ir directamente a un Cantón desde la tabla de Ordenamiento Territorial
         window.irAlVisorCanton = function(nombreCanton) {
             switchTab('geoportal');
             setTimeout(() => {
@@ -1875,9 +1933,9 @@
         }
 
         // =========================================================================
-        // MOTOR DE ORDENAMIENTO TERRITORIAL: CANTONES + ALCANTARILLAS + MAQUINARIA
+        // MOTOR DE ORDENAMIENTO TERRITORIAL: CANTONES + ALCANTARILLAS (SIN MAQUINARIA)
         // =========================================================================
-        function obtenerCantonYMaquinariaDePunto(props) {
+        function obtenerCantonDePunto(props) {
             let cantonAttr = props['CANTON'] || props['canton'] || props['DPA_DESCAN'] || props['NOMBRE_CAN'] || '';
             let tramo = String(props['TRAMO'] || props['tramo'] || '').trim().toUpperCase();
             let subtramo = String(props['SUBTRAMO'] || props['subtramo'] || '').trim().toUpperCase();
@@ -1885,7 +1943,6 @@
             let infoTramo = INFO_TERRITORIAL_TRAMOS[tramo];
             let cantonFinal = cantonAttr ? normalizarEncabezado(cantonAttr) : (infoTramo ? infoTramo.canton : "LOJA");
 
-            // Refinamiento espacial por subtramo para ejes compartidos entre cantones
             if (tramo === "LOJA - CATAMAYO") {
                 cantonFinal = subtramo.includes("CATAMAYO") ? "CATAMAYO" : "LOJA";
             } else if (tramo === "CATAMAYO - GONZANAMÁ") {
@@ -1896,30 +1953,15 @@
                 cantonFinal = "MACARA";
             }
 
-            let maqTexto = infoTramo ? infoTramo.maq : "Retroexcavadora + Volquete";
             let ejeTexto = infoTramo ? infoTramo.eje : (tramo || "Red Vial Estatal");
             let microTexto = infoTramo ? infoTramo.micro : "Conservación Vial RVE";
 
-            // Si en Drive hay horas actualizadas para esa microempresa, mostramos las horas reales del Drive
-            let claveMic = normalizarMicro(microTexto);
-            if (driveGruposPorMicro[claveMic]) {
-                let g = driveGruposPorMicro[claveMic];
-                let partesMaq = [];
-                if (g.horasRetro > 0) partesMaq.push(`🚜 Retroexcavadora (${g.horasRetro.toFixed(0)} h)`);
-                if (g.horasExc > 0) partesMaq.push(`🏗️ Excavadora (${g.horasExc.toFixed(0)} h)`);
-                if (g.horasVolq > 0) partesMaq.push(`🚛 Volquete (${g.horasVolq.toFixed(0)} h)`);
-                if (partesMaq.length > 0) {
-                    maqTexto = partesMaq.join(" + ");
-                }
-            }
-
-            return { canton: cantonFinal, maquinaria: maqTexto, eje: ejeTexto, micro: microTexto };
+            return { canton: cantonFinal, eje: ejeTexto, micro: microTexto };
         }
 
         function calcularEstadisticasCantonales() {
             estadisticasPorCanton = {};
 
-            // Inicializar todos los cantones desde cantonesLoja.js para que todos aparezcan
             if (typeof cantonesLojaData !== 'undefined' && cantonesLojaData && cantonesLojaData.features) {
                 cantonesLojaData.features.forEach(feat => {
                     let p = feat.properties || {};
@@ -1933,7 +1975,6 @@
                             limpias: 0,
                             faltan: 0,
                             prioritariasPendientes: 0,
-                            maquinariasSet: new Set([p['MAQUINARIA_PERTINENTE'] || 'Retroexcavadora + Volquete']),
                             microsSet: new Set(),
                             coords: []
                         };
@@ -1952,7 +1993,7 @@
                     let nivel = String(nivelRaw).toLowerCase().replace(/\s+/g, '');
                     let esCritica = nivel.includes('inmediata') || nivel.includes('alta') || nivel.includes('media') || nivel.includes('prioritaria');
 
-                    let meta = obtenerCantonYMaquinariaDePunto(props);
+                    let meta = obtenerCantonDePunto(props);
                     let cNom = meta.canton;
 
                     if (!estadisticasPorCanton[cNom]) {
@@ -1964,7 +2005,6 @@
                             limpias: 0,
                             faltan: 0,
                             prioritariasPendientes: 0,
-                            maquinariasSet: new Set(),
                             microsSet: new Set(),
                             coords: []
                         };
@@ -1978,7 +2018,6 @@
                         st.faltan++;
                         if (esCritica) st.prioritariasPendientes++;
                     }
-                    st.maquinariasSet.add(meta.maquinaria);
                     if (meta.micro) st.microsSet.add(meta.micro);
 
                     if (f.geometry && f.geometry.coordinates) {
@@ -1990,7 +2029,6 @@
                 });
             }
 
-            // Actualizar el selector de Cantones en la barra izquierda
             const sel = document.getElementById('select-canton-filtro');
             if (sel) {
                 let actual = sel.value || 'TODOS';
@@ -2029,18 +2067,16 @@
             cantonesConRed.forEach(c => {
                 let st = estadisticasPorCanton[c];
                 let pct = st.total > 0 ? Math.round((st.limpias / st.total) * 100) : 0;
-                let maqArr = Array.from(st.maquinariasSet);
-                let maqBadges = maqArr.map(m => `<span class="maq-pill">${m}</span>`).join('');
 
                 let tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><strong style="color:#FBBF24; font-size:0.9rem;">🏛️ ${st.nombre}</strong></td>
-                    <td style="font-size:0.78rem; color:#D1D5DB;">${st.eje}</td>
-                    <td style="text-align:center; font-weight:bold; font-size:1rem;">${st.total}</td>
-                    <td style="text-align:center; color:#10B981; font-weight:bold; font-size:1.05rem;">${st.limpias}</td>
-                    <td style="text-align:center; color:#F87171; font-weight:bold; font-size:1.05rem;">${st.faltan} <span style="font-size:0.7rem; color:#9CA3AF;">(${st.prioritariasPendientes} crít.)</span></td>
+                    <td><strong style="color:#FBBF24; font-size:0.92rem;">🏛️ ${st.nombre}</strong></td>
+                    <td style="font-size:0.82rem; color:#E5E7EB;">${st.eje}</td>
+                    <td style="text-align:center; font-weight:bold; font-size:1.05rem; color:#FFFFFF;">${st.total}</td>
+                    <td style="text-align:center; color:#10B981; font-weight:bold; font-size:1.08rem;">${st.limpias}</td>
+                    <td style="text-align:center; color:#F87171; font-weight:bold; font-size:1.08rem;">${st.faltan} <span style="font-size:0.72rem; color:#D1D5DB; font-weight:normal;">(${st.prioritariasPendientes} crít.)</span></td>
                     <td>
-                        <div style="display:flex; justify-content:space-between; font-size:0.72rem; margin-bottom:2px;">
+                        <div style="display:flex; justify-content:space-between; font-size:0.74rem; margin-bottom:3px;">
                             <span>Limpieza:</span><strong style="color:#10B981;">${pct}%</strong>
                         </div>
                         <div class="progress-bar-container">
@@ -2048,9 +2084,8 @@
                             <div class="progress-text">${pct}%</div>
                         </div>
                     </td>
-                    <td>${maqBadges}</td>
                     <td style="text-align:center;">
-                        <button class="btn-ir-mapa" onclick="irAlVisorCanton('${st.nombre}')" title="Ver alcantarillas y maquinaria del cantón ${st.nombre}">
+                        <button class="btn-ir-mapa" onclick="irAlVisorCanton('${st.nombre}')" title="Ver alcantarillas del cantón ${st.nombre} en el Visor">
                             🗺️ Ver Cantón
                         </button>
                     </td>
@@ -2115,14 +2150,11 @@
                     let nomCanton = normalizarEncabezado(props['DPA_DESCAN'] || props['CANTON'] || 'CANTON');
                     let st = estadisticasPorCanton[nomCanton] || {
                         total: 0, limpias: 0, faltan: 0, prioritariasPendientes: 0,
-                        eje: props['EJE_VIAL'] || 'Red Vial Estatal',
-                        maquinariasSet: new Set([props['MAQUINARIA_PERTINENTE'] || 'Retroexcavadora + Volquete'])
+                        eje: props['EJE_VIAL'] || 'Red Vial Estatal'
                     };
 
                     let pct = st.total > 0 ? Math.round((st.limpias / st.total) * 100) : 0;
-                    let maqTxt = Array.from(st.maquinariasSet).join("<br>• ");
 
-                    // Etiqueta permanente en el centro del polígono cantonal
                     if (st.total > 0) {
                         layer.bindTooltip(`🏛️ ${nomCanton} (${st.limpias}/${st.total})`, {
                             permanent: true,
@@ -2134,24 +2166,20 @@
                     layer.bindPopup(`
                         <div style="font-family: 'Segoe UI', sans-serif;">
                             <h4 style="margin:0 0 10px 0; color:#FBBF24; border-bottom:1px solid #374151; padding-bottom:6px; font-size:1.1rem;">🏛️ CANTÓN ${nomCanton}</h4>
-                            <div style="font-size:0.85rem; color:#9CA3AF; margin-bottom:10px;"><b>Eje Vial RVE:</b> ${st.eje}</div>
-                            <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px; text-align:center; margin-bottom:12px;">
-                                <div style="background:#111827; padding:8px; border-radius:6px; border:1px solid #374151;">
-                                    <div style="font-size:0.68rem; color:#9CA3AF;">TOTAL RVE</div>
-                                    <div style="font-size:1.2rem; font-weight:bold; color:#FFF;">${st.total}</div>
+                            <div style="font-size:0.86rem; color:#D1D5DB; margin-bottom:12px;"><b>Corredor RVE:</b> ${st.eje}</div>
+                            <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px; text-align:center;">
+                                <div style="background:#111827; padding:9px; border-radius:6px; border:1px solid #374151;">
+                                    <div style="font-size:0.68rem; color:#D1D5DB;">TOTAL RVE</div>
+                                    <div style="font-size:1.25rem; font-weight:bold; color:#FFF;">${st.total}</div>
                                 </div>
-                                <div style="background:#111827; padding:8px; border-radius:6px; border:1px solid #10B981;">
+                                <div style="background:#111827; padding:9px; border-radius:6px; border:1px solid #10B981;">
                                     <div style="font-size:0.68rem; color:#10B981;">✅ LIMPIAS</div>
-                                    <div style="font-size:1.2rem; font-weight:bold; color:#10B981;">${st.limpias} (${pct}%)</div>
+                                    <div style="font-size:1.25rem; font-weight:bold; color:#10B981;">${st.limpias} (${pct}%)</div>
                                 </div>
-                                <div style="background:#111827; padding:8px; border-radius:6px; border:1px solid #EF4444;">
+                                <div style="background:#111827; padding:9px; border-radius:6px; border:1px solid #EF4444;">
                                     <div style="font-size:0.68rem; color:#F87171;">⏳ FALTAN</div>
-                                    <div style="font-size:1.2rem; font-weight:bold; color:#F87171;">${st.faltan}</div>
+                                    <div style="font-size:1.25rem; font-weight:bold; color:#F87171;">${st.faltan}</div>
                                 </div>
-                            </div>
-                            <div style="background:#111827; padding:10px 12px; border-radius:8px; border-left:4px solid #3B82F6; font-size:0.84rem;">
-                                <strong style="color:#60A5FA; text-transform:uppercase; font-size:0.74rem; display:block; margin-bottom:4px;">🚜 Maquinaria Pertinente en el Cantón:</strong>
-                                <span style="color:#E5E7EB;">• ${maqTxt}</span>
                             </div>
                         </div>
                     `);
@@ -2167,7 +2195,7 @@
             }).addTo(grupoCantones);
         }
 
-        // Filtra las alcantarillas del mapa por Cantón y muestra la tarjeta didáctica de Maquinaria y Alcantarillas
+        // Filtra las alcantarillas del mapa por Cantón y muestra la tarjeta limpia (sin maquinaria asignada)
         window.filtrarPorCanton = function(cantonSeleccionado) {
             cantonFiltroActivo = cantonSeleccionado || 'TODOS';
             const boxResumen = document.getElementById('resumen-canton-seleccionado');
@@ -2188,29 +2216,26 @@
 
             document.getElementById('titulo-overlay-mapa').innerText = `Prioritarias — Cantón ${cantonFiltroActivo}`;
             let porcLimpio = st.total > 0 ? Math.round((st.limpias / st.total) * 100) : 0;
-            let maqBadges = Array.from(st.maquinariasSet).map(m => `<span class="maq-pill">${m}</span>`).join('');
-            let microsTxt = Array.from(st.microsSet).join(', ') || 'Frente Zonal 7';
+            let microsTxt = Array.from(st.microsSet).join(', ') || 'Conservación Vial RVE';
 
             if (boxResumen) {
                 boxResumen.style.display = 'block';
                 boxResumen.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; margin-bottom:3px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
                         <span>Total Alcantarillas Cantón:</span><strong style="color:#FFF;">${st.total} alc.</strong>
                     </div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:3px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
                         <span>✅ Alcantarillas Limpias:</span><strong style="color:#10B981;">${st.limpias} (${porcLimpio}%)</strong>
                     </div>
-                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:7px;">
                         <span>⏳ Faltan por Limpiar:</span><strong style="color:#F87171;">${st.faltan} (${st.prioritariasPendientes} crít.)</strong>
                     </div>
-                    <div class="progress-bar-container" style="margin-bottom:8px; height:13px;">
+                    <div class="progress-bar-container" style="margin-bottom:8px; height:14px;">
                         <div class="progress-bar-fill-abs" style="width:${porcLimpio}%;"></div>
-                        <div class="progress-text" style="line-height:13px; font-size:0.65rem;">${porcLimpio}% Limpio</div>
+                        <div class="progress-text" style="line-height:14px; font-size:0.68rem;">${porcLimpio}% Limpio</div>
                     </div>
-                    <div style="background:#1F2937; padding:8px 10px; border-radius:6px; border:1px solid #374151;">
-                        <span style="color:#FBBF24; display:block; text-transform:uppercase; font-size:0.66rem; font-weight:bold; margin-bottom:4px;">🚜 Maquinaria Pertinente Asignada:</span>
-                        <div>${maqBadges}</div>
-                        <div style="font-size:0.7rem; color:#9CA3AF; margin-top:4px;">👷 Frente: <b style="color:#D1D5DB;">${microsTxt}</b></div>
+                    <div style="font-size:0.74rem; color:#D1D5DB; background:#1F2937; padding:6px 9px; border-radius:6px; border:1px solid #374151;">
+                        👷 Frente en jurisdicción: <b style="color:#60A5FA;">${microsTxt}</b>
                     </div>
                 `;
             }
@@ -2247,7 +2272,7 @@
                     },
                     filter: function(feature) {
                         if (cantonFiltroActivo === 'TODOS') return true;
-                        let meta = obtenerCantonYMaquinariaDePunto(feature.properties || {});
+                        let meta = obtenerCantonDePunto(feature.properties || {});
                         return meta.canton === cantonFiltroActivo;
                     },
                     pointToLayer: function (feature, latlng) {
@@ -2257,7 +2282,7 @@
 
                         let idUnico = feature.properties['OBJECTID'] || feature.properties['FID'] || feature.properties['ID'] || feature.properties['id'] || feature.properties['NUMERO'] || feature.properties['numero'] || 'S/N';
                         let esAtendida = setAlcantarillasAtendidas.has(String(idUnico));
-                        let metaTerritorial = obtenerCantonYMaquinariaDePunto(feature.properties);
+                        let metaTerritorial = obtenerCantonDePunto(feature.properties);
 
                         let nivelRaw = feature.properties['PRIORIDAD'] || feature.properties['prioridad'] || feature.properties['Prioridad'] || 
                                        feature.properties['PRIORIDA'] || feature.properties['priorida'] || feature.properties['Priorida'] ||
@@ -2284,18 +2309,11 @@
                             ? `<div style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10B981; color: #10B981; padding: 6px 10px; border-radius: 6px; font-weight: bold; text-align: center; margin-bottom: 12px; letter-spacing: 0.5px;">✅ ESTADO: LIMPIA / ATENDIDA</div>`
                             : `<div style="background: rgba(239, 68, 68, 0.15); border: 1px solid #EF4444; color: #F87171; padding: 5px 10px; border-radius: 6px; font-weight: bold; text-align: center; margin-bottom: 12px; font-size:0.82rem;">⏳ ESTADO: FALTA POR LIMPIAR</div>`;
 
-                        let bloqueCantonMaq = `
-                            <div style="margin-bottom: 6px; font-size: 0.9rem;"><b style="color: #FBBF24;">🏛️ Cantón:</b> <span style="color: #FFFFFF; font-weight:bold;">${metaTerritorial.canton}</span></div>
-                            <div style="margin-bottom: 10px; font-size: 0.85rem; background:#111827; padding:6px 10px; border-radius:6px; border-left:3px solid #3B82F6;">
-                                <b style="color: #60A5FA;">🚜 Maquinaria Pertinente:</b> <span style="color: #D1D5DB;">${metaTerritorial.maquinaria}</span>
-                            </div>
-                        `;
-
                         let popupContent = `
                             <div style="font-family: 'Segoe UI', Tahoma, sans-serif;">
                                 <h4 style="margin: 0 0 10px 0; padding-bottom: 6px; border-bottom: 1px solid #374151; color: #F59E0B; font-size: 1.12rem; font-weight: bold;">${tramoRaw}</h4>
-                                ${bloqueCantonMaq}
-                                <div style="margin-bottom: 6px; font-size: 0.9rem;"><b style="color: #ffffff;">ID Único:</b> <span style="color: #9CA3AF;">${idUnico}</span> | <b style="color: #ffffff;">Código:</b> <span style="color: #9CA3AF;">${codigoD}</span></div>
+                                <div style="margin-bottom: 6px; font-size: 0.92rem;"><b style="color: #FBBF24;">🏛️ Cantón:</b> <span style="color: #FFFFFF; font-weight:bold;">${metaTerritorial.canton}</span></div>
+                                <div style="margin-bottom: 6px; font-size: 0.9rem;"><b style="color: #ffffff;">ID Único:</b> <span style="color: #D1D5DB;">${idUnico}</span> | <b style="color: #ffffff;">Código:</b> <span style="color: #D1D5DB;">${codigoD}</span></div>
                                 ${esCritica ? `<div style="margin-bottom: 8px; font-size: 0.88rem;"><b style="color: #ffffff;">Prioridad:</b> <span style="color: #FBBF24; font-weight:bold;">${nivelRaw || 'N/A'}</span> (${estadoFisico})</div>` : ''}
                                 ${badgeEstado}
                                 ${(esAtendida || esCritica) ? `
@@ -2324,7 +2342,7 @@
                             </div>
                         `;
                         
-                        marcadorBase.bindPopup(popupContent, { minWidth: (esAtendida || esCritica) ? 430 : 300 });
+                        marcadorBase.bindPopup(popupContent, { minWidth: (esAtendida || esCritica) ? 400 : 280 });
                         return marcadorBase;
                     },
                     onEachFeature: function (feature, layer) {
@@ -2399,11 +2417,13 @@
                 document.getElementById('val-media').innerText = countMed;
                 document.getElementById('val-prioritaria').innerText = countPrio;
 
+                // GRÁFICO DE BARRAS DE PUNTOS PRIORITARIOS CON ALTO CONTRASTE Y NITIDEZ TOTAL
                 let tramosOrdenados = Object.keys(conteoTramos).sort((a, b) => conteoTramos[b] - conteoTramos[a]);
+                let etiquetasCortas = tramosOrdenados.map(t => formatearEtiquetaTramoCorta(t));
                 let valoresOrdenados = tramosOrdenados.map(t => conteoTramos[t]);
 
                 let cantidadTramos = tramosOrdenados.length;
-                let alturaIdeal = Math.max(260, (cantidadTramos * 30) + 20); 
+                let alturaIdeal = Math.max(240, (cantidadTramos * 36) + 24); 
                 document.getElementById('graficoTramosWrapper').style.height = alturaIdeal + 'px';
 
                 let chartElement = document.getElementById('graficoTramos');
@@ -2414,14 +2434,17 @@
                 new Chart(ctx, {
                     type: 'bar',
                     data: {
-                        labels: tramosOrdenados,
+                        labels: etiquetasCortas,
                         datasets: [{
                             label: 'Puntos Prioritarios',
                             data: valoresOrdenados,
-                            backgroundColor: '#3B82F6', 
-                            borderRadius: 4,
-                            barPercentage: 0.6,
-                            categoryPercentage: 0.8
+                            backgroundColor: '#3B82F6',
+                            hoverBackgroundColor: '#60A5FA',
+                            borderColor: '#93C5FD',
+                            borderWidth: 1,
+                            borderRadius: 5,
+                            barPercentage: 0.68,
+                            categoryPercentage: 0.82
                         }]
                     },
                     options: {
@@ -2449,17 +2472,39 @@
                                 }
                             }
                         },
-                        layout: { padding: { left: 0, right: 30, top: 8, bottom: 8 } },
+                        layout: { padding: { left: 2, right: 42, top: 8, bottom: 8 } },
                         plugins: { 
                             legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    title: (items) => tramosOrdenados[items[0].dataIndex] || ''
+                                }
+                            },
                             datalabels: { 
-                                color: '#ffffff', anchor: 'start', align: 'right', offset: 6, backgroundColor: '#60A5FA', 
-                                borderRadius: 4, font: { weight: 'bold', size: 10 }, padding: { left: 5, right: 5, top: 2, bottom: 2 }
+                                color: '#FFFFFF',
+                                anchor: 'end',
+                                align: 'end',
+                                offset: 6,
+                                backgroundColor: '#1E40AF',
+                                borderColor: '#60A5FA',
+                                borderWidth: 1,
+                                borderRadius: 4,
+                                font: { weight: '900', size: 11, family: "'Segoe UI', sans-serif" },
+                                padding: { left: 6, right: 6, top: 2, bottom: 2 }
                             }
                         },
                         scales: {
-                            x: { display: false, max: Math.max(...valoresOrdenados, 1) * 1.25 },
-                            y: { ticks: { color: '#D1D5DB', font: { weight: 'bold', size: 8.5 }, autoSkip: false, padding: 6 }, grid: { display: false, drawBorder: false }, border: { display: false } }
+                            x: { display: false, max: Math.max(...valoresOrdenados, 1) * 1.32 },
+                            y: {
+                                ticks: {
+                                    color: '#FFFFFF',
+                                    font: { weight: '700', size: 10, family: "'Segoe UI', sans-serif" },
+                                    autoSkip: false,
+                                    padding: 6
+                                },
+                                grid: { display: false, drawBorder: false },
+                                border: { display: false }
+                            }
                         }
                     }
                 });
