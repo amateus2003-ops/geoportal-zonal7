@@ -316,7 +316,7 @@
     <div id="cronograma-view" class="view-container active">
         <div style="max-width: 1400px; margin: 0 auto; width: 100%; padding: 20px 0;">
             
-            <!-- SECCIÓN 1: RESUMEN DE INVERSIÓN Y CAPACIDAD OPERATIVA (SOLO VALORES EJECUTADOS) -->
+            <!-- SECCIÓN 1: RESUMEN DE INVERSIÓN Y CAPACIDAD OPERATIVA (CALCULADO CON DATOS DE MAQUINARIA Y SIN DUPLICADOS) -->
             <div class="planificacion-banner">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
                     <div style="font-size: 0.9rem; color: #10B981; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">⚙️ Resumen de Inversión y Capacidad Operativa</div>
@@ -780,7 +780,7 @@
             "LARAMA": "LARAMA"
         };
 
-        // Homologación entre microempresa normalizada y el atributo TRAMO o SUBTRAMO real en alcantarillas.js
+        // Homologación entre microempresa normalizada y los atributos TRAMO o SUBTRAMO reales en alcantarillas.js
         const MAPA_MICRO_A_TRAMO_QGIS = {
             "CAMINOS DEL SUR": ["LOJA - CATAMAYO"],
             "NINO DE POTRERILLOS": ["LÍMITE PROVINCIAL AZUAY/LOJA (OÑA) - SARAGURO", "SARAGURO - SAN LUCAS"],
@@ -798,15 +798,19 @@
             "PUYANGO": ["LÍMITE PROVINCIAL EL ORO/LOJA (RÍO PUYANGO) - Y DE ALAMOR", "Y DE ALAMOR - PINDAL"]
         };
 
-        // Homologación por palabras clave del nombre de ruta (ej. "Loja - Santiago", "Macandamine", "Capulí", "Nambacola")
+        // Homologación por palabras clave del nombre de ruta para garantizar que el botón "Ver Ruta" funcione siempre
         const MAPA_TEXTO_RUTA_A_TRAMO_QGIS = {
             "SANTIAGO": ["SAN LUCAS - LOJA"],
+            "SAN LUCAS": ["SAN LUCAS - LOJA", "SARAGURO - SAN LUCAS"],
             "MACANDAMINE": ["CATACOCHA - EL EMPALME"],
             "EMPALME": ["CATACOCHA - EL EMPALME", "CÉLICA - EL EMPALME", "EL EMPALME - MACARÁ - PUENTE INTERNACIONAL"],
             "NAMBACOLA": ["CATAMAYO - GONZANAMÁ"],
             "GONZANAMA": ["CATAMAYO - GONZANAMÁ", "GONZANAMÁ - CARIAMANGA"],
             "CAPULI": ["PUENTE GUAYABAL - SAN PEDRO DE LA BENDITA", "VARIANTE VÍA MIRAFLORES", "LOJA - CATAMAYO"],
             "CARIGAN": ["VARIANTE VÍA MIRAFLORES", "LOJA - CATAMAYO", "SAN LUCAS - LOJA"],
+            "MIRAFLORES": ["VARIANTE VÍA MIRAFLORES"],
+            "GUAYABAL": ["PUENTE GUAYABAL - SAN PEDRO DE LA BENDITA", "CATAMAYO - PUENTE GUAYABAL"],
+            "SAN PEDRO": ["SAN PEDRO DE LA BENDITA - VELACRUZ", "PUENTE GUAYABAL - SAN PEDRO DE LA BENDITA"],
             "VERACRUZ": ["SAN PEDRO DE LA BENDITA - VELACRUZ", "CHAGUARPAMBA - VELACRUZ", "VELACRUZ - CATACOCHA"],
             "VELACRUZ": ["SAN PEDRO DE LA BENDITA - VELACRUZ", "CHAGUARPAMBA - VELACRUZ", "VELACRUZ - CATACOCHA"],
             "MALACATOS": ["LOJA - VILCABAMBA"],
@@ -827,8 +831,8 @@
         };
 
         // =========================================================================
-        // BASE DE RESPALDO COHERENTE CON LOS DATOS REALES DE MAQUINARIA DEL DRIVE
-        // (Incluye Loja - Santiago: 68h Retro, 64h Volquete, 0h Excavadora)
+        // BASE INICIAL COHERENTE CON LOS DATOS REALES DE MAQUINARIA DEL DRIVE
+        // (Loja - Santiago: 68.0 h Retroexcavadora, 64.0 h Volquete, 0.0 h Excavadora)
         // =========================================================================
         const DATOS_RESPALDO_DRIVE = {
             "LLANKAY TANTANAKUY": {
@@ -972,7 +976,6 @@
                 let infoDiario = ultimoResumenRegistroDiario[empresaKeyDiario];
                 let codigosDeEstaMicro = (infoDiario && infoDiario.codigosSet) ? infoDiario.codigosSet : new Set();
 
-                // 1) Armar lista de tramos candidatos en QGIS según Microempresa y palabras clave de la Ruta
                 let tramosCandidatos = new Set();
                 if (MAPA_MICRO_A_TRAMO_QGIS[claveMicro]) {
                     MAPA_MICRO_A_TRAMO_QGIS[claveMicro].forEach(t => tramosCandidatos.add(normalizarEncabezado(t)));
@@ -1003,15 +1006,12 @@
                         : (layer.getBounds ? layer.getBounds().getCenter() : null);
                     if (!coord) return;
 
-                    // Nivel 1: Coincidencia exacta con los códigos limpiados por esta microempresa
                     if (codigosDeEstaMicro.size > 0 && codigosDeEstaMicro.has(idUnico)) {
                         latlngsPorCodigos.push(coord);
                     }
-                    // Nivel 2: Coincidencia con el Tramo QGIS homologado
                     if (tramosCandidatos.has(tramoCapa) || tramosCandidatos.has(subtramoCapa)) {
                         latlngsPorTramoHomologado.push(coord);
                     }
-                    // Nivel 3: Coincidencia por palabras clave en Tramo o Subtramo
                     if (palabrasSueltas.some(p => tramoCapa.includes(p) || subtramoCapa.includes(p))) {
                         latlngsPorPalabras.push(coord);
                     }
@@ -1453,7 +1453,6 @@
                 let obj = {};
                 for (let j = 0; j < encabezados.length; j++) {
                     let key = encabezados[j];
-                    // Si hay encabezados repetidos, guardamos el primero o concatenamos sufijo
                     if (obj[key] !== undefined && obj[key] !== "") {
                         obj[`${key}_${j}`] = fila[j] !== undefined ? String(fila[j]).trim() : "";
                     } else {
@@ -1494,7 +1493,7 @@
             });
         }
 
-        // Busca una columna evitando colisiones (ej. que "EXCAVADORA" no lea "RETROEXCAVADORA")
+        // Busca una columna evitando colisiones (ej. que "EXCAVADORA" nunca lea "RETROEXCAVADORA")
         function obtenerValorColumnaEstricta(row, posiblesNombres, palabrasExcluidas = []) {
             for (let nombre of posiblesNombres) {
                 if (row[nombre] !== undefined && row[nombre] !== "") return row[nombre];
@@ -1514,14 +1513,16 @@
             let hExc = parseNumeroDrive(obtenerValorColumnaEstricta(r, ["HORAS EXCAVADORA (H)", "HORAS EXCAVADORA", "EXCAVADORA"], ["RETRO"]));
             let hVolq = parseNumeroDrive(obtenerValorColumnaEstricta(r, ["HORAS VOLQUETE (H)", "HORAS VOLQUETE", "VOLQUETE", "VOLQUETES"], []));
 
-            // Soporte para cuando el Drive tiene 2 columnas de maquinaria: [Tipo de Maquinaria] y [Horas]
-            if (hRetro === 0 && hExc === 0 && hVolq === 0) {
-                let tipoMaq = normalizarEncabezado(obtenerValorColumnaEstricta(r, ["TIPO DE MAQUINARIA", "TIPO MAQUINARIA", "MAQUINARIA", "EQUIPO"], ["INTERVINO", "COSTO", "DIAS", "ALCANTARILLAS", "RENDIMIENTO", "HORAS MAQUINA"]));
-                let valorHoras = parseNumeroDrive(obtenerValorColumnaEstricta(r, ["HORAS TRABAJADAS", "HORAS EJECUTADAS", "HORAS MAQUINA", "HORAS (H)", "HORAS"], ["RETRO", "EXCAVADORA", "VOLQUETE", "RENDIMIENTO"]));
-                if (tipoMaq && valorHoras > 0) {
-                    if (tipoMaq.includes("RETRO")) hRetro += valorHoras;
-                    else if (tipoMaq.includes("VOLQ")) hVolq += valorHoras;
-                    else if (tipoMaq.includes("EXCAV")) hExc += valorHoras;
+            // Soporte para formato de 2 columnas de maquinaria en el Drive: [Maquinaria / Equipo] y [Horas]
+            for (let k in r) {
+                let valStr = normalizarEncabezado(r[k]);
+                if (valStr === "RETROEXCAVADORA" || valStr === "VOLQUETE" || valStr === "EXCAVADORA") {
+                    let numH = parseNumeroDrive(obtenerValorColumnaEstricta(r, ["HORAS TRABAJADAS", "HORAS EJECUTADAS", "HORAS MAQUINA", "HORAS (H)", "HORAS", "CANTIDAD HORAS"], ["RETRO", "EXCAVADORA", "VOLQUETE", "RENDIMIENTO", "TOTAL"]));
+                    if (numH > 0) {
+                        if (valStr === "RETROEXCAVADORA" && hRetro === 0) hRetro = numH;
+                        else if (valStr === "VOLQUETE" && hVolq === 0) hVolq = numH;
+                        else if (valStr === "EXCAVADORA" && hExc === 0) hExc = numH;
+                    }
                 }
             }
 
@@ -1529,10 +1530,24 @@
         }
 
         // =========================================================================
-        // FUNCIÓN DE PROCESAMIENTO DE GRUPOS CON DEDUPLICACIÓN AUTOMÁTICA
-        // Si se repiten (Tramo + Inicio de Gestión + Fin de Gestión + Monto Total)
-        // NO duplica el monto ni los días; solo consolida las horas reales de maquinaria.
+        // FUNCIÓN ANTI-DUPLICADOS: Verifica si (Tramo, Inicio de Gestión, Fin de Gestión, Monto Total)
+        // ya fue procesado para NO duplicar el valor en la plataforma.
         // =========================================================================
+        function esRegistroDuplicadoGestion(setHuellas, tramo, inicio, fin, monto) {
+            let t = normalizarEncabezado(tramo);
+            let i = normalizarEncabezado(inicio);
+            let f = normalizarEncabezado(fin);
+            let m = Number(monto || 0).toFixed(2);
+            if (!t && !i && !f && Number(m) === 0) return false;
+
+            let huella = `${t}\vert{}\vert{}${i}||${f}\vert{}\vert{}${m}`;
+            if (setHuellas.has(huella)) {
+                return true;
+            }
+            setHuellas.add(huella);
+            return false;
+        }
+
         function procesarHojaGrupos(rows) {
             let nuevosGrupos = {};
             let huellasGestionVistas = new Set();
@@ -1551,10 +1566,8 @@
                 let finRaw = String(obtenerValorColumnaEstricta(r, ["FIN DE GESTION", "FIN GESTION", "FIN"], ["MAQUINARIA"]) || "").trim();
                 let montoRaw = parseNumeroDrive(obtenerValorColumnaEstricta(r, ["MONTO TOTAL COBRADO (USD)", "MONTO TOTAL COBRADO", "MONTO COBRADO", "MONTO TOTAL"], []));
 
-                // Si la fila viene con celda combinada en blanco para el nombre pero trae datos de maquinaria del mismo tramo
                 let clave = nombreLimpio ? normalizarMicro(nombreLimpio) : ultimaClaveGrupo;
                 if (!clave && tramoFila) {
-                    // Homologar por tramo si solo viene el tramo (ej. "Loja - Santiago" -> "LLANKAY TANTANAKUY")
                     let tNorm = normalizarEncabezado(tramoFila);
                     if (tNorm.includes("SANTIAGO")) clave = "LLANKAY TANTANAKUY";
                     else if (tNorm.includes("SARAGURO") || tNorm.includes("ONA")) clave = "NINO DE POTRERILLOS";
@@ -1574,13 +1587,8 @@
                 let diasGest = parseNumeroDrive(obtenerValorColumnaEstricta(r, ["DIAS DE GESTION", "DIAS GESTION", "DIAS LABORABLES"], []));
                 let alcLimp = parseNumeroDrive(obtenerValorColumnaEstricta(r, ["N° ALCANTARILLAS LIMPIADAS", "ALCANTARILLAS LIMPIADAS"], ["MAQUINARIA"]));
 
-                // Huella única para detectar duplicados de (Tramo + Inicio de Gestión + Fin de Gestión + Monto Total)
-                let tramoEfectivo = normalizarEncabezado(tramoFila || ultimoTramoVisto || clave);
-                let huellaGestion = `${clave}|${tramoEfectivo}\vert{}${normalizarEncabezado(iniRaw)}|${normalizarEncabezado(finRaw)}\vert{}${montoRaw.toFixed(2)}`;
-                let esGestionDuplicada = huellasGestionVistas.has(huellaGestion);
-                if (iniRaw || finRaw || montoRaw > 0) {
-                    huellasGestionVistas.add(huellaGestion);
-                }
+                let tramoEfectivo = tramoFila || ultimoTramoVisto || clave;
+                let duplicado = esRegistroDuplicadoGestion(huellasGestionVistas, tramoEfectivo, iniRaw, finRaw, montoRaw);
 
                 if (!nuevosGrupos[clave]) {
                     nuevosGrupos[clave] = {
@@ -1600,30 +1608,26 @@
                         costoTotal: 0
                     };
                 } else {
-                    // Si el grupo ya existe:
-                    // 1) Si el Tramo, Inicio, Fin y Monto Total están repetidos (duplicados), NO se vuelve a sumar el monto ni los días.
-                    if (!esGestionDuplicada && nuevosGrupos[clave].montoCobrado === 0 && montoRaw > 0) {
-                        nuevosGrupos[clave].montoCobrado = montoRaw;
-                    }
-                    if (!nuevosGrupos[clave].inicioGestionDate && iniRaw) {
-                        nuevosGrupos[clave].inicioGestionRaw = iniRaw;
-                        nuevosGrupos[clave].inicioGestionDate = parseFechaDrive(iniRaw);
-                    }
-                    if (nuevosGrupos[clave].diasGestion === 0 && diasGest > 0) {
-                        nuevosGrupos[clave].diasGestion = diasGest;
-                    }
-                    if (nuevosGrupos[clave].alcLimpiadas === 0 && alcLimp > 0) {
-                        nuevosGrupos[clave].alcLimpiadas = alcLimp;
-                    }
-
-                    // 2) Para las horas de maquinaria: si la fila es completamente idéntica en todo (duplicado exacto de fila), no duplicar;
-                    // si es una sub-fila con nuevas horas de otra máquina (ej. 2 columnas), las acumula.
-                    if (!esGestionDuplicada) {
+                    // Si NO es duplicado de (Tramo + Inicio + Fin + Monto), completa datos faltantes; si ES duplicado, lo ignora para no duplicar valores
+                    if (!duplicado) {
+                        if (nuevosGrupos[clave].montoCobrado === 0 && montoRaw > 0) {
+                            nuevosGrupos[clave].montoCobrado = montoRaw;
+                        }
+                        if (!nuevosGrupos[clave].inicioGestionDate && iniRaw) {
+                            nuevosGrupos[clave].inicioGestionRaw = iniRaw;
+                            nuevosGrupos[clave].inicioGestionDate = parseFechaDrive(iniRaw);
+                        }
+                        if (nuevosGrupos[clave].diasGestion === 0 && diasGest > 0) {
+                            nuevosGrupos[clave].diasGestion = diasGest;
+                        }
+                        if (nuevosGrupos[clave].alcLimpiadas === 0 && alcLimp > 0) {
+                            nuevosGrupos[clave].alcLimpiadas = alcLimp;
+                        }
                         nuevosGrupos[clave].horasRetro += hRetro;
                         nuevosGrupos[clave].horasExc += hExc;
                         nuevosGrupos[clave].horasVolq += hVolq;
                     } else {
-                        // Si la fila tenía el mismo encabezado repetido pero aporta una máquina que estaba en 0, la asigna sin duplicar
+                        // Si la fila tenía repetidos Tramo/Inicio/Fin/Monto pero traía en otra columna las horas de otra máquina (ej. Volquete), las rescata sin duplicar
                         if (nuevosGrupos[clave].horasRetro === 0 && hRetro > 0) nuevosGrupos[clave].horasRetro = hRetro;
                         if (nuevosGrupos[clave].horasExc === 0 && hExc > 0) nuevosGrupos[clave].horasExc = hExc;
                         if (nuevosGrupos[clave].horasVolq === 0 && hVolq > 0) nuevosGrupos[clave].horasVolq = hVolq;
@@ -1693,7 +1697,6 @@
                 }
             });
 
-            // Costo total de maquinaria calculado directamente de las horas ejecutadas por máquina
             let sumaCostoMaq = (hRetro * PLAN.tarifa.retro) + (hExc * PLAN.tarifa.excavadora) + (hVolq * PLAN.tarifa.volquete);
 
             document.getElementById('card-inv-maq').innerText = formatearMoneda(sumaCostoMaq);
