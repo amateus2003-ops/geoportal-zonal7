@@ -373,8 +373,9 @@
                         </div>
                         <div>
                             <div class="plan-icon-container" style="font-size: 1.7rem;">💰</div>
-                            <div class="plan-item-lbl">Inversión Microempresas</div>
+                            <div class="plan-item-lbl">Inversión en Alcantarillas</div>
                             <div class="plan-item-val" style="color: #FBBF24;" id="card-inv-micro">—</div>
+                            <div class="plan-item-lbl" style="font-size: 0.7rem; color: #9CA3AF; text-transform: none; margin-top: 4px;" id="card-inv-micro-total"></div>
                         </div>
                         <div>
                             <div class="plan-icon-container" style="font-size: 1.7rem;">⏳</div>
@@ -829,6 +830,9 @@
         // =========================================================================
         // ENLACES CSV CONFIGURADOS Y PARÁMETROS BASE DE LA ZONAL 7
         // =========================================================================
+        // Jornadas de cuadrilla por alcantarilla, estimadas del chat de reportes de las microempresas (118,5 jornadas / 267 alcantarillas)
+        const JORNADAS_POR_ALCANTARILLA = 0.444;
+
         const URL_GRUPOS      = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRiKv8b_aqemoRDqnpObERya2YtDl1YPLZreGuFoN3ODItctXixCAitBxUS-cDNN43Ef8v85hANnaXz/pub?gid=715116195&single=true&output=csv";
         const URL_ALC_DRIVE   = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRiKv8b_aqemoRDqnpObERya2YtDl1YPLZreGuFoN3ODItctXixCAitBxUS-cDNN43Ef8v85hANnaXz/pub?gid=353357775&single=true&output=csv";
         const URL_PARAMETROS  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRiKv8b_aqemoRDqnpObERya2YtDl1YPLZreGuFoN3ODItctXixCAitBxUS-cDNN43Ef8v85hANnaXz/pub?gid=134870880&single=true&output=csv";
@@ -1425,6 +1429,7 @@
 
             renderizarTablaMonitorizacion(ultimoResumenRegistroDiario);
             actualizarFilaMicroempresasFrentes();
+            actualizarTarjetasResumenCapacidad();
             actualizarSeccionMetaGlobalYProyeccion();
             actualizarMapaGeografico();
         }
@@ -1794,12 +1799,32 @@
             const lista = Object.values(driveGruposPorMicro);
             if (lista.length === 0) return;
 
+            let alcPorMicro = {};
+            for (let k in ultimoResumenRegistroDiario) {
+                let info = ultimoResumenRegistroDiario[k];
+                let clave = normalizarMicro(info.nombreReal);
+                if (clave) {
+                    alcPorMicro[clave] = (alcPorMicro[clave] || 0) + (info.limpiadasAcumuladas || 0);
+                }
+            }
+
             let sumaMontoMicro = 0;
+            let sumaInversionAlc = 0;
             let hRetro = 0, hExc = 0, hVolq = 0;
             let minFechaInicio = null;
 
-            lista.forEach(g => {
-                sumaMontoMicro += (g.montoCobrado || 0);
+            for (let clave in driveGruposPorMicro) {
+                let g = driveGruposPorMicro[clave];
+                let montoCobrado = g.montoCobrado || 0;
+                let diasGestion = (g.diasGestion && g.diasGestion > 0) ? g.diasGestion : 183;
+                let costoDia = montoCobrado / diasGestion;
+                let alcantarillas = alcPorMicro[clave] || 0;
+                let inversionAlc = alcantarillas > 0
+                    ? Math.min(montoCobrado, alcantarillas * JORNADAS_POR_ALCANTARILLA * costoDia)
+                    : 0;
+
+                sumaMontoMicro += montoCobrado;
+                sumaInversionAlc += inversionAlc;
                 hRetro += (g.horasRetro || 0);
                 hExc += (g.horasExc || 0);
                 hVolq += (g.horasVolq || 0);
@@ -1808,12 +1833,16 @@
                         minFechaInicio = g.inicioGestionDate;
                     }
                 }
-            });
+            }
 
             let sumaCostoMaq = (hRetro * PLAN.tarifa.retro) + (hExc * PLAN.tarifa.excavadora) + (hVolq * PLAN.tarifa.volquete);
 
             document.getElementById('card-inv-maq').innerText = formatearMoneda(sumaCostoMaq);
-            document.getElementById('card-inv-micro').innerText = formatearMoneda(sumaMontoMicro);
+            document.getElementById('card-inv-micro').innerText = formatearMoneda(sumaInversionAlc);
+            const elTotalContratos = document.getElementById('card-inv-micro-total');
+            if (elTotalContratos) {
+                elTotalContratos.innerText = `de ${formatearMoneda(sumaMontoMicro)} en contratos (incluye cunetas y vía)`;
+            }
 
             if (minFechaInicio) {
                 let hoy = new Date();
@@ -2088,7 +2117,7 @@
                         let st = estadisticasPorCanton[c];
                         let opt = document.createElement('option');
                         opt.value = c;
-                        opt.textContent = `${c} — ✅ ${st.limpias} limpias | ⏳ ${st.faltan} faltan`;
+                        opt.textContent = `${c} — ✅ ${st.limpias} limpias \vert{} ⏳${st.faltan} faltan`;
                         sel.appendChild(opt);
                     });
 
@@ -2358,10 +2387,8 @@
                             <div style="font-family: 'Segoe UI', Tahoma, sans-serif;">
                                 <h4 style="margin: 0 0 10px 0; padding-bottom: 6px; border-bottom: 1px solid #374151; color: #F59E0B; font-size: 1.12rem; font-weight: bold;">${tramoRaw}</h4>
                                 <div style="margin-bottom: 6px; font-size: 0.92rem;"><b style="color: #FBBF24;">🏛️ Cantón:</b> <span style="color: #FFFFFF; font-weight:bold;">${metaTerritorial.canton}</span></div>
-                                <div style="margin-bottom: 6px; font-size: 0.9rem;"><b style="color: #ffffff;">ID Único:</b> <span style="color: #D1D5DB;">${idUnico}</span> | <b style="color: #ffffff;">Código:</b> <span style="color: #D1D5DB;">${codigoD}</span></div>
-                                ${esCritica ? `<div style="margin-bottom: 8px; font-size: 0.88rem;"><b style="color: #ffffff;">Prioridad:</b> <span style="color: #FBBF24; font-weight:bold;">${nivelRaw || 'N/A'}</span> (${estadoFisico})</div>` : ''}
-                                ${badgeEstado}
-                                ${(esAtendida || esCritica) ? `
+                                <div style="margin-bottom: 6px; font-size: 0.9rem;"><b style="color: #ffffff;">ID Único:</b> <span style="color: #D1D5DB;">${idUnico}</span> | <b style="color: #ffffff;">Código:</b> <span style="color: #D1D5DB;">${codigoD}</span></div>${esCritica ? `<div style="margin-bottom: 8px; font-size: 0.88rem;"><b style="color: #ffffff;">Prioridad:</b> <span style="color: #FBBF24; font-weight:bold;">${nivelRaw || 'N/A'}</span> (${estadoFisico})</div>` : ''}
+                                ${badgeEstado}${(esAtendida || esCritica) ? `
                                 <div style="display:flex; gap:12px; margin-top:10px;">
                                     <div style="flex:1; text-align:center;">
                                         <div style="font-size:0.75rem; color:#EF4444; font-weight:bold; margin-bottom:4px;">ANTES</div>
