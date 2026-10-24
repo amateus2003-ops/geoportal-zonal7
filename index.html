@@ -219,11 +219,16 @@
         .upload-btn:hover { background-color: #2563EB; }
         #excel-file { display: none; }
 
-        /* BUSCADOR Y BLOQUE DE ORDENAMIENTO TERRITORIAL EN EL SIDEBAR */
+        /* BUSCADOR CON LISTA DESPLEGABLE DE CÓDIGOS COMPATIBLES */
+        .search-wrapper {
+            position: relative;
+            width: 100%;
+            margin-bottom: 12px;
+            box-sizing: border-box;
+        }
         .search-container { 
             display: flex; 
             gap: 8px; 
-            margin-bottom: 12px; 
             width: 100%;
             box-sizing: border-box;
         }
@@ -254,6 +259,98 @@
             flex-shrink: 0;
         }
         .search-btn:hover { background: #2563EB; }
+
+        .search-dropdown {
+            display: none;
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 0;
+            right: 0;
+            background: #111827;
+            border: 1px solid #3B82F6;
+            border-radius: 8px;
+            max-height: 290px;
+            overflow-y: auto;
+            z-index: 4000;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.9);
+        }
+        .search-dropdown.activo {
+            display: block;
+        }
+        .search-dropdown-header {
+            background: #1F2937;
+            color: #9CA3AF;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 7px 12px;
+            border-bottom: 1px solid #374151;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+        .search-item {
+            padding: 9px 12px;
+            border-bottom: 1px solid #1F2937;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.18s ease;
+        }
+        .search-item:last-child {
+            border-bottom: none;
+        }
+        .search-item:hover {
+            background: #27303F;
+        }
+        .search-item-exact {
+            background: rgba(59, 130, 246, 0.14);
+            border-left: 3px solid #3B82F6;
+        }
+        .search-item-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+        .search-item-title {
+            font-size: 0.84rem;
+            font-weight: bold;
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .search-item-sub {
+            font-size: 0.72rem;
+            color: #9CA3AF;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .badge-exacto {
+            background: #FBBF24;
+            color: #111827;
+            font-size: 0.62rem;
+            font-weight: 900;
+            padding: 1px 5px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        .badge-estado-mini {
+            font-size: 0.68rem;
+            font-weight: bold;
+            padding: 3px 7px;
+            border-radius: 5px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
 
         .canton-sidebar-box {
             background-color: #27303F;
@@ -722,10 +819,13 @@
     <div id="geoportal-view" class="view-container">
         
         <div id="sidebar">
-            <!-- 1) BUSCADOR DE ALCANTARILLAS -->
-            <div class="search-container">
-                <input type="text" id="buscador-id" class="search-input" placeholder="Buscar ID o Código (ej. 1820)..." onkeypress="if(event.key === 'Enter') buscarAlcantarilla()">
-                <button class="search-btn" onclick="buscarAlcantarilla()" title="Buscar Alcantarilla">🔍</button>
+            <!-- 1) BUSCADOR DE ALCANTARILLAS CON LISTA DESPLEGABLE DE CÓDIGOS COMPATIBLES -->
+            <div class="search-wrapper" id="search-wrapper-box">
+                <div class="search-container">
+                    <input type="text" id="buscador-id" class="search-input" autocomplete="off" placeholder="Buscar ID o Código (ej. 17, 1820)..." oninput="mostrarSugerenciasBusqueda(this.value)" onfocus="mostrarSugerenciasBusqueda(this.value)" onkeydown="manejarTeclasBuscador(event)">
+                    <button class="search-btn" onclick="buscarAlcantarilla()" title="Buscar Alcantarilla">🔍</button>
+                </div>
+                <div id="lista-codigos-compatibles" class="search-dropdown"></div>
             </div>
 
             <!-- 2) BLOQUE DE ORDENAMIENTO TERRITORIAL POR CANTONES -->
@@ -1294,7 +1394,6 @@
         let setAlcantarillasAtendidas = new Set();
         let estadisticasPorCanton = {};
         let cantonFiltroActivo = 'TODOS';
-        // Variable interna para conservar el monto total de contratos sin mostrarlo en la interfaz pública
         let montoContratosInternoZonal7 = 0;
 
         function ejecutarDiagnosticoConsola() {
@@ -1665,7 +1764,6 @@
             return "";
         }
 
-        // Extrae las horas dinámicas de Retroexcavadora, Excavadora y Volquete de cada fila
         function extraerHorasMaquinariaDeFila(r) {
             let hRetro = parseNumeroDrive(obtenerValorColumnaEstricta(r, ["HORAS RETROEXCAVADORA (H)", "HORAS RETROEXCAVADORA", "RETROEXCAVADORA", "HORAS RETRO"], []));
             let hExc = parseNumeroDrive(obtenerValorColumnaEstricta(r, ["HORAS EXCAVADORA (H)", "HORAS EXCAVADORA", "EXCAVADORA"], ["RETRO"]));
@@ -1686,11 +1784,6 @@
             return { hRetro, hExc, hVolq };
         }
 
-        // =========================================================================
-        // PROCESAMIENTO DE LA HOJA GRUPOS DEL DRIVE:
-        // - DATOS ESTÁTICOS REPETIDOS (Grupo/Microempresa, Tramo, Monto Total Cobrado, Fechas, Días): NO SE SUMAN.
-        // - DATOS DINÁMICOS DE MAQUINARIA (Horas Retro, Horas Excavadora, Horas Volquete): SÍ SE SUMAN SIEMPRE.
-        // =========================================================================
         function procesarHojaGrupos(rows) {
             let nuevosGrupos = {};
             let ultimaClaveGrupo = "";
@@ -1813,13 +1906,6 @@
             calcularEstadisticasCantonales();
         }
 
-        // =========================================================================
-        // CÁLCULO DE INVERSIÓN DE MICROEMPRESAS PARA EL TOTAL DE ALCANTARILLAS LIMPIAS:
-        // 1. Costo por día = Monto de su contrato / 183 días de gestión ($202 a $303/día; Virgen del Cisne = $50/día).
-        // 2. Tiempo por alcantarilla = 0.44 días de cuadrilla (118.5 días / 267 alcantarillas).
-        // 3. Inversión en alcantarillas de cada microempresa = alcantarillas limpias × 0.44 × su costo por día.
-        // 4. El monto total de contratos (~$623,270) queda guardado solo internamente en montoContratosInternoZonal7.
-        // =========================================================================
         function calcularCostoDiaMicroempresa(claveMicro, grupoDrive) {
             if (claveMicro === "VIRGEN DEL CISNE") {
                 return 50.00;
@@ -1850,11 +1936,8 @@
                 }
             });
 
-            // Guardamos internamente el total de contratos (~$623,270) sin exponerlo en la tarjeta pública
             montoContratosInternoZonal7 = sumaContratosInterno;
 
-            // Sumar la inversión de cada microempresa según sus alcantarillas limpias:
-            // Inversión = alcantarillas limpias × 0.44 × costo por día
             let sumaInversionAlcantarillasLimpias = 0;
             let microsContabilizadas = new Set();
 
@@ -1874,7 +1957,6 @@
                 }
             }
 
-            // Si hay algún grupo en Drive que no estaba en ultimoResumenRegistroDiario pero tiene alcLimpiadas > 0
             for (let clave in driveGruposPorMicro) {
                 if (!microsContabilizadas.has(clave)) {
                     let gDrive = driveGruposPorMicro[clave];
@@ -1940,6 +2022,7 @@
         window.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 cerrarModalMaquinaria();
+                cerrarListaBusqueda();
             }
         });
 
@@ -2752,40 +2835,238 @@
         toggleCapa('chk-limpias', grupoLimpias);
         toggleCapa('chk-atendidas', grupoAtendidas);
 
-        function buscarAlcantarilla() {
-            let inputElement = document.getElementById('buscador-id');
-            let termino = inputElement.value.trim().toLowerCase();
-            if (!termino) return;
-
-            if (cantonFiltroActivo !== 'TODOS') {
-                filtrarPorCanton('TODOS');
+        // =========================================================================
+        // MOTOR DE BÚSQUEDA ESPACIAL PROFESIONAL CON LISTA DESPLEGABLE COMPATIBLE
+        // =========================================================================
+        function obtenerCoincidenciasAlcantarillas(terminoRaw) {
+            let termino = String(terminoRaw || '').trim().toLowerCase();
+            if (!termino || typeof alcantarillasData === 'undefined' || !alcantarillasData.features) {
+                return [];
             }
 
-            let encontrada = false;
+            let resultados = [];
+
+            alcantarillasData.features.forEach(feat => {
+                if (!feat.properties) return;
+                let props = feat.properties;
+                let idUnicoStr = String(props['OBJECTID'] || props['FID'] || props['ID'] || props['id'] || props['NUMERO'] || props['numero'] || '').trim();
+                let codigoDStr = String(props['CÓDIGO_D_'] || props['CODIGO_D_'] || props['codigo'] || props['CODIGO'] || '').trim();
+                let tramoStr = String(props['TRAMO'] || props['tramo'] || props['Tramo'] || 'Sin tramo').trim();
+
+                let idLow = idUnicoStr.toLowerCase();
+                let codLow = codigoDStr.toLowerCase();
+
+                let prioridadOrden = 99;
+                if (idLow === termino) {
+                    prioridadOrden = 1; // Coincidencia exacta de ID (ej. "17" === "17")
+                } else if (codLow === termino) {
+                    prioridadOrden = 2; // Coincidencia exacta de Código
+                } else if (idLow.startsWith(termino)) {
+                    prioridadOrden = 3; // El ID empieza con el término (ej. "170", "171")
+                } else if (codLow.startsWith(termino)) {
+                    prioridadOrden = 4; // El Código empieza con el término
+                } else if (idLow.includes(termino)) {
+                    prioridadOrden = 5; // El ID contiene el término (ej. "117", "217")
+                } else if (codLow.includes(termino)) {
+                    prioridadOrden = 6; // El Código contiene el término
+                }
+
+                if (prioridadOrden < 99) {
+                    let meta = obtenerCantonDePunto(props);
+                    let esLimpia = setAlcantarillasAtendidas.has(idUnicoStr);
+                    resultados.push({
+                        idUnico: idUnicoStr,
+                        idNum: parseInt(idUnicoStr, 10) || 999999,
+                        codigoD: codigoDStr || 'S/C',
+                        tramo: formatearEtiquetaTramoCorta(tramoStr),
+                        canton: meta.canton,
+                        esLimpia: esLimpia,
+                        esExacto: (prioridadOrden === 1 || prioridadOrden === 2),
+                        prioridadOrden: prioridadOrden
+                    });
+                }
+            });
+
+            // Ordenar por relevancia (exacto primero) y luego por número de ID ascendente
+            resultados.sort((a, b) => {
+                if (a.prioridadOrden !== b.prioridadOrden) {
+                    return a.prioridadOrden - b.prioridadOrden;
+                }
+                return a.idNum - b.idNum;
+            });
+
+            return resultados;
+        }
+
+        window.mostrarSugerenciasBusqueda = function(valorInput) {
+            const dropdown = document.getElementById('lista-codigos-compatibles');
+            if (!dropdown) return;
+
+            let termino = String(valorInput || '').trim();
+            if (!termino) {
+                dropdown.classList.remove('activo');
+                dropdown.innerHTML = '';
+                return;
+            }
+
+            let coincidencias = obtenerCoincidenciasAlcantarillas(termino);
+            if (coincidencias.length === 0) {
+                dropdown.innerHTML = `
+                    <div class="search-dropdown-header">
+                        <span>Sin coincidencias</span>
+                        <span style="cursor:pointer; color:#F87171;" onclick="cerrarListaBusqueda()">✕</span>
+                    </div>
+                    <div style="padding: 12px; font-size: 0.8rem; color: #9CA3AF; text-align: center;">
+                        No se encontró ningún ID o Código compatible con "<b>${termino.toUpperCase()}</b>"
+                    </div>
+                `;
+                dropdown.classList.add('activo');
+                return;
+            }
+
+            let maxMostrar = coincidencias.slice(0, 35);
+            let html = `
+                <div class="search-dropdown-header">
+                    <span>📋 ${coincidencias.length} código(s) compatible(s)</span>
+                    <span style="cursor:pointer; color:#F3F4F6; font-size:0.8rem;" onclick="cerrarListaBusqueda()" title="Cerrar lista">✕</span>
+                </div>
+            `;
+
+            maxMostrar.forEach(item => {
+                let badgeExacto = item.esExacto ? `<span class="badge-exacto">EXACTO</span>` : '';
+                let badgeEstado = item.esLimpia
+                    ? `<span class="badge-estado-mini" style="background:rgba(16,185,129,0.2); color:#10B981; border:1px solid #10B981;">✅ Limpia</span>`
+                    : `<span class="badge-estado-mini" style="background:rgba(245,158,11,0.15); color:#FBBF24; border:1px solid rgba(245,158,11,0.4);">⏳ Pendiente</span>`;
+
+                let idEscapado = item.idUnico.replace(/'/g, "\\'");
+                html += `
+                    <div class="search-item ${item.esExacto ? 'search-item-exact' : ''}" onclick="seleccionarAlcantarillaPorId('${idEscapado}')">
+                        <div class="search-item-info">
+                            <div class="search-item-title">
+                                <span style="color:#60A5FA;">ID: ${item.idUnico}</span>
+                                <span style="color:#9CA3AF; font-weight:normal;">| Cód: ${item.codigoD}</span>
+                                ${badgeExacto}
+                            </div>
+                            <div class="search-item-sub">🏛️ ${item.canton} — ${item.tramo}</div>
+                        </div>
+                        ${badgeEstado}
+                    </div>
+                `;
+            });
+
+            dropdown.innerHTML = html;
+            dropdown.classList.add('activo');
+        };
+
+        window.cerrarListaBusqueda = function() {
+            const dropdown = document.getElementById('lista-codigos-compatibles');
+            if (dropdown) dropdown.classList.remove('activo');
+        };
+
+        // Cierra la lista desplegable al hacer clic fuera del buscador
+        document.addEventListener('click', function(e) {
+            const box = document.getElementById('search-wrapper-box');
+            if (box && !box.contains(e.target)) {
+                cerrarListaBusqueda();
+            }
+        });
+
+        window.manejarTeclasBuscador = function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                buscarAlcantarilla();
+            } else if (event.key === 'Escape') {
+                cerrarListaBusqueda();
+            }
+        };
+
+        // Vuela directamente a la alcantarilla elegida por su ID Único exacto (sin sobrescribir con otros puntos)
+        window.seleccionarAlcantarillaPorId = function(idObjetivo) {
+            let objetivoNorm = String(idObjetivo || '').trim().toLowerCase();
+            if (!objetivoNorm) return;
+
+            if (cantonFiltroActivo !== 'TODOS') {
+                cantonFiltroActivo = 'TODOS';
+                const sel = document.getElementById('select-canton-filtro');
+                if (sel) sel.value = 'TODOS';
+                const boxResumen = document.getElementById('resumen-canton-seleccionado');
+                if (boxResumen) boxResumen.style.display = 'none';
+                document.getElementById('titulo-overlay-mapa').innerText = 'Puntos de Atención Prioritaria (Zonal 7)';
+                actualizarMapaGeografico();
+            }
+
+            let layerElegido = null;
+            let coordElegida = null;
+
             if (capaAlcantarillas) {
                 capaAlcantarillas.eachLayer(function(layer) {
-                    if (!layer.feature || !layer.feature.properties) return;
+                    if (layerElegido || !layer.feature || !layer.feature.properties) return;
                     let props = layer.feature.properties;
-                    let idUnico = String(props['OBJECTID'] || props['FID'] || props['ID'] || props['id'] || props['NUMERO'] || props['numero'] || '').toLowerCase();
-                    let codigoD = String(props['CÓDIGO_D_'] || props['CODIGO_D_'] || props['codigo'] || props['CODIGO'] || '').toLowerCase();
+                    let idUnico = String(props['OBJECTID'] || props['FID'] || props['ID'] || props['id'] || props['NUMERO'] || props['numero'] || '').trim().toLowerCase();
+                    let codigoD = String(props['CÓDIGO_D_'] || props['CODIGO_D_'] || props['codigo'] || props['CODIGO'] || '').trim().toLowerCase();
 
-                    if (idUnico === termino || codigoD === termino || idUnico.includes(termino) || codigoD.includes(termino)) {
-                        let coord = typeof layer.getLatLng === 'function' 
-                            ? layer.getLatLng() 
+                    if (idUnico === objetivoNorm || codigoD === objetivoNorm) {
+                        layerElegido = layer;
+                        coordElegida = typeof layer.getLatLng === 'function'
+                            ? layer.getLatLng()
                             : (layer.getBounds ? layer.getBounds().getCenter() : null);
-
-                        if (coord) {
-                            encontrada = true;
-                            map.flyTo(coord, 18, { duration: 1.5 });
-                            setTimeout(() => { layer.openPopup(); }, 1500);
-                            inputElement.value = '';
-                        }
                     }
                 });
             }
 
-            if (!encontrada) {
-                alert("No se encontró ninguna alcantarilla registrada con el ID o Código: " + termino.toUpperCase());
+            if (layerElegido && coordElegida) {
+                cerrarListaBusqueda();
+                const inputElement = document.getElementById('buscador-id');
+                if (inputElement) inputElement.value = String(idObjetivo);
+
+                map.flyTo(coordElegida, 18, { duration: 1.4 });
+                setTimeout(() => {
+                    layerElegido.openPopup();
+                }, 1450);
+            }
+        };
+
+        function buscarAlcantarilla() {
+            let inputElement = document.getElementById('buscador-id');
+            let termino = inputElement ? inputElement.value.trim() : '';
+            if (!termino) return;
+
+            let coincidencias = obtenerCoincidenciasAlcantarillas(termino);
+            if (coincidencias.length === 0) {
+                mostrarSugerenciasBusqueda(termino);
+                return;
+            }
+
+            // Desplegar siempre la lista con los códigos compatibles
+            mostrarSugerenciasBusqueda(termino);
+
+            // Si solo existe 1 resultado compatible o si el primer resultado es coincidencia exacta, enfocar ese punto exacto
+            if (coincidencias.length === 1) {
+                seleccionarAlcantarillaPorId(coincidencias[0].idUnico);
+            } else if (coincidencias[0].esExacto) {
+                let idExacto = coincidencias[0].idUnico;
+                if (cantonFiltroActivo !== 'TODOS') {
+                    filtrarPorCanton('TODOS');
+                }
+                if (capaAlcantarillas) {
+                    let layerExacto = null;
+                    let coordExacta = null;
+                    capaAlcantarillas.eachLayer(function(layer) {
+                        if (layerExacto || !layer.feature || !layer.feature.properties) return;
+                        let props = layer.feature.properties;
+                        let idUnico = String(props['OBJECTID'] || props['FID'] || props['ID'] || props['id'] || props['NUMERO'] || props['numero'] || '').trim();
+                        if (idUnico.toLowerCase() === idExacto.toLowerCase()) {
+                            layerExacto = layer;
+                            coordExacta = typeof layer.getLatLng === 'function'
+                                ? layer.getLatLng()
+                                : (layer.getBounds ? layer.getBounds().getCenter() : null);
+                        }
+                    });
+                    if (layerExacto && coordExacta) {
+                        map.flyTo(coordExacta, 18, { duration: 1.4 });
+                        setTimeout(() => { layerExacto.openPopup(); }, 1450);
+                    }
+                }
             }
         }
     </script>
