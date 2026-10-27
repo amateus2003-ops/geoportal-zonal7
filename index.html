@@ -16,7 +16,10 @@
     <style>
         body { margin: 0; padding: 0; background-color: #111827; color: #ffffff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         
-        header { background-color: #1F2937; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #374151; min-height: 60px; box-sizing: border-box; z-index: 3000; }
+        header { background-color: #1F2937; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #374151; min-height: 60px; box-sizing: border-box; z-index: 3000; gap: 15px; }
+        .header-brand { display: flex; align-items: center; gap: 14px; }
+        .logo-gob-box { background-color: #ffffff; padding: 4px 10px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.35); }
+        .logo-gob-img { height: 44px; width: auto; display: block; object-fit: contain; }
         h1 { margin: 0; font-size: 1.2rem; color: #FBBF24; text-transform: uppercase; letter-spacing: 1px; }
         .nav-tabs { display: flex; gap: 10px; }
         .tab-btn { background-color: #374151; color: #D1D5DB; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: all 0.3s; font-size: 0.88rem; }
@@ -87,7 +90,7 @@
         }
 
         .leaflet-popup-content-wrapper, .leaflet-popup-tip { background-color: #1F2937 !important; color: #ffffff !important; box-shadow: 0 4px 15px rgba(0,0,0,0.8) !important; }
-        .leaflet-popup-content { margin: 18px 22px !important; line-height: 1.5 !important; width: 410px !important; max-width: 82vw !important; }
+        .leaflet-popup-content { margin: 14px 18px !important; line-height: 1.4 !important; width: auto !important; min-width: 150px; max-width: 82vw !important; }
         .leaflet-container a.leaflet-popup-close-button { color: #9CA3AF !important; padding: 10px !important; }
         
         .btn-reset-zoom { background-color: #3B82F6; color: white; border: none; padding: 11px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 14px; transition: background-color 0.3s; text-transform: uppercase; font-size: 0.82rem; letter-spacing: 0.5px; box-sizing: border-box; flex-shrink: 0; }
@@ -132,6 +135,260 @@
         .modal-maquinaria-close { background: transparent; border: none; color: #9CA3AF; font-size: 1.4rem; cursor: pointer; line-height: 1; padding: 2px 6px; border-radius: 4px; }
         .modal-maquinaria-close:hover { color: #FFFFFF; background: #374151; }
         .modal-maquinaria-body { overflow-y: auto; }
+
+        /* BOTÓN Y MODAL DE GALERÍA FOTOGRÁFICA TIPO COLLAGE + LIGHTBOX */
+        .btn-registro-foto {
+            background: rgba(59, 130, 246, 0.14);
+            border: 1px solid rgba(59, 130, 246, 0.45);
+            color: #60A5FA;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: all 0.2s ease;
+            margin-top: 6px;
+            white-space: nowrap;
+        }
+        .btn-registro-foto:hover {
+            background: #3B82F6;
+            color: #FFFFFF;
+            box-shadow: 0 3px 8px rgba(59, 130, 246, 0.35);
+        }
+        .btn-registro-foto-popup {
+            width: 100%;
+            padding: 8px 12px;
+            font-size: 0.82rem;
+            margin-top: 8px;
+            box-sizing: border-box;
+        }
+
+        #modal-galeria-tramo {
+            z-index: 6000;
+        }
+        .modal-galeria-box {
+            max-width: 1280px;
+            width: 96%;
+            height: 90vh;
+            max-height: 90vh;
+        }
+        .galeria-nota-gris {
+            font-size: 0.8rem;
+            color: #9CA3AF;
+            margin: -6px 0 12px 0;
+        }
+        .galeria-tabs-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #374151;
+        }
+        .galeria-tab-btn {
+            background: #111827;
+            color: #D1D5DB;
+            border: 1px solid #374151;
+            padding: 6px 13px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .galeria-tab-btn:hover {
+            border-color: #60A5FA;
+            color: #FFFFFF;
+        }
+        .galeria-tab-btn.activo {
+            background: #3B82F6;
+            color: #FFFFFF;
+            border-color: #3B82F6;
+        }
+        .galeria-collage-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 10px;
+            padding-right: 4px;
+        }
+        .galeria-thumb-item {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background-color: #111827;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #374151;
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .galeria-thumb-item:hover {
+            transform: scale(1.02);
+            border-color: #60A5FA;
+        }
+        .galeria-thumb-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .galeria-ver-mas-wrap {
+            text-align: center;
+            margin: 18px 0 8px 0;
+        }
+        .btn-ver-mas-fotos {
+            background: #3B82F6;
+            color: #FFFFFF;
+            border: none;
+            padding: 9px 24px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.25s;
+        }
+        .btn-ver-mas-fotos:hover {
+            background: #2563EB;
+        }
+
+
+        /* PANEL LATERAL DERECHO: GALERÍA POR TRAMO (CARPETAS + COLLAGE) */
+        #panel-galeria-tramos {
+            position: absolute; top: 128px; right: 15px; bottom: 15px; width: 370px;
+            background: rgba(31, 41, 55, 0.97); border: 1px solid #4B5563; border-top: 4px solid #22D3EE;
+            border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.8); z-index: 1900;
+            display: flex; flex-direction: column; overflow: hidden; backdrop-filter: blur(8px);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        #panel-galeria-tramos.oculto { transform: translateX(calc(100% + 30px)); opacity: 0; pointer-events: none; }
+        .pg-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 14px 8px 14px; }
+        .pg-titulo { font-size: 0.9rem; font-weight: 800; color: #22D3EE; text-transform: uppercase; letter-spacing: 0.8px; }
+        .pg-btn-icono { background: transparent; border: none; color: #9CA3AF; font-size: 1.05rem; cursor: pointer; padding: 4px 8px; border-radius: 6px; }
+        .pg-btn-icono:hover { background: #374151; color: #FFFFFF; }
+        .pg-buscador { margin: 0 14px 10px 14px; padding: 8px 11px; background: #111827; border: 1px solid #374151; border-radius: 8px; color: #F3F4F6; font-size: 0.85rem; outline: none; }
+        .pg-buscador:focus { border-color: #22D3EE; }
+        .pg-cuerpo { flex: 1; overflow-y: auto; padding: 0 12px 12px 12px; }
+        .pg-carpeta { display: flex; gap: 11px; align-items: center; padding: 10px; margin-bottom: 8px; background: #111827; border: 1px solid #374151; border-radius: 9px; cursor: pointer; transition: border-color 0.2s, background 0.2s; }
+        .pg-carpeta:hover { border-color: #22D3EE; background: #0F172A; }
+        .pg-carpeta-icono { font-size: 1.7rem; line-height: 1; flex-shrink: 0; }
+        .pg-carpeta-info { flex: 1; min-width: 0; }
+        .pg-carpeta-tramo { font-size: 0.86rem; font-weight: bold; color: #F3F4F6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .pg-carpeta-micro { font-size: 0.72rem; color: #9CA3AF; margin-top: 1px; }
+        .pg-barra { display: flex; height: 6px; border-radius: 4px; overflow: hidden; background: #374151; margin-top: 6px; }
+        .pg-barra span { display: block; height: 100%; }
+        .pg-carpeta-num { font-size: 0.78rem; font-weight: bold; color: #22D3EE; flex-shrink: 0; text-align: right; }
+        .pg-leyenda { display: flex; gap: 12px; flex-wrap: wrap; font-size: 0.68rem; color: #9CA3AF; margin: 0 14px 10px 14px; }
+        .pg-leyenda i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
+        .pg-detalle-head { padding: 0 14px 8px 14px; }
+        .pg-volver { background: #111827; border: 1px solid #374151; color: #D1D5DB; border-radius: 6px; padding: 5px 10px; font-size: 0.76rem; cursor: pointer; }
+        .pg-volver:hover { border-color: #22D3EE; color: #FFFFFF; }
+        .pg-detalle-tramo { font-size: 0.95rem; font-weight: 800; color: #FBBF24; margin-top: 8px; }
+        .pg-detalle-sub { font-size: 0.74rem; color: #9CA3AF; margin-top: 2px; }
+        .pg-tabs { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 14px 10px 14px; border-bottom: 1px solid #374151; margin-bottom: 10px; }
+        .pg-tabs .galeria-tab-btn { padding: 5px 9px; font-size: 0.72rem; }
+        .pg-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+        .pg-grid .galeria-thumb-item { border-radius: 6px; }
+        .pg-vacio { text-align: center; color: #9CA3AF; padding: 30px 10px; font-size: 0.85rem; }
+        #btn-abrir-galeria-tramos {
+            position: absolute; top: 140px; right: 0; z-index: 1890; background: #22D3EE; color: #0F172A; border: none;
+            border-radius: 10px 0 0 10px; padding: 14px 9px; cursor: pointer; font-weight: 800; font-size: 0.78rem; letter-spacing: 1px;
+            writing-mode: vertical-rl; transform: rotate(180deg); box-shadow: -3px 4px 12px rgba(0,0,0,0.6);
+        }
+        #btn-abrir-galeria-tramos:hover { background: #67E8F9; }
+        #btn-abrir-galeria-tramos.oculto { display: none; }
+        @media (max-width: 1250px) { #panel-galeria-tramos { top: 175px; } #btn-abrir-galeria-tramos { top: 185px; } }
+        @media (max-width: 850px) {
+            #panel-galeria-tramos { top: auto; left: 8px; right: 8px; bottom: 8px; width: auto; height: 62%; }
+            #btn-abrir-galeria-tramos { top: auto; bottom: 70px; padding: 11px 7px; font-size: 0.7rem; }
+            .pg-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        /* LIGHTBOX DE IMAGEN GRANDE */
+        .lightbox-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.92);
+            z-index: 7000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+            user-select: none;
+        }
+        .lightbox-overlay.activo {
+            display: flex;
+        }
+        .lightbox-img {
+            max-width: 90vw;
+            max-height: 86vh;
+            object-fit: contain;
+            border-radius: 8px;
+            border: 1px solid #374151;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.9);
+            background: #111827;
+        }
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            background: #1F2937;
+            color: #FFFFFF;
+            border: 1px solid #4B5563;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            font-size: 1.3rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .lightbox-close:hover {
+            background: #EF4444;
+            border-color: #EF4444;
+        }
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(31, 41, 55, 0.85);
+            color: #FFFFFF;
+            border: 1px solid #4B5563;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .lightbox-nav:hover {
+            background: #3B82F6;
+            border-color: #60A5FA;
+        }
+        .lightbox-prev { left: 25px; }
+        .lightbox-next { right: 25px; }
+        .lightbox-counter {
+            position: absolute;
+            bottom: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(31, 41, 55, 0.9);
+            color: #D1D5DB;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            border: 1px solid #374151;
+        }
 
         /* SECCIÓN AVANCE */
         .panel-avance-general {
@@ -407,6 +664,8 @@
         @media (max-width: 850px) {
             body { height: 100dvh; }
             header { flex-direction: column; height: auto; padding: 10px 12px; gap: 8px; text-align: center; }
+            .header-brand { justify-content: center; flex-wrap: wrap; gap: 10px; }
+            .logo-gob-img { height: 32px; }
             h1 { font-size: 0.98rem; line-height: 1.3; }
             .nav-tabs { width: 100%; justify-content: center; flex-wrap: wrap; gap: 6px; }
             .tab-btn { flex: 1; min-width: 145px; padding: 8px 10px; font-size: 0.78rem; }
@@ -438,14 +697,24 @@
             th, td { padding: 10px 8px; font-size: 0.78rem; }
             .progress-bar-canton { min-width: 150px; }
             .footer-autoria { flex-direction: column; text-align: center; padding: 14px; }
-            .leaflet-popup-content { width: 290px !important; margin: 14px 16px !important; }
+            .leaflet-popup-content { width: 280px !important; margin: 14px 16px !important; }
+
+            .galeria-collage-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; }
+            .modal-galeria-box { width: 100%; height: 92vh; max-height: 92vh; padding: 16px 14px; }
+            .lightbox-prev { left: 10px; }
+            .lightbox-next { right: 10px; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>MIT — Zonal 7 | Transparencia y Mantenimiento Vial</h1>
+        <div class="header-brand">
+            <div class="logo-gob-box">
+                <img src="logo-gobierno-ecuador.png" alt="Gobierno del Ecuador" class="logo-gob-img">
+            </div>
+            <h1>MIT — Zonal 7 | Transparencia y Mantenimiento Vial</h1>
+        </div>
         <div class="nav-tabs">
             <button class="tab-btn active" id="btn-cronograma" onclick="switchTab('cronograma')">📋 Seguimiento de Frentes de Trabajo</button>
             <button class="tab-btn" id="btn-geoportal" onclick="switchTab('geoportal')">🗺️ Visor Geográfico Público</button>
@@ -816,6 +1085,34 @@
         </div>
     </div>
 
+    <!-- MODAL A PANTALLA COMPLETA: REGISTRO FOTOGRÁFICO DEL TRAMO (COLLAGE) -->
+    <div id="modal-galeria-tramo" class="modal-maquinaria-overlay" onclick="if(event.target === this) cerrarGaleriaTramo()">
+        <div class="modal-maquinaria-box modal-galeria-box">
+            <div class="modal-maquinaria-header">
+                <div class="modal-maquinaria-title" id="modal-galeria-titulo">📷 Registro fotográfico</div>
+                <button class="modal-maquinaria-close" onclick="cerrarGaleriaTramo()" title="Cerrar">✕</button>
+            </div>
+            <div class="galeria-nota-gris">Fotos referenciales del trabajo realizado en el tramo.</div>
+            <div id="modal-galeria-tabs" class="galeria-tabs-bar"></div>
+            <div class="modal-maquinaria-body" id="modal-galeria-scroll" style="flex-grow: 1;">
+                <div id="modal-galeria-estado" style="text-align: center; color: #9CA3AF; padding: 45px 20px; font-size: 0.95rem; display: none;"></div>
+                <div id="modal-galeria-grid" class="galeria-collage-grid"></div>
+                <div id="modal-galeria-more-wrap" class="galeria-ver-mas-wrap" style="display: none;">
+                    <button type="button" class="btn-ver-mas-fotos" id="btn-galeria-ver-mas" onclick="cargarMasFotosGaleria()">Ver más</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VISOR GRANDE (LIGHTBOX) -->
+    <div id="lightbox-galeria" class="lightbox-overlay" onclick="if(event.target === this) cerrarLightboxGaleria()">
+        <button type="button" class="lightbox-close" onclick="cerrarLightboxGaleria()" title="Cerrar (Esc)">✕</button>
+        <button type="button" class="lightbox-nav lightbox-prev" onclick="navegarLightbox(-1)" title="Anterior (←)">❮</button>
+        <img id="lightbox-img-el" class="lightbox-img" src="" alt="Fotografía del tramo">
+        <button type="button" class="lightbox-nav lightbox-next" onclick="navegarLightbox(1)" title="Siguiente (→)">❯</button>
+        <div id="lightbox-contador" class="lightbox-counter">1 / 1</div>
+    </div>
+
     <div id="geoportal-view" class="view-container">
         
         <div id="sidebar">
@@ -917,6 +1214,40 @@
             </div>
 
             <div id="map"></div>
+
+            <button type="button" id="btn-abrir-galeria-tramos" class="oculto" onclick="togglePanelGaleria(true)" title="Mostrar galería por tramo">📷 GALERÍA POR TRAMO</button>
+            <div id="panel-galeria-tramos">
+                <div class="pg-head">
+                    <div class="pg-titulo">📷 Galería por tramo</div>
+                    <button type="button" class="pg-btn-icono" onclick="togglePanelGaleria(false)" title="Ocultar panel">✕</button>
+                </div>
+                <div id="pg-vista-lista" style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
+                    <input type="text" id="pg-buscador" class="pg-buscador" autocomplete="off" placeholder="Buscar tramo o microempresa (ej. Loja, Saraguro)..." oninput="renderizarCarpetasGaleria()">
+                    <div class="pg-leyenda">
+                        <span><i style="background:#22D3EE"></i>Alcantarillas</span>
+                        <span><i style="background:#10B981"></i>Cunetas y desbroce</span>
+                        <span><i style="background:#F59E0B"></i>Tubería</span>
+                    </div>
+                    <div class="pg-cuerpo" id="pg-lista-carpetas"><div class="pg-vacio">Cargando tramos...</div></div>
+                </div>
+                <div id="pg-vista-detalle" style="display: none; flex-direction: column; flex: 1; min-height: 0;">
+                    <div class="pg-detalle-head">
+                        <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+                            <button type="button" class="pg-volver" onclick="volverCarpetasGaleria()">← Tramos</button>
+                            <button type="button" class="pg-volver" onclick="ampliarGaleriaPanel()" title="Ver en pantalla completa">⤢ Pantalla completa</button>
+                        </div>
+                        <div class="pg-detalle-tramo" id="pg-detalle-tramo"></div>
+                        <div class="pg-detalle-sub" id="pg-detalle-sub"></div>
+                    </div>
+                    <div class="pg-tabs" id="pg-tabs"></div>
+                    <div class="pg-cuerpo" id="pg-scroll">
+                        <div class="pg-grid" id="pg-grid"></div>
+                        <div class="galeria-ver-mas-wrap" id="pg-mas-wrap" style="display: none;">
+                            <button type="button" class="btn-ver-mas-fotos" id="pg-btn-mas" onclick="cargarMasFotosPanel()">Ver más</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1396,6 +1727,430 @@
         let cantonFiltroActivo = 'TODOS';
         let montoContratosInternoZonal7 = 0;
 
+        // =========================================================================
+        // GALERÍA FOTOGRÁFICA POR TRAMO (CACHÉ JSON, FILTROS, COLLAGE Y LIGHTBOX)
+        // =========================================================================
+        let cacheGaleriaTramos = null;
+        let galeriaFotosTodas = [];
+        let galeriaFotosFiltradas = [];
+        let galeriaCategoriaActiva = 'todas';
+        let galeriaMostradasCount = 0;
+        let lightboxIndiceActual = -1;
+        const GALERIA_LOTE_FOTOS = 60;
+
+        async function obtenerDatosGaleriaTramos() {
+            if (cacheGaleriaTramos) return cacheGaleriaTramos;
+            for (const ruta of ['galeria_tramos.json', 'fotos/galeria_tramos.json']) {
+                try {
+                    const resp = await fetch(ruta, { cache: 'no-cache' });
+                    if (resp.ok) { cacheGaleriaTramos = await resp.json(); return cacheGaleriaTramos; }
+                } catch (e) { /* se intenta la siguiente ruta */ }
+            }
+            throw new Error('No se pudo cargar galeria_tramos.json');
+        }
+
+        function buscarMicroempresaEnGaleria(dataGaleria, nombreMicro, tramoRef) {
+            if (!dataGaleria || !dataGaleria.microempresas) return null;
+            const microsObj = dataGaleria.microempresas;
+            const targetStrict = normalizarEncabezado(nombreMicro);
+            const targetAlias = normalizarMicro(nombreMicro);
+            const tramoStrict = normalizarEncabezado(tramoRef);
+
+            // 1) Empate directo por nombre normalizado (mayúsculas, sin tildes, sin espacios dobles, trim)
+            for (let key in microsObj) {
+                let kStrict = normalizarEncabezado(key);
+                let kAlias = normalizarMicro(key);
+                if (targetStrict && (kStrict === targetStrict || kAlias === targetAlias)) {
+                    return { nombreKey: key, datos: microsObj[key] };
+                }
+            }
+
+            // 2) Empate parcial por inclusión de nombre normalizado
+            for (let key in microsObj) {
+                let kStrict = normalizarEncabezado(key);
+                let kAlias = normalizarMicro(key);
+                if (targetAlias && (kStrict.includes(targetAlias) || targetAlias.includes(kAlias))) {
+                    return { nombreKey: key, datos: microsObj[key] };
+                }
+            }
+
+            // 3) Respaldo por tramo normalizado si viene desde un popup
+            if (tramoStrict) {
+                for (let key in microsObj) {
+                    let tGal = normalizarEncabezado(microsObj[key].tramo || '');
+                    if (tGal && (tGal === tramoStrict || tGal.includes(tramoStrict) || tramoStrict.includes(tGal))) {
+                        return { nombreKey: key, datos: microsObj[key] };
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        window.abrirGaleriaTramo = async function(nombreMicro, tramoRef) {
+            const modal = document.getElementById('modal-galeria-tramo');
+            const tituloEl = document.getElementById('modal-galeria-titulo');
+            const tabsEl = document.getElementById('modal-galeria-tabs');
+            const gridEl = document.getElementById('modal-galeria-grid');
+            const estadoEl = document.getElementById('modal-galeria-estado');
+            const moreWrap = document.getElementById('modal-galeria-more-wrap');
+
+            tituloEl.innerText = `Registro fotográfico — ${tramoRef || 'Tramo'} (${nombreMicro || 'Microempresa'})`;
+            tabsEl.innerHTML = '';
+            gridEl.innerHTML = '';
+            moreWrap.style.display = 'none';
+            estadoEl.style.display = 'block';
+            estadoEl.innerText = 'Cargando registro fotográfico del tramo...';
+            modal.classList.add('activo');
+
+            try {
+                const dataGaleria = await obtenerDatosGaleriaTramos();
+                const encontrado = buscarMicroempresaEnGaleria(dataGaleria, nombreMicro, tramoRef);
+
+                if (!encontrado || !encontrado.datos || !Array.isArray(encontrado.datos.fotos) || encontrado.datos.fotos.length === 0) {
+                    tituloEl.innerText = `Registro fotográfico — ${tramoRef || 'Tramo'} (${nombreMicro || 'Microempresa'}) (0 fotos)`;
+                    estadoEl.style.display = 'block';
+                    estadoEl.innerText = 'Sin registro fotográfico para este tramo';
+                    return;
+                }
+
+                const nombreMostrar = encontrado.nombreKey || nombreMicro;
+                const tramoMostrar = encontrado.datos.tramo || tramoRef || 'Tramo RVE';
+                galeriaFotosTodas = encontrado.datos.fotos;
+
+                tituloEl.innerText = `Registro fotográfico — ${tramoMostrar} (${nombreMostrar}) (${galeriaFotosTodas.length} fotos)`;
+                estadoEl.style.display = 'none';
+
+                renderizarPestanasGaleria();
+                seleccionarCategoriaGaleria('todas');
+            } catch (err) {
+                console.warn('Aviso al cargar galería del tramo:', err.message);
+                tituloEl.innerText = `Registro fotográfico — ${tramoRef || 'Tramo'} (${nombreMicro || 'Microempresa'}) (0 fotos)`;
+                estadoEl.style.display = 'block';
+                estadoEl.innerText = 'Sin registro fotográfico para este tramo';
+            }
+        };
+
+        function renderizarPestanasGaleria() {
+            const tabsEl = document.getElementById('modal-galeria-tabs');
+            tabsEl.innerHTML = '';
+
+            const conteo = {
+                todas: galeriaFotosTodas.length,
+                alcantarillas: 0,
+                cunetas: 0,
+                tuberia: 0
+            };
+
+            galeriaFotosTodas.forEach(item => {
+                let c = String(item.cat || '').toLowerCase().trim();
+                if (c === 'alcantarillas') conteo.alcantarillas++;
+                else if (c === 'cunetas') conteo.cunetas++;
+                else if (c === 'tuberia') conteo.tuberia++;
+            });
+
+            const definicionTabs = [
+                { id: 'todas', label: 'Todas', count: conteo.todas },
+                { id: 'alcantarillas', label: 'Alcantarillas', count: conteo.alcantarillas },
+                { id: 'cunetas', label: 'Cunetas y desbroce', count: conteo.cunetas },
+                { id: 'tuberia', label: 'Tubería', count: conteo.tuberia }
+            ];
+
+            definicionTabs.forEach(t => {
+                if (t.count > 0) {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'galeria-tab-btn' + (galeriaCategoriaActiva === t.id ? ' activo' : '');
+                    btn.setAttribute('data-cat', t.id);
+                    btn.innerText = `${t.label} (${t.count})`;
+                    btn.onclick = () => seleccionarCategoriaGaleria(t.id);
+                    tabsEl.appendChild(btn);
+                }
+            });
+        }
+
+        window.seleccionarCategoriaGaleria = function(categoria) {
+            galeriaCategoriaActiva = categoria;
+            document.querySelectorAll('#modal-galeria-tabs .galeria-tab-btn').forEach(btn => {
+                btn.classList.toggle('activo', btn.getAttribute('data-cat') === categoria);
+            });
+
+            if (categoria === 'todas') {
+                galeriaFotosFiltradas = galeriaFotosTodas.slice();
+            } else {
+                galeriaFotosFiltradas = galeriaFotosTodas.filter(item => String(item.cat || '').toLowerCase().trim() === categoria);
+            }
+
+            galeriaMostradasCount = 0;
+            const gridEl = document.getElementById('modal-galeria-grid');
+            const scrollEl = document.getElementById('modal-galeria-scroll');
+            gridEl.innerHTML = '';
+            if (scrollEl) scrollEl.scrollTop = 0;
+
+            cargarMasFotosGaleria();
+        };
+
+        window.cargarMasFotosGaleria = function() {
+            const gridEl = document.getElementById('modal-galeria-grid');
+            const moreWrap = document.getElementById('modal-galeria-more-wrap');
+            const btnMore = document.getElementById('btn-galeria-ver-mas');
+
+            const inicio = galeriaMostradasCount;
+            const fin = Math.min(inicio + GALERIA_LOTE_FOTOS, galeriaFotosFiltradas.length);
+
+            for (let i = inicio; i < fin; i++) {
+                const fotoObj = galeriaFotosFiltradas[i];
+                if (!fotoObj || !fotoObj.f) continue;
+
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'galeria-thumb-item';
+                itemDiv.onclick = () => abrirLightboxGaleria(i);
+
+                const img = document.createElement('img');
+                img.loading = 'lazy';
+                img.src = 'fotos/' + fotoObj.f;
+                img.alt = '';
+                img.onerror = function() {
+                    if (this.parentElement) {
+                        this.parentElement.style.display = 'none';
+                    }
+                };
+
+                itemDiv.appendChild(img);
+                gridEl.appendChild(itemDiv);
+            }
+
+            galeriaMostradasCount = fin;
+
+            if (galeriaMostradasCount < galeriaFotosFiltradas.length) {
+                const restantes = galeriaFotosFiltradas.length - galeriaMostradasCount;
+                moreWrap.style.display = 'block';
+                btnMore.innerText = `Ver más (${restantes} restantes)`;
+            } else {
+                moreWrap.style.display = 'none';
+            }
+        };
+
+        window.cerrarGaleriaTramo = function() {
+            cerrarLightboxGaleria();
+            const modal = document.getElementById('modal-galeria-tramo');
+            if (modal) modal.classList.remove('activo');
+        };
+
+        window.abrirLightboxGaleria = function(indice) {
+            if (!galeriaFotosFiltradas || galeriaFotosFiltradas.length === 0) return;
+            lightboxIndiceActual = indice;
+            actualizarVistaLightbox();
+            document.getElementById('lightbox-galeria').classList.add('activo');
+        };
+
+        function actualizarVistaLightbox() {
+            const imgEl = document.getElementById('lightbox-img-el');
+            const contEl = document.getElementById('lightbox-contador');
+            const fotoObj = galeriaFotosFiltradas[lightboxIndiceActual];
+            if (!fotoObj) return;
+            imgEl.src = 'fotos/' + fotoObj.f;
+            contEl.innerText = `${lightboxIndiceActual + 1} / ${galeriaFotosFiltradas.length}`;
+        }
+
+        window.navegarLightbox = function(direccion) {
+            if (!galeriaFotosFiltradas || galeriaFotosFiltradas.length === 0) return;
+            lightboxIndiceActual = (lightboxIndiceActual + direccion + galeriaFotosFiltradas.length) % galeriaFotosFiltradas.length;
+            actualizarVistaLightbox();
+        };
+
+        window.cerrarLightboxGaleria = function() {
+            const lb = document.getElementById('lightbox-galeria');
+            if (lb) lb.classList.remove('activo');
+            lightboxIndiceActual = -1;
+        };
+
+
+        // ---------- PANEL LATERAL: CARPETAS POR TRAMO ----------
+        let panelGaleriaActual = null;
+        let panelMostradas = 0;
+        const PANEL_LOTE_FOTOS = 45;
+
+        function normalizarTextoBusqueda(s) {
+            return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/[^A-Z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+        }
+
+        function contarCategorias(fotos) {
+            const c = { alcantarillas: 0, cunetas: 0, tuberia: 0, otros: 0 };
+            (fotos || []).forEach(f => { const k = String(f.cat || '').toLowerCase(); c[k in c ? k : 'otros']++; });
+            return c;
+        }
+
+        window.togglePanelGaleria = function(mostrar) {
+            const panel = document.getElementById('panel-galeria-tramos');
+            const btn = document.getElementById('btn-abrir-galeria-tramos');
+            if (!panel || !btn) return;
+            panel.classList.toggle('oculto', !mostrar);
+            btn.classList.toggle('oculto', !!mostrar);
+            if (mostrar) iniciarPanelGaleria();
+        };
+
+        async function iniciarPanelGaleria() {
+            const cont = document.getElementById('pg-lista-carpetas');
+            try {
+                await obtenerDatosGaleriaTramos();
+                renderizarCarpetasGaleria();
+            } catch (err) {
+                console.warn('Aviso galería por tramo:', err.message);
+                cont.innerHTML = '<div class="pg-vacio">No se pudo cargar el registro fotográfico (galeria_tramos.json).</div>';
+            }
+        }
+
+        window.renderizarCarpetasGaleria = function() {
+            const cont = document.getElementById('pg-lista-carpetas');
+            if (!cacheGaleriaTramos || !cacheGaleriaTramos.microempresas) return;
+            const q = normalizarTextoBusqueda((document.getElementById('pg-buscador') || {}).value);
+            const tokens = q ? q.split(' ').filter(x => x.length > 1) : [];
+            let items = [];
+            Object.keys(cacheGaleriaTramos.microempresas).forEach((micro, orden) => {
+                const d = cacheGaleriaTramos.microempresas[micro];
+                if (!d || !Array.isArray(d.fotos) || d.fotos.length === 0) return;
+                const texto = normalizarTextoBusqueda((d.tramo || '') + ' ' + micro);
+                const aciertos = tokens.filter(tk => texto.includes(tk)).length;
+                if (tokens.length && aciertos === 0) return;
+                items.push({ micro, d, orden, aciertos });
+            });
+            items.sort((a, b) => (b.aciertos - a.aciertos) || (a.orden - b.orden));
+            if (items.length === 0) {
+                cont.innerHTML = '<div class="pg-vacio">No hay tramos que coincidan con la búsqueda.</div>';
+                return;
+            }
+            cont.innerHTML = '';
+            items.forEach(({ micro, d }) => {
+                const n = d.fotos.length;
+                const c = contarCategorias(d.fotos);
+                const pct = v => (100 * v / n).toFixed(1) + '%';
+                const div = document.createElement('div');
+                div.className = 'pg-carpeta';
+                div.title = 'Abrir galería de ' + (d.tramo || micro);
+                div.innerHTML = `
+                    <div class="pg-carpeta-icono">📁</div>
+                    <div class="pg-carpeta-info">
+                        <div class="pg-carpeta-tramo">${d.tramo || micro}</div>
+                        <div class="pg-carpeta-micro">${micro === 'SIN MICROEMPRESA' ? 'Otros tramos' : micro}</div>
+                        <div class="pg-barra">
+                            <span style="width:${pct(c.alcantarillas)}; background:#22D3EE"></span>
+                            <span style="width:${pct(c.cunetas)}; background:#10B981"></span>
+                            <span style="width:${pct(c.tuberia)}; background:#F59E0B"></span>
+                            <span style="width:${pct(c.otros)}; background:#6B7280"></span>
+                        </div>
+                    </div>
+                    <div class="pg-carpeta-num">${n}<br><span style="font-weight:normal; color:#9CA3AF; font-size:0.66rem;">fotos</span></div>`;
+                div.onclick = () => abrirCarpetaGaleria(micro);
+                cont.appendChild(div);
+            });
+        };
+
+        window.abrirCarpetaGaleria = function(micro) {
+            const d = cacheGaleriaTramos && cacheGaleriaTramos.microempresas[micro];
+            if (!d) return;
+            panelGaleriaActual = { micro, d };
+            galeriaFotosTodas = d.fotos.slice();
+            document.getElementById('pg-vista-lista').style.display = 'none';
+            document.getElementById('pg-vista-detalle').style.display = 'flex';
+            document.getElementById('pg-detalle-tramo').innerText = '📂 ' + (d.tramo || micro);
+            document.getElementById('pg-detalle-sub').innerText = (micro === 'SIN MICROEMPRESA' ? 'Otros tramos' : micro) + ' · ' + d.fotos.length + ' fotos referenciales del trabajo en el tramo';
+            const c = contarCategorias(d.fotos);
+            const tabs = document.getElementById('pg-tabs');
+            tabs.innerHTML = '';
+            [['todas', 'Todas', d.fotos.length], ['alcantarillas', 'Alcantarillas', c.alcantarillas], ['cunetas', 'Cunetas y desbroce', c.cunetas], ['tuberia', 'Tubería', c.tuberia]]
+                .forEach(([id, label, cnt]) => {
+                    if (!cnt) return;
+                    const b = document.createElement('button');
+                    b.type = 'button'; b.className = 'galeria-tab-btn'; b.setAttribute('data-cat', id);
+                    b.innerText = `${label} (${cnt})`;
+                    b.onclick = () => filtrarPanelGaleria(id);
+                    tabs.appendChild(b);
+                });
+            filtrarPanelGaleria('todas');
+        };
+
+        window.filtrarPanelGaleria = function(cat) {
+            galeriaCategoriaActiva = cat;
+            document.querySelectorAll('#pg-tabs .galeria-tab-btn').forEach(b => b.classList.toggle('activo', b.getAttribute('data-cat') === cat));
+            galeriaFotosFiltradas = cat === 'todas' ? galeriaFotosTodas.slice() : galeriaFotosTodas.filter(f => String(f.cat || '').toLowerCase() === cat);
+            panelMostradas = 0;
+            document.getElementById('pg-grid').innerHTML = '';
+            document.getElementById('pg-scroll').scrollTop = 0;
+            cargarMasFotosPanel();
+        };
+
+        window.cargarMasFotosPanel = function() {
+            const grid = document.getElementById('pg-grid');
+            const fin = Math.min(panelMostradas + PANEL_LOTE_FOTOS, galeriaFotosFiltradas.length);
+            for (let i = panelMostradas; i < fin; i++) {
+                const f = galeriaFotosFiltradas[i];
+                const it = document.createElement('div');
+                it.className = 'galeria-thumb-item';
+                it.onclick = () => abrirLightboxGaleria(i);
+                const img = document.createElement('img');
+                img.loading = 'lazy'; img.alt = ''; img.src = 'fotos/' + f.f;
+                img.onerror = function() { if (this.parentElement) this.parentElement.style.display = 'none'; };
+                it.appendChild(img); grid.appendChild(it);
+            }
+            panelMostradas = fin;
+            const wrap = document.getElementById('pg-mas-wrap');
+            const rest = galeriaFotosFiltradas.length - panelMostradas;
+            wrap.style.display = rest > 0 ? 'block' : 'none';
+            if (rest > 0) document.getElementById('pg-btn-mas').innerText = `Ver más (${rest} restantes)`;
+        };
+
+        window.volverCarpetasGaleria = function() {
+            document.getElementById('pg-vista-detalle').style.display = 'none';
+            document.getElementById('pg-vista-lista').style.display = 'flex';
+        };
+
+        window.ampliarGaleriaPanel = function() {
+            if (panelGaleriaActual) abrirGaleriaTramo(panelGaleriaActual.micro, panelGaleriaActual.d.tramo);
+        };
+
+        // Al cerrar la vista de pantalla completa, el panel recupera su propia lista de fotos
+        const cerrarGaleriaTramoBase = window.cerrarGaleriaTramo;
+        window.cerrarGaleriaTramo = function() {
+            cerrarGaleriaTramoBase();
+            if (panelGaleriaActual && document.getElementById('pg-vista-detalle').style.display !== 'none') {
+                galeriaFotosTodas = panelGaleriaActual.d.fotos.slice();
+                filtrarPanelGaleria(galeriaCategoriaActiva || 'todas');
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const esMovil = window.matchMedia('(max-width: 850px)').matches;
+            togglePanelGaleria(!esMovil);
+        });
+
+        function obtenerMicroempresaParaAlcantarilla(idUnico, tramoRaw, metaTerritorial) {
+            let idStr = String(idUnico || '').trim();
+            if (idStr) {
+                for (let k in ultimoResumenRegistroDiario) {
+                    let info = ultimoResumenRegistroDiario[k];
+                    if (info && info.codigosSet && info.codigosSet.has(idStr)) {
+                        return { micro: info.nombreReal, tramo: info.ruta || tramoRaw };
+                    }
+                }
+            }
+            let tramoNorm = normalizarEncabezado(tramoRaw);
+            for (let claveMicro in MAPA_MICRO_A_TRAMO_QGIS) {
+                let listaTramos = MAPA_MICRO_A_TRAMO_QGIS[claveMicro];
+                if (listaTramos.some(t => normalizarEncabezado(t) === tramoNorm)) {
+                    let gDrive = driveGruposPorMicro[claveMicro];
+                    return {
+                        micro: (gDrive && gDrive.nombreOriginal) ? gDrive.nombreOriginal : (metaTerritorial.micro || claveMicro),
+                        tramo: (gDrive && gDrive.tramo && gDrive.tramo !== '—') ? gDrive.tramo : tramoRaw
+                    };
+                }
+            }
+            return {
+                micro: metaTerritorial.micro || 'Conservación Vial RVE',
+                tramo: tramoRaw
+            };
+        }
+
         function ejecutarDiagnosticoConsola() {
             console.group("🔍 DIAGNÓSTICO DEL SISTEMA GEOPORTAL - MIT ZONAL 7");
             if (typeof alcantarillasData !== 'undefined' && alcantarillasData && alcantarillasData.features) {
@@ -1406,17 +2161,6 @@
             }
             console.groupEnd();
         }
-
-        window.cambiarFoto = function(tipo, id, valor) {
-            let sufijo = valor === '1' ? '' : valor;
-            let imgElement = document.getElementById('img-' + tipo + '-' + id);
-            if(imgElement) {
-                imgElement.style.opacity = '0'; 
-                setTimeout(() => {
-                    imgElement.src = 'fotos/' + id + tipo + sufijo + '.jpg';
-                }, 150);
-            }
-        };
 
         let avancePieChart;
         let globalPieChart;
@@ -1581,12 +2325,16 @@
                 let promAlcDiario = (info.limpiadasAcumuladas / totalDias).toFixed(1);
                 let promKmDiario = (info.kmTrabajados / totalDias).toFixed(2);
 
-                let nombreEscapado = info.nombreReal.replace(/'/g, "\\'");
+                let claveMicro = normalizarMicro(info.nombreReal);
+                let gDrive = driveGruposPorMicro[claveMicro];
+                let nombreMostrar = (gDrive && gDrive.nombreOriginal) ? gDrive.nombreOriginal : info.nombreReal;
+
+                let nombreEscapado = nombreMostrar.replace(/'/g, "\\'");
                 let rutaEscapada = info.ruta.replace(/'/g, "\\'");
 
                 let tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><strong>${info.nombreReal}</strong></td>
+                    <td><strong>${nombreMostrar}</strong></td>
                     <td>${info.ruta}</td>
                     <td style="text-align: center; font-size: 1.1rem; color: #F87171; font-weight: bold;">${info.obstruidasTotal}</td>
                     <td style="text-align: center; font-size: 1.1rem; color: #60A5FA; font-weight: bold;">${info.limpiadasAcumuladas}</td>
@@ -2003,6 +2751,8 @@
 
             let filtrados = lista.filter(g => (g[tipoMaquina] || 0) > 0);
             filtrados.forEach(g => {
+                let nomEsc = String(g.nombreOriginal || '').replace(/'/g, "\\'");
+                let tramoEsc = String(g.tramo || '').replace(/'/g, "\\'");
                 let tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td><strong>${g.nombreOriginal}</strong></td>
@@ -2020,7 +2770,29 @@
         };
 
         window.addEventListener('keydown', function(e) {
+            const lb = document.getElementById('lightbox-galeria');
+            const lbActivo = lb && lb.classList.contains('activo');
+            const galModal = document.getElementById('modal-galeria-tramo');
+            const galActiva = galModal && galModal.classList.contains('activo');
+
+            if (lbActivo) {
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    cerrarLightboxGaleria();
+                } else if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    navegarLightbox(-1);
+                } else if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    navegarLightbox(1);
+                }
+                return;
+            }
+
             if (e.key === 'Escape') {
+                if (galActiva) {
+                    cerrarGaleriaTramo();
+                }
                 cerrarModalMaquinaria();
                 cerrarListaBusqueda();
             }
@@ -2513,44 +3285,19 @@
 
                         let marcadorBase = L.circleMarker(latlng, { radius: 5, fillColor: colorPunto, color: "#ffffff", weight: 1, opacity: 1, fillOpacity: 0.9 });
                         
-                        let badgeEstado = esAtendida 
-                            ? `<div style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10B981; color: #10B981; padding: 6px 10px; border-radius: 6px; font-weight: bold; text-align: center; margin-bottom: 12px; letter-spacing: 0.5px;">✅ ESTADO: LIMPIA / ATENDIDA</div>`
-                            : `<div style="background: rgba(239, 68, 68, 0.15); border: 1px solid #EF4444; color: #F87171; padding: 5px 10px; border-radius: 6px; font-weight: bold; text-align: center; margin-bottom: 12px; font-size:0.82rem;">⏳ ESTADO: FALTA POR LIMPIAR</div>`;
+                        let estadoTxt = esAtendida
+                            ? `<div style="margin-top: 6px; font-size: 0.78rem; font-weight: bold; color: #22D3EE;">● Limpia / atendida</div>`
+                            : '';
 
                         let popupContent = `
-                            <div style="font-family: 'Segoe UI', Tahoma, sans-serif;">
-                                <h4 style="margin: 0 0 10px 0; padding-bottom: 6px; border-bottom: 1px solid #374151; color: #F59E0B; font-size: 1.12rem; font-weight: bold;">${tramoRaw}</h4>
-                                <div style="margin-bottom: 6px; font-size: 0.92rem;"><b style="color: #FBBF24;">🏛️ Cantón:</b> <span style="color: #FFFFFF; font-weight:bold;">${metaTerritorial.canton}</span></div>
-                                <div style="margin-bottom: 6px; font-size: 0.9rem;"><b style="color: #ffffff;">ID Único:</b> <span style="color: #D1D5DB;">${idUnico}</span> | <b style="color: #ffffff;">Código:</b> <span style="color: #D1D5DB;">${codigoD}</span></div>
-                                ${esCritica ? `<div style="margin-bottom: 8px; font-size: 0.88rem;"><b style="color: #ffffff;">Prioridad:</b> <span style="color: #FBBF24; font-weight:bold;">${nivelRaw || 'N/A'}</span> (${estadoFisico})</div>` : ''}
-                                ${badgeEstado}
-                                ${(esAtendida || esCritica) ? `
-                                <div style="display:flex; gap:12px; margin-top:10px;">
-                                    <div style="flex:1; text-align:center;">
-                                        <div style="font-size:0.75rem; color:#EF4444; font-weight:bold; margin-bottom:4px;">ANTES</div>
-                                        <select onchange="cambiarFoto('antes', '${idUnico}', this.value)" style="width: 100%; margin-bottom: 8px; background: #374151; color: white; border: 1px solid #4B5563; border-radius: 4px; padding: 4px; font-size: 0.78rem; cursor: pointer;">
-                                            <option value="1">📸 Fotografía 1</option><option value="2">📸 Fotografía 2</option><option value="3">📸 Fotografía 3</option>
-                                        </select>
-                                        <div style="position: relative; width: 100%; height: 145px; background-color: #1F2937; border-radius: 6px; border: 1px dashed #4B5563; overflow: hidden; display: flex; align-items: center; justify-content: center;">
-                                            <div style="position: absolute; color: #6B7280; font-size: 0.72rem; text-align: center; font-weight: bold; z-index: 0;">🚫<br>FOTO NO<br>DISPONIBLE</div>
-                                            <img id="img-antes-${idUnico}" src="fotos/${idUnico}antes.jpg" style="position: relative; z-index: 1; width:100%; height:100%; object-fit:cover; transition: opacity 0.3s ease;" onerror="this.style.opacity='0';" onload="this.style.opacity='1';" alt="">
-                                        </div>
-                                    </div>
-                                    <div style="flex:1; text-align:center;">
-                                        <div style="font-size:0.75rem; color:#10B981; font-weight:bold; margin-bottom:4px;">DESPUÉS</div>
-                                        <select onchange="cambiarFoto('despues', '${idUnico}', this.value)" style="width: 100%; margin-bottom: 8px; background: #374151; color: white; border: 1px solid #4B5563; border-radius: 4px; padding: 4px; font-size: 0.78rem; cursor: pointer;">
-                                            <option value="1">📸 Fotografía 1</option><option value="2">📸 Fotografía 2</option><option value="3">📸 Fotografía 3</option>
-                                        </select>
-                                        <div style="position: relative; width: 100%; height: 145px; background-color: #1F2937; border-radius: 6px; border: 1px dashed #4B5563; overflow: hidden; display: flex; align-items: center; justify-content: center;">
-                                            <div style="position: absolute; color: #6B7280; font-size: 0.72rem; text-align: center; font-weight: bold; z-index: 0;">🚫<br>FOTO NO<br>DISPONIBLE</div>
-                                            <img id="img-despues-${idUnico}" src="fotos/${idUnico}despues.jpg" style="position: relative; z-index: 1; width:100%; height:100%; object-fit:cover; transition: opacity 0.3s ease;" onerror="this.style.opacity='0';" onload="this.style.opacity='1';" alt="">
-                                        </div>
-                                    </div>
-                                </div>` : ''}
+                            <div style="font-family: 'Segoe UI', Tahoma, sans-serif; text-align: center; min-width: 140px;">
+                                <div style="font-size: 0.7rem; color: #9CA3AF; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap;">ID de la alcantarilla</div>
+                                <div style="font-size: 1.6rem; font-weight: 800; color: #FBBF24; line-height: 1.2;">${idUnico}</div>
+                                ${estadoTxt}
                             </div>
                         `;
-                        
-                        marcadorBase.bindPopup(popupContent, { minWidth: (esAtendida || esCritica) ? 400 : 280 });
+
+                        marcadorBase.bindPopup(popupContent, { minWidth: 150, className: 'popup-id-alcantarilla' });
                         return marcadorBase;
                     },
                     onEachFeature: function (feature, layer) {
@@ -2593,7 +3340,7 @@
 
                             if (latlng) {
                                 let marcadorAura = L.circleMarker(latlng, {
-                                    radius: 8, color: "#00FFFF", weight: 3, opacity: 0.9, fillColor: "#00FFFF", fillOpacity: 0.35, interactive: false 
+                                    radius: 8, color: "#00FFFF", weight: 3, opacity: 0.9, fillColor: "#00FFFF", fillOpacity: 0.35, interactive: false, className: "aura-azul-svg"
                                 });
                                 grupoAtendidas.addLayer(marcadorAura);
                             }

@@ -3,7 +3,7 @@
  "nota": "Galeria por tramo. Cada foto de fotos/ se agrupa por la microempresa que realmente la envio al chat; si no aparece en el chat, por la microempresa del tramo donde esta la alcantarilla. Categorias: alcantarillas, cunetas (cunetas, desbroce, limpieza de calzada y similares), tuberia, otros. Fotos repetidas excluidas. No se renombro ni movio ninguna foto.",
  "microempresas": {
   "Caminos del Sur": {
-   "tramo": "Loja-Catamayo",
+   "tramo": "Loja - Catamayo",
    "fotos": [
     {
      "f": "10005antes.jpg",
@@ -2011,7 +2011,7 @@
    ]
   },
   "Los Cañaverales": {
-   "tramo": "San pedro - Veracruz",
+   "tramo": "San Pedro - Velacruz",
    "fotos": [
     {
      "f": "1000antes.jpg",
@@ -10941,7 +10941,7 @@
    ]
   },
   "Sabiango": {
-   "tramo": "Sozoranga-Macára",
+   "tramo": "Sozoranga - Macará",
    "fotos": [
     {
      "f": "1271despues.jpg",
@@ -11558,7 +11558,7 @@
    ]
   },
   "Estoraques del Suro": {
-   "tramo": "Vilcabamba - Yangana - Limite Provincial Loja/ Zamora Chinchipe",
+   "tramo": "Vilcabamba - Yangana - Límite Provincial Loja/Zamora Chinchipe",
    "fotos": [
     {
      "f": "328antes.jpg",
@@ -12654,7 +12654,7 @@
    ]
   },
   "SIN MICROEMPRESA": {
-   "tramo": "Tramos sin microempresa asignada",
+   "tramo": "Otros tramos sin microempresa",
    "fotos": [
     {
      "f": "1218antes.jpg",
