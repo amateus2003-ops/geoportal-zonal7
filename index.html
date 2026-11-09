@@ -90,7 +90,7 @@
         }
 
         .leaflet-popup-content-wrapper, .leaflet-popup-tip { background-color: #1F2937 !important; color: #ffffff !important; box-shadow: 0 4px 15px rgba(0,0,0,0.8) !important; }
-        .leaflet-popup-content { margin: 14px 18px !important; line-height: 1.4 !important; width: auto !important; min-width: 150px; max-width: 82vw !important; }
+        .leaflet-popup-content { margin: 18px 22px !important; line-height: 1.5 !important; width: 320px !important; max-width: 82vw !important; }
         .leaflet-container a.leaflet-popup-close-button { color: #9CA3AF !important; padding: 10px !important; }
         
         .btn-reset-zoom { background-color: #3B82F6; color: white; border: none; padding: 11px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 14px; transition: background-color 0.3s; text-transform: uppercase; font-size: 0.82rem; letter-spacing: 0.5px; box-sizing: border-box; flex-shrink: 0; }
@@ -253,58 +253,6 @@
         }
         .btn-ver-mas-fotos:hover {
             background: #2563EB;
-        }
-
-
-        /* PANEL LATERAL DERECHO: GALERÍA POR TRAMO (CARPETAS + COLLAGE) */
-        #panel-galeria-tramos {
-            position: absolute; top: 128px; right: 15px; bottom: 15px; width: 370px;
-            background: rgba(31, 41, 55, 0.97); border: 1px solid #4B5563; border-top: 4px solid #22D3EE;
-            border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.8); z-index: 1900;
-            display: flex; flex-direction: column; overflow: hidden; backdrop-filter: blur(8px);
-            transition: transform 0.3s ease, opacity 0.3s ease;
-        }
-        #panel-galeria-tramos.oculto { transform: translateX(calc(100% + 30px)); opacity: 0; pointer-events: none; }
-        .pg-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 14px 8px 14px; }
-        .pg-titulo { font-size: 0.9rem; font-weight: 800; color: #22D3EE; text-transform: uppercase; letter-spacing: 0.8px; }
-        .pg-btn-icono { background: transparent; border: none; color: #9CA3AF; font-size: 1.05rem; cursor: pointer; padding: 4px 8px; border-radius: 6px; }
-        .pg-btn-icono:hover { background: #374151; color: #FFFFFF; }
-        .pg-buscador { margin: 0 14px 10px 14px; padding: 8px 11px; background: #111827; border: 1px solid #374151; border-radius: 8px; color: #F3F4F6; font-size: 0.85rem; outline: none; }
-        .pg-buscador:focus { border-color: #22D3EE; }
-        .pg-cuerpo { flex: 1; overflow-y: auto; padding: 0 12px 12px 12px; }
-        .pg-carpeta { display: flex; gap: 11px; align-items: center; padding: 10px; margin-bottom: 8px; background: #111827; border: 1px solid #374151; border-radius: 9px; cursor: pointer; transition: border-color 0.2s, background 0.2s; }
-        .pg-carpeta:hover { border-color: #22D3EE; background: #0F172A; }
-        .pg-carpeta-icono { font-size: 1.7rem; line-height: 1; flex-shrink: 0; }
-        .pg-carpeta-info { flex: 1; min-width: 0; }
-        .pg-carpeta-tramo { font-size: 0.86rem; font-weight: bold; color: #F3F4F6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .pg-carpeta-micro { font-size: 0.72rem; color: #9CA3AF; margin-top: 1px; }
-        .pg-barra { display: flex; height: 6px; border-radius: 4px; overflow: hidden; background: #374151; margin-top: 6px; }
-        .pg-barra span { display: block; height: 100%; }
-        .pg-carpeta-num { font-size: 0.78rem; font-weight: bold; color: #22D3EE; flex-shrink: 0; text-align: right; }
-        .pg-leyenda { display: flex; gap: 12px; flex-wrap: wrap; font-size: 0.68rem; color: #9CA3AF; margin: 0 14px 10px 14px; }
-        .pg-leyenda i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
-        .pg-detalle-head { padding: 0 14px 8px 14px; }
-        .pg-volver { background: #111827; border: 1px solid #374151; color: #D1D5DB; border-radius: 6px; padding: 5px 10px; font-size: 0.76rem; cursor: pointer; }
-        .pg-volver:hover { border-color: #22D3EE; color: #FFFFFF; }
-        .pg-detalle-tramo { font-size: 0.95rem; font-weight: 800; color: #FBBF24; margin-top: 8px; }
-        .pg-detalle-sub { font-size: 0.74rem; color: #9CA3AF; margin-top: 2px; }
-        .pg-tabs { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 14px 10px 14px; border-bottom: 1px solid #374151; margin-bottom: 10px; }
-        .pg-tabs .galeria-tab-btn { padding: 5px 9px; font-size: 0.72rem; }
-        .pg-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-        .pg-grid .galeria-thumb-item { border-radius: 6px; }
-        .pg-vacio { text-align: center; color: #9CA3AF; padding: 30px 10px; font-size: 0.85rem; }
-        #btn-abrir-galeria-tramos {
-            position: absolute; top: 140px; right: 0; z-index: 1890; background: #22D3EE; color: #0F172A; border: none;
-            border-radius: 10px 0 0 10px; padding: 14px 9px; cursor: pointer; font-weight: 800; font-size: 0.78rem; letter-spacing: 1px;
-            writing-mode: vertical-rl; transform: rotate(180deg); box-shadow: -3px 4px 12px rgba(0,0,0,0.6);
-        }
-        #btn-abrir-galeria-tramos:hover { background: #67E8F9; }
-        #btn-abrir-galeria-tramos.oculto { display: none; }
-        @media (max-width: 1250px) { #panel-galeria-tramos { top: 175px; } #btn-abrir-galeria-tramos { top: 185px; } }
-        @media (max-width: 850px) {
-            #panel-galeria-tramos { top: auto; left: 8px; right: 8px; bottom: 8px; width: auto; height: 62%; }
-            #btn-abrir-galeria-tramos { top: auto; bottom: 70px; padding: 11px 7px; font-size: 0.7rem; }
-            .pg-grid { grid-template-columns: repeat(3, 1fr); }
         }
 
         /* LIGHTBOX DE IMAGEN GRANDE */
@@ -1214,40 +1162,6 @@
             </div>
 
             <div id="map"></div>
-
-            <button type="button" id="btn-abrir-galeria-tramos" class="oculto" onclick="togglePanelGaleria(true)" title="Mostrar galería por tramo">📷 GALERÍA POR TRAMO</button>
-            <div id="panel-galeria-tramos">
-                <div class="pg-head">
-                    <div class="pg-titulo">📷 Galería por tramo</div>
-                    <button type="button" class="pg-btn-icono" onclick="togglePanelGaleria(false)" title="Ocultar panel">✕</button>
-                </div>
-                <div id="pg-vista-lista" style="display: flex; flex-direction: column; flex: 1; min-height: 0;">
-                    <input type="text" id="pg-buscador" class="pg-buscador" autocomplete="off" placeholder="Buscar tramo o microempresa (ej. Loja, Saraguro)..." oninput="renderizarCarpetasGaleria()">
-                    <div class="pg-leyenda">
-                        <span><i style="background:#22D3EE"></i>Alcantarillas</span>
-                        <span><i style="background:#10B981"></i>Cunetas y desbroce</span>
-                        <span><i style="background:#F59E0B"></i>Tubería</span>
-                    </div>
-                    <div class="pg-cuerpo" id="pg-lista-carpetas"><div class="pg-vacio">Cargando tramos...</div></div>
-                </div>
-                <div id="pg-vista-detalle" style="display: none; flex-direction: column; flex: 1; min-height: 0;">
-                    <div class="pg-detalle-head">
-                        <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
-                            <button type="button" class="pg-volver" onclick="volverCarpetasGaleria()">← Tramos</button>
-                            <button type="button" class="pg-volver" onclick="ampliarGaleriaPanel()" title="Ver en pantalla completa">⤢ Pantalla completa</button>
-                        </div>
-                        <div class="pg-detalle-tramo" id="pg-detalle-tramo"></div>
-                        <div class="pg-detalle-sub" id="pg-detalle-sub"></div>
-                    </div>
-                    <div class="pg-tabs" id="pg-tabs"></div>
-                    <div class="pg-cuerpo" id="pg-scroll">
-                        <div class="pg-grid" id="pg-grid"></div>
-                        <div class="galeria-ver-mas-wrap" id="pg-mas-wrap" style="display: none;">
-                            <button type="button" class="btn-ver-mas-fotos" id="pg-btn-mas" onclick="cargarMasFotosPanel()">Ver más</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -1740,13 +1654,10 @@
 
         async function obtenerDatosGaleriaTramos() {
             if (cacheGaleriaTramos) return cacheGaleriaTramos;
-            for (const ruta of ['galeria_tramos.json', 'fotos/galeria_tramos.json']) {
-                try {
-                    const resp = await fetch(ruta, { cache: 'no-cache' });
-                    if (resp.ok) { cacheGaleriaTramos = await resp.json(); return cacheGaleriaTramos; }
-                } catch (e) { /* se intenta la siguiente ruta */ }
-            }
-            throw new Error('No se pudo cargar galeria_tramos.json');
+            const resp = await fetch('fotos/galeria_tramos.json');
+            if (!resp.ok) throw new Error('No se pudo cargar fotos/galeria_tramos.json');
+            cacheGaleriaTramos = await resp.json();
+            return cacheGaleriaTramos;
         }
 
         function buscarMicroempresaEnGaleria(dataGaleria, nombreMicro, tramoRef) {
@@ -1965,165 +1876,6 @@
             lightboxIndiceActual = -1;
         };
 
-
-        // ---------- PANEL LATERAL: CARPETAS POR TRAMO ----------
-        let panelGaleriaActual = null;
-        let panelMostradas = 0;
-        const PANEL_LOTE_FOTOS = 45;
-
-        function normalizarTextoBusqueda(s) {
-            return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/[^A-Z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
-        }
-
-        function contarCategorias(fotos) {
-            const c = { alcantarillas: 0, cunetas: 0, tuberia: 0, otros: 0 };
-            (fotos || []).forEach(f => { const k = String(f.cat || '').toLowerCase(); c[k in c ? k : 'otros']++; });
-            return c;
-        }
-
-        window.togglePanelGaleria = function(mostrar) {
-            const panel = document.getElementById('panel-galeria-tramos');
-            const btn = document.getElementById('btn-abrir-galeria-tramos');
-            if (!panel || !btn) return;
-            panel.classList.toggle('oculto', !mostrar);
-            btn.classList.toggle('oculto', !!mostrar);
-            if (mostrar) iniciarPanelGaleria();
-        };
-
-        async function iniciarPanelGaleria() {
-            const cont = document.getElementById('pg-lista-carpetas');
-            try {
-                await obtenerDatosGaleriaTramos();
-                renderizarCarpetasGaleria();
-            } catch (err) {
-                console.warn('Aviso galería por tramo:', err.message);
-                cont.innerHTML = '<div class="pg-vacio">No se pudo cargar el registro fotográfico (galeria_tramos.json).</div>';
-            }
-        }
-
-        window.renderizarCarpetasGaleria = function() {
-            const cont = document.getElementById('pg-lista-carpetas');
-            if (!cacheGaleriaTramos || !cacheGaleriaTramos.microempresas) return;
-            const q = normalizarTextoBusqueda((document.getElementById('pg-buscador') || {}).value);
-            const tokens = q ? q.split(' ').filter(x => x.length > 1) : [];
-            let items = [];
-            Object.keys(cacheGaleriaTramos.microempresas).forEach((micro, orden) => {
-                const d = cacheGaleriaTramos.microempresas[micro];
-                if (!d || !Array.isArray(d.fotos) || d.fotos.length === 0) return;
-                const texto = normalizarTextoBusqueda((d.tramo || '') + ' ' + micro);
-                const aciertos = tokens.filter(tk => texto.includes(tk)).length;
-                if (tokens.length && aciertos === 0) return;
-                items.push({ micro, d, orden, aciertos });
-            });
-            items.sort((a, b) => (b.aciertos - a.aciertos) || (a.orden - b.orden));
-            if (items.length === 0) {
-                cont.innerHTML = '<div class="pg-vacio">No hay tramos que coincidan con la búsqueda.</div>';
-                return;
-            }
-            cont.innerHTML = '';
-            items.forEach(({ micro, d }) => {
-                const n = d.fotos.length;
-                const c = contarCategorias(d.fotos);
-                const pct = v => (100 * v / n).toFixed(1) + '%';
-                const div = document.createElement('div');
-                div.className = 'pg-carpeta';
-                div.title = 'Abrir galería de ' + (d.tramo || micro);
-                div.innerHTML = `
-                    <div class="pg-carpeta-icono">📁</div>
-                    <div class="pg-carpeta-info">
-                        <div class="pg-carpeta-tramo">${d.tramo || micro}</div>
-                        <div class="pg-carpeta-micro">${micro === 'SIN MICROEMPRESA' ? 'Otros tramos' : micro}</div>
-                        <div class="pg-barra">
-                            <span style="width:${pct(c.alcantarillas)}; background:#22D3EE"></span>
-                            <span style="width:${pct(c.cunetas)}; background:#10B981"></span>
-                            <span style="width:${pct(c.tuberia)}; background:#F59E0B"></span>
-                            <span style="width:${pct(c.otros)}; background:#6B7280"></span>
-                        </div>
-                    </div>
-                    <div class="pg-carpeta-num">${n}<br><span style="font-weight:normal; color:#9CA3AF; font-size:0.66rem;">fotos</span></div>`;
-                div.onclick = () => abrirCarpetaGaleria(micro);
-                cont.appendChild(div);
-            });
-        };
-
-        window.abrirCarpetaGaleria = function(micro) {
-            const d = cacheGaleriaTramos && cacheGaleriaTramos.microempresas[micro];
-            if (!d) return;
-            panelGaleriaActual = { micro, d };
-            galeriaFotosTodas = d.fotos.slice();
-            document.getElementById('pg-vista-lista').style.display = 'none';
-            document.getElementById('pg-vista-detalle').style.display = 'flex';
-            document.getElementById('pg-detalle-tramo').innerText = '📂 ' + (d.tramo || micro);
-            document.getElementById('pg-detalle-sub').innerText = (micro === 'SIN MICROEMPRESA' ? 'Otros tramos' : micro) + ' · ' + d.fotos.length + ' fotos referenciales del trabajo en el tramo';
-            const c = contarCategorias(d.fotos);
-            const tabs = document.getElementById('pg-tabs');
-            tabs.innerHTML = '';
-            [['todas', 'Todas', d.fotos.length], ['alcantarillas', 'Alcantarillas', c.alcantarillas], ['cunetas', 'Cunetas y desbroce', c.cunetas], ['tuberia', 'Tubería', c.tuberia]]
-                .forEach(([id, label, cnt]) => {
-                    if (!cnt) return;
-                    const b = document.createElement('button');
-                    b.type = 'button'; b.className = 'galeria-tab-btn'; b.setAttribute('data-cat', id);
-                    b.innerText = `${label} (${cnt})`;
-                    b.onclick = () => filtrarPanelGaleria(id);
-                    tabs.appendChild(b);
-                });
-            filtrarPanelGaleria('todas');
-        };
-
-        window.filtrarPanelGaleria = function(cat) {
-            galeriaCategoriaActiva = cat;
-            document.querySelectorAll('#pg-tabs .galeria-tab-btn').forEach(b => b.classList.toggle('activo', b.getAttribute('data-cat') === cat));
-            galeriaFotosFiltradas = cat === 'todas' ? galeriaFotosTodas.slice() : galeriaFotosTodas.filter(f => String(f.cat || '').toLowerCase() === cat);
-            panelMostradas = 0;
-            document.getElementById('pg-grid').innerHTML = '';
-            document.getElementById('pg-scroll').scrollTop = 0;
-            cargarMasFotosPanel();
-        };
-
-        window.cargarMasFotosPanel = function() {
-            const grid = document.getElementById('pg-grid');
-            const fin = Math.min(panelMostradas + PANEL_LOTE_FOTOS, galeriaFotosFiltradas.length);
-            for (let i = panelMostradas; i < fin; i++) {
-                const f = galeriaFotosFiltradas[i];
-                const it = document.createElement('div');
-                it.className = 'galeria-thumb-item';
-                it.onclick = () => abrirLightboxGaleria(i);
-                const img = document.createElement('img');
-                img.loading = 'lazy'; img.alt = ''; img.src = 'fotos/' + f.f;
-                img.onerror = function() { if (this.parentElement) this.parentElement.style.display = 'none'; };
-                it.appendChild(img); grid.appendChild(it);
-            }
-            panelMostradas = fin;
-            const wrap = document.getElementById('pg-mas-wrap');
-            const rest = galeriaFotosFiltradas.length - panelMostradas;
-            wrap.style.display = rest > 0 ? 'block' : 'none';
-            if (rest > 0) document.getElementById('pg-btn-mas').innerText = `Ver más (${rest} restantes)`;
-        };
-
-        window.volverCarpetasGaleria = function() {
-            document.getElementById('pg-vista-detalle').style.display = 'none';
-            document.getElementById('pg-vista-lista').style.display = 'flex';
-        };
-
-        window.ampliarGaleriaPanel = function() {
-            if (panelGaleriaActual) abrirGaleriaTramo(panelGaleriaActual.micro, panelGaleriaActual.d.tramo);
-        };
-
-        // Al cerrar la vista de pantalla completa, el panel recupera su propia lista de fotos
-        const cerrarGaleriaTramoBase = window.cerrarGaleriaTramo;
-        window.cerrarGaleriaTramo = function() {
-            cerrarGaleriaTramoBase();
-            if (panelGaleriaActual && document.getElementById('pg-vista-detalle').style.display !== 'none') {
-                galeriaFotosTodas = panelGaleriaActual.d.fotos.slice();
-                filtrarPanelGaleria(galeriaCategoriaActiva || 'todas');
-            }
-        };
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const esMovil = window.matchMedia('(max-width: 850px)').matches;
-            togglePanelGaleria(!esMovil);
-        });
-
         function obtenerMicroempresaParaAlcantarilla(idUnico, tramoRaw, metaTerritorial) {
             let idStr = String(idUnico || '').trim();
             if (idStr) {
@@ -2334,7 +2086,12 @@
 
                 let tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><strong>${nombreMostrar}</strong></td>
+                    <td>
+                        <div><strong>${nombreMostrar}</strong></div>
+                        <button type="button" class="btn-registro-foto" onclick="abrirGaleriaTramo('${nombreEscapado}', '${rutaEscapada}')">
+                            📷 Registro fotográfico
+                        </button>
+                    </td>
                     <td>${info.ruta}</td>
                     <td style="text-align: center; font-size: 1.1rem; color: #F87171; font-weight: bold;">${info.obstruidasTotal}</td>
                     <td style="text-align: center; font-size: 1.1rem; color: #60A5FA; font-weight: bold;">${info.limpiadasAcumuladas}</td>
@@ -2755,7 +2512,12 @@
                 let tramoEsc = String(g.tramo || '').replace(/'/g, "\\'");
                 let tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><strong>${g.nombreOriginal}</strong></td>
+                    <td>
+                        <div><strong>${g.nombreOriginal}</strong></div>
+                        <button type="button" class="btn-registro-foto" onclick="abrirGaleriaTramo('${nomEsc}', '${tramoEsc}')">
+                            📷 Registro fotográfico
+                        </button>
+                    </td>
                     <td>${g.tramo || '—'}</td>
                     <td style="text-align: right; color: #34D399; font-weight: bold;">${g[tipoMaquina].toFixed(1)} h</td>
                 `;
@@ -3285,19 +3047,28 @@
 
                         let marcadorBase = L.circleMarker(latlng, { radius: 5, fillColor: colorPunto, color: "#ffffff", weight: 1, opacity: 1, fillOpacity: 0.9 });
                         
-                        let estadoTxt = esAtendida
-                            ? `<div style="margin-top: 6px; font-size: 0.78rem; font-weight: bold; color: #22D3EE;">● Limpia / atendida</div>`
-                            : '';
+                        let badgeEstado = esAtendida 
+                            ? `<div style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10B981; color: #10B981; padding: 6px 10px; border-radius: 6px; font-weight: bold; text-align: center; margin-bottom: 10px; letter-spacing: 0.5px;">✅ ESTADO: LIMPIA / ATENDIDA</div>`
+                            : `<div style="background: rgba(239, 68, 68, 0.15); border: 1px solid #EF4444; color: #F87171; padding: 5px 10px; border-radius: 6px; font-weight: bold; text-align: center; margin-bottom: 10px; font-size:0.82rem;">⏳ ESTADO: FALTA POR LIMPIAR</div>`;
+
+                        let infoGaleriaPunto = obtenerMicroempresaParaAlcantarilla(idUnico, tramoRaw, metaTerritorial);
+                        let microEscapada = String(infoGaleriaPunto.micro || '').replace(/'/g, "\\'");
+                        let tramoEscapado = String(infoGaleriaPunto.tramo || tramoRaw || '').replace(/'/g, "\\'");
 
                         let popupContent = `
-                            <div style="font-family: 'Segoe UI', Tahoma, sans-serif; text-align: center; min-width: 140px;">
-                                <div style="font-size: 0.7rem; color: #9CA3AF; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap;">ID de la alcantarilla</div>
-                                <div style="font-size: 1.6rem; font-weight: 800; color: #FBBF24; line-height: 1.2;">${idUnico}</div>
-                                ${estadoTxt}
+                            <div style="font-family: 'Segoe UI', Tahoma, sans-serif;">
+                                <h4 style="margin: 0 0 10px 0; padding-bottom: 6px; border-bottom: 1px solid #374151; color: #F59E0B; font-size: 1.12rem; font-weight: bold;">${tramoRaw}</h4>
+                                <div style="margin-bottom: 6px; font-size: 0.92rem;"><b style="color: #FBBF24;">🏛️ Cantón:</b> <span style="color: #FFFFFF; font-weight:bold;">${metaTerritorial.canton}</span></div>
+                                <div style="margin-bottom: 6px; font-size: 0.9rem;"><b style="color: #ffffff;">ID Único:</b> <span style="color: #D1D5DB;">${idUnico}</span> | <b style="color: #ffffff;">Código:</b> <span style="color: #D1D5DB;">${codigoD}</span></div>
+                                ${esCritica ? `<div style="margin-bottom: 8px; font-size: 0.88rem;"><b style="color: #ffffff;">Prioridad:</b> <span style="color: #FBBF24; font-weight:bold;">${nivelRaw || 'N/A'}</span> (${estadoFisico})</div>` : ''}
+                                ${badgeEstado}
+                                <button type="button" class="btn-registro-foto btn-registro-foto-popup" onclick="abrirGaleriaTramo('${microEscapada}', '${tramoEscapado}')">
+                                    📷 Registro fotográfico
+                                </button>
                             </div>
                         `;
-
-                        marcadorBase.bindPopup(popupContent, { minWidth: 150, className: 'popup-id-alcantarilla' });
+                        
+                        marcadorBase.bindPopup(popupContent, { minWidth: 280 });
                         return marcadorBase;
                     },
                     onEachFeature: function (feature, layer) {
