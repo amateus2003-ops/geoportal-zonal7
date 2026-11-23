@@ -1500,12 +1500,32 @@
             return L.latLng(y, x);
         }
 
+        // Fotos del popup que no tienen ubicación exacta: se muestran como "referencial del tramo"
+        let fotosReferenciales = new Set();
+        (async () => {
+            for (const ruta of ['fotos_referenciales.json', 'fotos/fotos_referenciales.json']) {
+                try {
+                    const resp = await fetch(ruta, { cache: 'no-cache' });
+                    if (resp.ok) { const j = await resp.json(); fotosReferenciales = new Set(j.referenciales || []); return; }
+                } catch (e) { /* se intenta la siguiente ruta */ }
+            }
+        })();
+
+        window.marcarFotoReferencial = function(tipo, id, imgElement, visible) {
+            let tag = document.getElementById('tag-' + tipo + '-' + id);
+            if (!tag) return;
+            let sufijo = (imgElement && imgElement.dataset.suf) ? imgElement.dataset.suf : '';
+            tag.style.display = (visible && fotosReferenciales.has(String(id) + tipo + sufijo)) ? 'block' : 'none';
+        };
+
         window.cambiarFoto = function(tipo, id, valor) {
             let sufijo = valor === '1' ? '' : valor;
             let imgElement = document.getElementById('img-' + tipo + '-' + id);
             if(imgElement) {
                 imgElement.style.opacity = '0'; 
+                marcarFotoReferencial(tipo, id, imgElement, false);
                 setTimeout(() => {
+                    imgElement.dataset.suf = sufijo;
                     imgElement.src = 'fotos/' + id + tipo + sufijo + '.jpg';
                 }, 150);
             }
@@ -3187,7 +3207,8 @@
                                         </select>
                                         <div style="position: relative; width: 100%; height: 145px; background-color: #1F2937; border-radius: 6px; border: 1px dashed #4B5563; overflow: hidden; display: flex; align-items: center; justify-content: center;">
                                             <div style="position: absolute; color: #6B7280; font-size: 0.72rem; text-align: center; font-weight: bold; z-index: 0;">🚫<br>FOTO NO<br>DISPONIBLE</div>
-                                            <img id="img-antes-${idUnico}" src="fotos/${idUnico}antes.jpg" style="position: relative; z-index: 1; width:100%; height:100%; object-fit:cover; transition: opacity 0.3s ease;" onerror="this.style.opacity='0';" onload="this.style.opacity='1';" alt="">
+                                            <img id="img-antes-${idUnico}" src="fotos/${idUnico}antes.jpg" style="position: relative; z-index: 1; width:100%; height:100%; object-fit:cover; transition: opacity 0.3s ease;" onerror="this.style.opacity='0'; marcarFotoReferencial('antes', '${idUnico}', this, false);" onload="this.style.opacity='1'; marcarFotoReferencial('antes', '${idUnico}', this, true);" alt="">
+                                            <div id="tag-antes-${idUnico}" style="display:none; position:absolute; left:0; right:0; bottom:0; z-index:2; background:rgba(17,24,39,0.82); color:#FBBF24; font-size:0.66rem; font-weight:bold; padding:3px 4px; text-align:center; letter-spacing:0.2px;">📍 Foto referencial del tramo</div>
                                         </div>
                                     </div>
                                     <div style="flex:1; text-align:center;">
@@ -3197,7 +3218,8 @@
                                         </select>
                                         <div style="position: relative; width: 100%; height: 145px; background-color: #1F2937; border-radius: 6px; border: 1px dashed #4B5563; overflow: hidden; display: flex; align-items: center; justify-content: center;">
                                             <div style="position: absolute; color: #6B7280; font-size: 0.72rem; text-align: center; font-weight: bold; z-index: 0;">🚫<br>FOTO NO<br>DISPONIBLE</div>
-                                            <img id="img-despues-${idUnico}" src="fotos/${idUnico}despues.jpg" style="position: relative; z-index: 1; width:100%; height:100%; object-fit:cover; transition: opacity 0.3s ease;" onerror="this.style.opacity='0';" onload="this.style.opacity='1';" alt="">
+                                            <img id="img-despues-${idUnico}" src="fotos/${idUnico}despues.jpg" style="position: relative; z-index: 1; width:100%; height:100%; object-fit:cover; transition: opacity 0.3s ease;" onerror="this.style.opacity='0'; marcarFotoReferencial('despues', '${idUnico}', this, false);" onload="this.style.opacity='1'; marcarFotoReferencial('despues', '${idUnico}', this, true);" alt="">
+                                            <div id="tag-despues-${idUnico}" style="display:none; position:absolute; left:0; right:0; bottom:0; z-index:2; background:rgba(17,24,39,0.82); color:#FBBF24; font-size:0.66rem; font-weight:bold; padding:3px 4px; text-align:center; letter-spacing:0.2px;">📍 Foto referencial del tramo</div>
                                         </div>
                                     </div>
                                 </div>` : ''}
