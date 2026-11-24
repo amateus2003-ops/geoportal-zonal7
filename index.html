@@ -2189,11 +2189,25 @@
             for (const ruta of ['galeria_tramos.json', 'fotos/galeria_tramos.json']) {
                 try {
                     const resp = await fetch(ruta, { cache: 'no-cache' });
-                    if (resp.ok) { cacheGaleriaTramos = await resp.json(); return cacheGaleriaTramos; }
+                    if (resp.ok) { cacheGaleriaTramos = await resp.json(); await sumarGaleriaBD(cacheGaleriaTramos); return cacheGaleriaTramos; }
                 } catch (e) { /* se intenta la siguiente ruta */ }
             }
             throw new Error('No se pudo cargar galeria_tramos.json');
         }
+
+        // Fotos de galería que están en la base de datos y no en el archivo (las subidas desde el campo)
+        async function sumarGaleriaBD(data) {
+            try {
+                const filas = await consultarBD('galeria_fotos?select=microempresa,tramo,ruta&ruta=like.http*&order=id.asc');
+                if (!data.microempresas) data.microempresas = {};
+                filas.forEach(f => {
+                    const m = f.microempresa || 'SIN MICROEMPRESA';
+                    if (!data.microempresas[m]) data.microempresas[m] = { tramo: f.tramo || 'Otros tramos', fotos: [] };
+                    data.microempresas[m].fotos.push({ f: f.ruta });
+                });
+            } catch (e) { console.warn('Galería solo con el archivo galeria_tramos.json:', e.message); }
+        }
+        function rutaFotoGaleria(f) { return /^https?:/i.test(f) ? f : 'fotos/' + f; }
 
         function buscarMicroempresaEnGaleria(dataGaleria, nombreMicro, tramoRef) {
             if (!dataGaleria || !dataGaleria.microempresas) return null;
@@ -2294,7 +2308,7 @@
 
                 const img = document.createElement('img');
                 img.loading = 'lazy';
-                img.src = 'fotos/' + fotoObj.f;
+                img.src = rutaFotoGaleria(fotoObj.f);
                 img.alt = '';
                 img.onerror = function() {
                     if (this.parentElement) {
@@ -2335,7 +2349,7 @@
             const contEl = document.getElementById('lightbox-contador');
             const fotoObj = galeriaFotosFiltradas[lightboxIndiceActual];
             if (!fotoObj) return;
-            imgEl.src = 'fotos/' + fotoObj.f;
+            imgEl.src = rutaFotoGaleria(fotoObj.f);
             contEl.innerText = `${lightboxIndiceActual + 1} / ${galeriaFotosFiltradas.length}`;
         }
 
@@ -2449,7 +2463,7 @@
                 it.className = 'galeria-thumb-item';
                 it.onclick = () => abrirLightboxGaleria(i);
                 const img = document.createElement('img');
-                img.loading = 'lazy'; img.alt = ''; img.src = 'fotos/' + f.f;
+                img.loading = 'lazy'; img.alt = ''; img.src = rutaFotoGaleria(f.f);
                 img.onerror = function() { if (this.parentElement) this.parentElement.style.display = 'none'; };
                 it.appendChild(img); grid.appendChild(it);
             }
