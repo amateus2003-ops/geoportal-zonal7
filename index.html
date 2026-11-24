@@ -1890,8 +1890,15 @@
                 caja.innerHTML = `
                     <h3>👤 ${escaparHTML(sesionBD.nombre || sesionBD.email)}</h3>
                     <p>${escaparHTML(sesionBD.email)}<br>Rol: <b style="color:#E5E7EB;">${escaparHTML(rolTexto)}</b></p>
+                    ${sesionBD.errorPerfil ? `<p style="color:#F87171;">⚠ ${escaparHTML(sesionBD.errorPerfil)}</p>` : ''}
                     <p>${puedeEditarBD() ? 'Puedes registrar limpiezas desde la ventana de cada alcantarilla en el Visor Geográfico.' : 'Tu usuario puede ver la información. Para registrar limpiezas, pide al administrador el rol de editor.'}</p>
                     <div class="acciones"><button class="btn-secundario" onclick="cerrarModalSesion()">Volver</button><button class="btn-primario" onclick="cerrarSesionBD()">Cerrar sesión</button></div>`;
+                if (!abrirSesion.refrescando) {
+                    abrirSesion.refrescando = true;
+                    actualizarPerfilBD().then(cambio => {
+                        if (cambio && document.getElementById('modal-sesion').classList.contains('abierto')) abrirSesion();
+                    }).finally(() => { abrirSesion.refrescando = false; });
+                }
             } else {
                 caja.innerHTML = `
                     <h3>🔐 Ingreso del personal MIT</h3>
@@ -1924,8 +1931,7 @@
                     expires_at: j.expires_at || (Math.floor(Date.now() / 1000) + (j.expires_in || 3600)),
                     email: (j.user && j.user.email) || email, user_id: j.user && j.user.id, rol: 'lector', nombre: null
                 });
-                const perfil = await consultarBD(`perfiles?select=rol,nombre&user_id=eq.${sesionBD.user_id}`, true);
-                if (perfil[0]) { sesionBD.rol = perfil[0].rol; sesionBD.nombre = perfil[0].nombre; guardarSesionBD(sesionBD); }
+                await actualizarPerfilBD();
                 await cargarMicroempresasBD();
                 actualizarBotonSesion();
                 abrirSesion();
@@ -1933,6 +1939,25 @@
                 msg.style.color = '#F87171';
                 msg.textContent = e.name === 'AbortError' ? 'La base de datos no respondió. Intenta de nuevo.' : e.message;
             } finally { if (boton) boton.disabled = false; }
+        }
+        // Lee el rol y el nombre del usuario desde la tabla perfiles (también al recargar la página,
+        // así un cambio de rol se aplica sin volver a ingresar). Devuelve true si algo cambió.
+        async function actualizarPerfilBD() {
+            if (!sesionBD) return false;
+            const antes = `${sesionBD.rol}|${sesionBD.nombre}|${sesionBD.errorPerfil || ''}`;
+            try {
+                const perfil = await consultarBD(`perfiles?select=rol,nombre&user_id=eq.${sesionBD.user_id}`, true);
+                if (!sesionBD) return false;
+                sesionBD.errorPerfil = perfil[0] ? null : 'No se encontró tu perfil en la base de datos.';
+                if (perfil[0]) { sesionBD.rol = perfil[0].rol; sesionBD.nombre = perfil[0].nombre; }
+            } catch (e) {
+                if (!sesionBD) return false;
+                sesionBD.errorPerfil = 'No se pudo leer tu rol (' + e.message + ').';
+                console.warn(sesionBD.errorPerfil);
+            }
+            guardarSesionBD(sesionBD);
+            actualizarBotonSesion();
+            return antes !== `${sesionBD.rol}|${sesionBD.nombre}|${sesionBD.errorPerfil || ''}`;
         }
         async function cerrarSesionBD() {
             try { if (sesionBD) await fetchConTiempo(`${BD.url}/auth/v1/logout`, { method: 'POST', headers: await cabecerasBD(true) }); } catch (e) { }
@@ -3751,7 +3776,7 @@
             cargarDatosDrive();
 
             actualizarBotonSesion();
-            if (sesionBD) cargarMicroempresasBD();
+            if (sesionBD) { actualizarPerfilBD(); cargarMicroempresasBD(); }
 
             leerReporteDesdeBD()
                 .then(filasBD => {
