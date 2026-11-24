@@ -24,6 +24,30 @@
         .nav-tabs { display: flex; gap: 10px; }
         .tab-btn { background-color: #374151; color: #D1D5DB; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: all 0.3s; font-size: 0.88rem; }
         .tab-btn.active, .tab-btn:hover { background-color: #3B82F6; color: #FFFFFF; }
+        /* Sesión y edición (base de datos) */
+        .btn-sesion { background-color: transparent; color: #D1D5DB; border: 1px solid #4B5563; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.85rem; transition: all 0.3s; white-space: nowrap; }
+        .btn-sesion:hover { border-color: #FBBF24; color: #FBBF24; }
+        .btn-sesion.activa { border-color: #10B981; color: #10B981; }
+        .btn-sesion .txt { display: none; margin-left: 6px; }
+        @media (min-width: 1600px) { .btn-sesion .txt { display: inline; } }
+        @media (max-width: 1500px) { h1 { font-size: 1.06rem; } }
+        #modal-sesion { display: none; position: fixed; inset: 0; background: rgba(3,7,18,0.75); z-index: 6000; align-items: center; justify-content: center; padding: 16px; }
+        #modal-sesion.abierto { display: flex; }
+        .caja-sesion { background: #1F2937; border: 1px solid #374151; border-top: 3px solid #FBBF24; border-radius: 10px; width: 100%; max-width: 360px; padding: 22px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); color: #E5E7EB; box-sizing: border-box; }
+        .caja-sesion h3 { margin: 0 0 4px; color: #FBBF24; font-size: 1.05rem; }
+        .caja-sesion p { margin: 0 0 14px; color: #9CA3AF; font-size: 0.82rem; line-height: 1.4; }
+        .caja-sesion label { display: block; font-size: 0.78rem; color: #9CA3AF; margin: 10px 0 4px; font-weight: bold; }
+        .caja-sesion input, .bd-editor input, .bd-editor select { width: 100%; box-sizing: border-box; background: #111827; color: #F3F4F6; border: 1px solid #4B5563; border-radius: 6px; padding: 9px 10px; font-size: 0.9rem; font-family: inherit; }
+        .caja-sesion .acciones { display: flex; gap: 10px; margin-top: 18px; }
+        .btn-primario { flex: 1; background: #3B82F6; color: #fff; border: none; border-radius: 6px; padding: 10px; font-weight: bold; cursor: pointer; font-family: inherit; }
+        .btn-primario:disabled { opacity: 0.6; cursor: wait; }
+        .btn-secundario { background: #374151; color: #D1D5DB; border: none; border-radius: 6px; padding: 10px 14px; font-weight: bold; cursor: pointer; font-family: inherit; }
+        .msg-sesion { margin-top: 10px; font-size: 0.8rem; min-height: 1em; }
+        .bd-editor { margin-top: 12px; padding: 10px; border: 1px solid #374151; border-left: 3px solid #FBBF24; border-radius: 6px; background: #111827; }
+        .bd-editor .titulo { color: #FBBF24; font-size: 0.74rem; font-weight: bold; letter-spacing: 0.4px; margin-bottom: 8px; }
+        .bd-editor .fila { display: flex; gap: 8px; margin-bottom: 8px; }
+        .bd-editor input, .bd-editor select { padding: 6px 8px; font-size: 0.8rem; }
+        .bd-editor .btn-primario { padding: 8px; font-size: 0.82rem; }
 
         .view-container { display: none; flex-grow: 1; height: calc(100vh - 60px); overflow-y: auto; -webkit-overflow-scrolling: touch; }
         .view-container.active { display: flex; flex-direction: column; }
@@ -631,6 +655,7 @@
             header { flex-direction: column; height: auto; padding: 10px 12px; gap: 8px; text-align: center; }
             .header-brand { justify-content: center; flex-wrap: wrap; gap: 10px; }
             .logo-gob-img { height: 32px; }
+            .logo-gob-box { border-right: none; padding-right: 0; }
             h1 { font-size: 0.98rem; line-height: 1.3; }
             .nav-tabs { width: 100%; justify-content: center; flex-wrap: wrap; gap: 6px; }
             .tab-btn { flex: 1; min-width: 145px; padding: 8px 10px; font-size: 0.78rem; }
@@ -683,8 +708,13 @@
         <div class="nav-tabs">
             <button class="tab-btn active" id="btn-cronograma" onclick="switchTab('cronograma')">📋 Seguimiento de Frentes de Trabajo</button>
             <button class="tab-btn" id="btn-geoportal" onclick="switchTab('geoportal')">🗺️ Visor Geográfico Público</button>
+            <button class="btn-sesion" id="btn-sesion" onclick="abrirSesion()" title="Ingreso del personal MIT"><span class="ico">🔐</span><span class="txt">Ingresar</span></button>
         </div>
     </header>
+
+    <div id="modal-sesion" onclick="if (event.target === this) cerrarModalSesion()">
+        <div class="caja-sesion" id="caja-sesion"></div>
+    </div>
 
     <div id="cronograma-view" class="view-container active">
         <div style="max-width: 1400px; margin: 0 auto; width: 100%; padding: 20px 0;">
@@ -1721,14 +1751,256 @@
         // Alcantarillas con al menos 1 foto del antes y 1 del después (archivo alcantarillas_con_fotos.json).
         // Las demás alcantarillas reportadas se muestran con aura café.
         let setAlcantarillasConFotos = null;
-        const promesaConFotos = (async () => {
+
+        // =========================================================================
+        // BASE DE DATOS (Supabase). Si no responde, el portal usa Reporte_Diario.xlsx
+        // y alcantarillas_con_fotos.json como respaldo.
+        // La clave publicable es pública por diseño; los permisos los controla la base (RLS).
+        // =========================================================================
+        const BD = {
+            url: 'https://zuanqaymtjxmhtizlypj.supabase.co',
+            clave: 'sb_publishable_JcmOdI17wDbayd91ASl27w_IH5fGPox',
+            tiempoMaximoMs: 10000
+        };
+        const CLAVE_SESION_BD = 'geoportal_z7_sesion';
+        let sesionBD = null;
+        let fuenteDatosPortal = 'excel';
+        let listaMicroempresasBD = [];
+        try { sesionBD = JSON.parse(localStorage.getItem(CLAVE_SESION_BD) || 'null'); } catch (e) { sesionBD = null; }
+
+        function escaparHTML(v) {
+            return String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
+        function guardarSesionBD(s) {
+            sesionBD = s;
+            try { s ? localStorage.setItem(CLAVE_SESION_BD, JSON.stringify(s)) : localStorage.removeItem(CLAVE_SESION_BD); } catch (e) { }
+        }
+        function puedeEditarBD() { return !!(sesionBD && (sesionBD.rol === 'admin' || sesionBD.rol === 'editor')); }
+
+        async function fetchConTiempo(url, opciones = {}) {
+            const control = new AbortController();
+            const reloj = setTimeout(() => control.abort(), BD.tiempoMaximoMs);
+            try { return await fetch(url, Object.assign({}, opciones, { signal: control.signal })); }
+            finally { clearTimeout(reloj); }
+        }
+        async function tokenVigenteBD() {
+            if (!sesionBD) return null;
+            if ((sesionBD.expires_at || 0) - 60 > Date.now() / 1000) return sesionBD.access_token;
+            try {
+                const r = await fetchConTiempo(`${BD.url}/auth/v1/token?grant_type=refresh_token`, {
+                    method: 'POST', headers: { apikey: BD.clave, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ refresh_token: sesionBD.refresh_token })
+                });
+                if (!r.ok) throw new Error('Sesión vencida');
+                const j = await r.json();
+                sesionBD.access_token = j.access_token;
+                sesionBD.refresh_token = j.refresh_token;
+                sesionBD.expires_at = j.expires_at || (Math.floor(Date.now() / 1000) + (j.expires_in || 3600));
+                guardarSesionBD(sesionBD);
+                return sesionBD.access_token;
+            } catch (e) {
+                guardarSesionBD(null);
+                actualizarBotonSesion();
+                return null;
+            }
+        }
+        async function cabecerasBD(conSesion) {
+            const h = { apikey: BD.clave };
+            if (conSesion) { const t = await tokenVigenteBD(); if (t) h.Authorization = 'Bearer ' + t; }
+            return h;
+        }
+        // Lee una tabla o vista completa (de 1000 en 1000 filas)
+        async function consultarBD(ruta, conSesion = false) {
+            const filas = [];
+            const sep = ruta.includes('?') ? '&' : '?';
+            for (let desde = 0; ; desde += 1000) {
+                const r = await fetchConTiempo(`${BD.url}/rest/v1/${ruta}${sep}limit=1000&offset=${desde}`, { headers: await cabecerasBD(conSesion), cache: 'no-store' });
+                if (!r.ok) throw new Error(`HTTP ${r.status} en ${ruta.split('?')[0]}`);
+                const lote = await r.json();
+                filas.push(...lote);
+                if (lote.length < 1000) break;
+            }
+            return filas;
+        }
+
+        // Filas del reporte diario con el mismo formato que entrega el Excel (fecha como número de serie)
+        const COLUMNAS_REPORTE_BD = {
+            microempresa: 'MICROEMPRESA', fecha: 'FECHA', tramo_ruta: 'TRAMO_RUTA',
+            alcantarillas_obstruidas_tramo: 'ALCANTARILLAS_OBSTRUIDAS_TRAMO', abscisa_inicial: 'ABSCISA_INICIAL',
+            abscisa_final: 'ABSCISA_FINAL', alcantarillas_limpiadas: 'ALCANTARILLAS_LIMPIADAS', distancia_km: 'DISTANCIA_KM',
+            observaciones: 'OBSERVACIONES', codigo_alcantarilla: 'CODIGO_ALCANTARILLA', estado: 'ESTADO',
+            coordenadas_utm: 'COORDENADAS_UTM', registro_fotografico: 'REGISTRO_FOTOGRAFICO'
+        };
+        function fechaISOaSerieExcel(iso) {
+            const [y, m, d] = String(iso).slice(0, 10).split('-').map(Number);
+            return Math.round((Date.UTC(y, m - 1, d) - Date.UTC(1899, 11, 30)) / 86400000);
+        }
+        async function leerReporteDesdeBD() {
+            const filas = await consultarBD('reporte_diario?select=*&order=fila_excel.asc.nullslast,id.asc');
+            if (!filas.length) throw new Error('La tabla reporte_diario está vacía');
+            return filas.map(f => {
+                const fila = {};
+                for (const [col, titulo] of Object.entries(COLUMNAS_REPORTE_BD)) {
+                    let v = f[col];
+                    if (v === null || v === undefined || v === '') continue;
+                    if (col === 'fecha') v = fechaISOaSerieExcel(v);
+                    fila[titulo] = v;
+                }
+                return fila;
+            });
+        }
+        async function leerConFotosDesdeBD() {
+            const filas = await consultarBD('v_estado_alcantarillas?select=objectid&capa=eq.con_respaldo');
+            if (!filas.length) throw new Error('La vista v_estado_alcantarillas no tiene datos');
+            return new Set(filas.map(f => String(f.objectid)));
+        }
+
+        // Alcantarillas con al menos 1 foto del antes y 1 del después: primero la base de datos, luego el JSON
+        let promesaConFotos = cargarConFotos();
+        async function cargarConFotos() {
+            try { setAlcantarillasConFotos = await leerConFotosDesdeBD(); return; }
+            catch (e) { console.warn('Capa con respaldo fotográfico desde el archivo de respaldo:', e.message); }
             for (const ruta of ['alcantarillas_con_fotos.json', 'fotos/alcantarillas_con_fotos.json']) {
                 try {
                     const resp = await fetch(ruta, { cache: 'no-cache' });
                     if (resp.ok) { const j = await resp.json(); setAlcantarillasConFotos = new Set((j.con_fotos || []).map(String)); return; }
                 } catch (e) { /* se intenta la siguiente ruta */ }
             }
-        })();
+        }
+
+        // ---------- Sesión (usuario y contraseña) ----------
+        function actualizarBotonSesion() {
+            const b = document.getElementById('btn-sesion');
+            if (!b) return;
+            if (sesionBD) {
+                b.classList.add('activa');
+                b.innerHTML = `<span class="ico">👤</span><span class="txt">${escaparHTML(sesionBD.nombre || sesionBD.email || 'Sesión')}</span>`;
+                b.title = `${sesionBD.nombre ? sesionBD.nombre + ' · ' : ''}${sesionBD.email} · rol: ${sesionBD.rol}`;
+            } else {
+                b.classList.remove('activa');
+                b.innerHTML = '<span class="ico">🔐</span><span class="txt">Ingresar</span>';
+                b.title = 'Ingreso del personal MIT';
+            }
+        }
+        function cerrarModalSesion() { document.getElementById('modal-sesion').classList.remove('abierto'); }
+        function abrirSesion() {
+            const caja = document.getElementById('caja-sesion');
+            if (sesionBD) {
+                const rolTexto = { admin: 'Administrador', editor: 'Editor', lector: 'Solo lectura' }[sesionBD.rol] || sesionBD.rol;
+                caja.innerHTML = `
+                    <h3>👤 ${escaparHTML(sesionBD.nombre || sesionBD.email)}</h3>
+                    <p>${escaparHTML(sesionBD.email)}<br>Rol: <b style="color:#E5E7EB;">${escaparHTML(rolTexto)}</b></p>
+                    <p>${puedeEditarBD() ? 'Puedes registrar limpiezas desde la ventana de cada alcantarilla en el Visor Geográfico.' : 'Tu usuario puede ver la información. Para registrar limpiezas, pide al administrador el rol de editor.'}</p>
+                    <div class="acciones"><button class="btn-secundario" onclick="cerrarModalSesion()">Volver</button><button class="btn-primario" onclick="cerrarSesionBD()">Cerrar sesión</button></div>`;
+            } else {
+                caja.innerHTML = `
+                    <h3>🔐 Ingreso del personal MIT</h3>
+                    <p>Acceso para registrar y corregir información. El público puede ver el portal sin ingresar.</p>
+                    <form onsubmit="event.preventDefault(); ingresarBD();">
+                        <label for="sesion-email">Correo</label>
+                        <input id="sesion-email" type="email" autocomplete="username" required>
+                        <label for="sesion-clave">Contraseña</label>
+                        <input id="sesion-clave" type="password" autocomplete="current-password" required>
+                        <div class="msg-sesion" id="sesion-msg"></div>
+                        <div class="acciones"><button type="button" class="btn-secundario" onclick="cerrarModalSesion()">Cancelar</button><button type="submit" class="btn-primario" id="sesion-boton">Ingresar</button></div>
+                    </form>`;
+                setTimeout(() => { const i = document.getElementById('sesion-email'); if (i) i.focus(); }, 50);
+            }
+            document.getElementById('modal-sesion').classList.add('abierto');
+        }
+        async function ingresarBD() {
+            const msg = document.getElementById('sesion-msg'), boton = document.getElementById('sesion-boton');
+            const email = document.getElementById('sesion-email').value.trim(), clave = document.getElementById('sesion-clave').value;
+            boton.disabled = true; msg.style.color = '#9CA3AF'; msg.textContent = 'Verificando…';
+            try {
+                const r = await fetchConTiempo(`${BD.url}/auth/v1/token?grant_type=password`, {
+                    method: 'POST', headers: { apikey: BD.clave, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password: clave })
+                });
+                const j = await r.json().catch(() => ({}));
+                if (!r.ok) throw new Error(r.status === 400 ? 'Correo o contraseña incorrectos.' : (j.msg || j.error_description || `Error ${r.status}`));
+                guardarSesionBD({
+                    access_token: j.access_token, refresh_token: j.refresh_token,
+                    expires_at: j.expires_at || (Math.floor(Date.now() / 1000) + (j.expires_in || 3600)),
+                    email: (j.user && j.user.email) || email, user_id: j.user && j.user.id, rol: 'lector', nombre: null
+                });
+                const perfil = await consultarBD(`perfiles?select=rol,nombre&user_id=eq.${sesionBD.user_id}`, true);
+                if (perfil[0]) { sesionBD.rol = perfil[0].rol; sesionBD.nombre = perfil[0].nombre; guardarSesionBD(sesionBD); }
+                await cargarMicroempresasBD();
+                actualizarBotonSesion();
+                abrirSesion();
+            } catch (e) {
+                msg.style.color = '#F87171';
+                msg.textContent = e.name === 'AbortError' ? 'La base de datos no respondió. Intenta de nuevo.' : e.message;
+            } finally { if (boton) boton.disabled = false; }
+        }
+        async function cerrarSesionBD() {
+            try { if (sesionBD) await fetchConTiempo(`${BD.url}/auth/v1/logout`, { method: 'POST', headers: await cabecerasBD(true) }); } catch (e) { }
+            guardarSesionBD(null);
+            actualizarBotonSesion();
+            cerrarModalSesion();
+            map.closePopup();
+        }
+        async function cargarMicroempresasBD() {
+            try { listaMicroempresasBD = await consultarBD('microempresas?select=nombre,tramo&activa=eq.true&order=nombre.asc'); }
+            catch (e) { listaMicroempresasBD = []; }
+        }
+
+        // ---------- Registro de limpiezas desde el popup (rol editor o admin) ----------
+        function fechaHoyISO() {
+            const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+            return d.toISOString().slice(0, 10);
+        }
+        function prepararEditorPopup(popup) {
+            const el = popup.getElement && popup.getElement();
+            const slot = el && el.querySelector('.bd-editor-slot');
+            if (!slot) return;
+            if (!puedeEditarBD()) { slot.innerHTML = ''; return; }
+            const id = slot.dataset.id;
+            const opciones = listaMicroempresasBD.map(m => `<option value="${escaparHTML(m.nombre)}">${escaparHTML(m.nombre)}</option>`).join('');
+            slot.innerHTML = `
+                <div class="bd-editor">
+                    <div class="titulo">✏️ REGISTRAR LIMPIEZA EN LA BASE DE DATOS</div>
+                    <div class="fila"><input type="date" id="bd-fecha-${id}" value="${fechaHoyISO()}" max="${fechaHoyISO()}"><select id="bd-micro-${id}"><option value="">Microempresa…</option>${opciones}</select></div>
+                    <div class="fila"><input type="text" id="bd-obs-${id}" placeholder="Observación (opcional)" maxlength="300"></div>
+                    <div class="fila"><button class="btn-primario" onclick="registrarLimpiezaBD('${id}', this)">Guardar limpieza de la alcantarilla ${escaparHTML(id)}</button></div>
+                    <div class="msg-sesion" id="bd-msg-${id}"></div>
+                </div>`;
+            // (sin popup.update(): Leaflet volvería a escribir el contenido original y borraría el formulario)
+        }
+        async function registrarLimpiezaBD(id, boton) {
+            const msg = document.getElementById(`bd-msg-${id}`);
+            const fecha = document.getElementById(`bd-fecha-${id}`).value;
+            const micro = document.getElementById(`bd-micro-${id}`).value;
+            const obs = document.getElementById(`bd-obs-${id}`).value.trim();
+            if (!fecha || !micro) { msg.style.color = '#F87171'; msg.textContent = 'Indica la fecha y la microempresa.'; return; }
+            boton.disabled = true; msg.style.color = '#9CA3AF'; msg.textContent = 'Guardando…';
+            try {
+                const cab = await cabecerasBD(true);
+                if (!cab.Authorization) throw new Error('Tu sesión terminó. Vuelve a ingresar.');
+                const r = await fetchConTiempo(`${BD.url}/rest/v1/reporte_diario`, {
+                    method: 'POST',
+                    headers: Object.assign(cab, { 'Content-Type': 'application/json', Prefer: 'return=minimal' }),
+                    body: JSON.stringify({
+                        microempresa: micro, fecha, codigo_alcantarilla: String(id), estado: 'LIMPIO', alcantarillas_limpiadas: 1,
+                        observaciones: (obs ? obs + ' | ' : '') + `Registrado en el geoportal por ${sesionBD.email}`
+                    })
+                });
+                if (!r.ok) throw new Error(r.status === 401 || r.status === 403 ? 'Tu usuario no tiene permiso para registrar.' : `No se pudo guardar (HTTP ${r.status}).`);
+                msg.style.color = '#10B981'; msg.textContent = '✔ Guardado. Actualizando el mapa…';
+                await recargarDatosDesdeBD();
+            } catch (e) {
+                msg.style.color = '#F87171';
+                msg.textContent = e.name === 'AbortError' ? 'La base de datos no respondió. Intenta de nuevo.' : e.message;
+                boton.disabled = false;
+            }
+        }
+        async function recargarDatosDesdeBD() {
+            const filas = await leerReporteDesdeBD();
+            try { setAlcantarillasConFotos = await leerConFotosDesdeBD(); } catch (e) { }
+            map.closePopup();
+            procesarDatosExcel(filas);
+        }
         function tieneFotosCompletas(id) {
             return !setAlcantarillasConFotos || setAlcantarillasConFotos.has(String(id));
         }
@@ -3006,6 +3278,7 @@
         const zoomOriginal = 9;
         
         var map = L.map('map', {zoomControl: false}).setView(centroZonal, zoomOriginal);
+        map.on('popupopen', e => prepararEditorPopup(e.popup));
         L.control.zoom({ position: 'bottomleft' }).addTo(map);
 
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -3251,6 +3524,7 @@
                                         </div>
                                     </div>
                                 </div>` : ''}
+                                <div class="bd-editor-slot" data-id="${idUnico}"></div>
                             </div>
                         `;
                         
@@ -3476,24 +3750,37 @@
 
             cargarDatosDrive();
 
-            fetch('Reporte_Diario.xlsx?v=' + new Date().getTime())
-                .then(response => {
-                    if (!response.ok) throw new Error("Archivo no encontrado en el servidor");
-                    return response.arrayBuffer();
-                })
-                .then(data => {
-                    let workbook = XLSX.read(new Uint8Array(data), {type: 'array'});
-                    let firstSheet = workbook.SheetNames[0];
-                    let excelRows = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
-                    
-                    promesaConFotos.finally(() => procesarDatosExcel(excelRows));
+            actualizarBotonSesion();
+            if (sesionBD) cargarMicroempresasBD();
 
+            leerReporteDesdeBD()
+                .then(filasBD => {
+                    fuenteDatosPortal = 'bd';
+                    promesaConFotos.finally(() => procesarDatosExcel(filasBD));
                     let badge = document.getElementById('conexion-estado');
-                    badge.innerHTML = '<div class="status-dot"></div> Conectado a Servidor';
+                    badge.innerHTML = '<div class="status-dot"></div> Conectado a la Base de Datos';
                 })
-                .catch(error => {
-                    console.warn("Usando datos de respaldo locales:", error.message);
-                    document.getElementById('manual-upload-container').style.display = 'flex';
+                .catch(errorBD => {
+                    console.warn("Base de datos no disponible; se usa Reporte_Diario.xlsx:", errorBD.message);
+                    fetch('Reporte_Diario.xlsx?v=' + new Date().getTime())
+                        .then(response => {
+                            if (!response.ok) throw new Error("Archivo no encontrado en el servidor");
+                            return response.arrayBuffer();
+                        })
+                        .then(data => {
+                            let workbook = XLSX.read(new Uint8Array(data), {type: 'array'});
+                            let firstSheet = workbook.SheetNames[0];
+                            let excelRows = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
+
+                            promesaConFotos.finally(() => procesarDatosExcel(excelRows));
+
+                            let badge = document.getElementById('conexion-estado');
+                            badge.innerHTML = '<div class="status-dot"></div> Conectado a Servidor (respaldo Excel)';
+                        })
+                        .catch(error => {
+                            console.warn("Usando datos de respaldo locales:", error.message);
+                            document.getElementById('manual-upload-container').style.display = 'flex';
+                        });
                 });
         });
 
