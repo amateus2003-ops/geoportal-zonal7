@@ -48,6 +48,8 @@
         .bd-editor .fila { display: flex; gap: 8px; margin-bottom: 8px; }
         .bd-editor input, .bd-editor select { padding: 6px 8px; font-size: 0.8rem; }
         .bd-editor .btn-primario { padding: 8px; font-size: 0.82rem; }
+        .bd-archivo { display: block; width: 100%; font-size: 0.74rem; color: #9CA3AF; font-weight: bold; }
+        .bd-editor .bd-archivo input { margin-top: 4px; padding: 5px; font-size: 0.75rem; }
 
         .view-container { display: none; flex-grow: 1; height: calc(100vh - 60px); overflow-y: auto; -webkit-overflow-scrolling: touch; }
         .view-container.active { display: flex; flex-direction: column; }
@@ -1988,6 +1990,7 @@
             const el = popup.getElement && popup.getElement();
             const slot = el && el.querySelector('.bd-editor-slot');
             if (!slot) return;
+            aplicarFotosBDPopup(slot.dataset.id);
             if (!puedeEditarBD()) { slot.innerHTML = ''; return; }
             const id = slot.dataset.id;
             const opciones = nombresMicroempresasEditor().map(n => `<option value="${escaparHTML(n)}">${escaparHTML(n)}</option>`).join('');
@@ -2003,44 +2006,164 @@
             }
             slot.innerHTML = `
                 <div class="bd-editor">
-                    <div class="titulo">✏️ REGISTRAR LIMPIEZA EN LA BASE DE DATOS</div>
+                    <div class="titulo">✏️ REGISTRAR LIMPIEZA Y FOTOS</div>
                     <div class="fila"><input type="date" id="bd-fecha-${id}" value="${fechaHoyISO()}" max="${fechaHoyISO()}"><select id="bd-micro-${id}"><option value="">Microempresa…</option>${opciones}</select></div>
+                    <div class="fila"><label class="bd-archivo">📷 Fotos ANTES (máx. 2)<input type="file" id="bd-fa-${id}" accept="image/*" multiple></label></div>
+                    <div class="fila"><label class="bd-archivo">📷 Fotos DESPUÉS (máx. 2)<input type="file" id="bd-fd-${id}" accept="image/*" multiple></label></div>
                     <div class="fila"><input type="text" id="bd-obs-${id}" placeholder="Observación (opcional)" maxlength="300"></div>
-                    <div class="fila"><button class="btn-primario" onclick="registrarLimpiezaBD('${id}', this)">Guardar limpieza de la alcantarilla ${escaparHTML(id)}</button></div>
+                    <div class="fila"><button class="btn-primario" onclick="registrarLimpiezaBD('${id}', this)">Guardar en la base de datos (alcantarilla ${escaparHTML(id)})</button></div>
                     <div class="msg-sesion" id="bd-msg-${id}"></div>
                 </div>`;
             // (sin popup.update(): Leaflet volvería a escribir el contenido original y borraría el formulario)
         }
+        // ---------- Fotos: se leen de la base (fotos del portal y de campo) ----------
+        let mapaFotosBD = null; // objectid -> { antes: [{ruta, ref}], despues: [...] }
+        async function cargarFotosBD() {
+            const filas = await consultarBD('fotos_alcantarillas?select=objectid,tipo,orden,ruta,referencial&order=objectid.asc,tipo.asc,orden.asc,id.asc');
+            const m = new Map();
+            filas.forEach(f => {
+                const k = String(f.objectid);
+                if (!m.has(k)) m.set(k, { antes: [], despues: [] });
+                if (m.get(k)[f.tipo]) m.get(k)[f.tipo].push({ ruta: f.ruta, ref: !!f.referencial });
+            });
+            mapaFotosBD = m;
+        }
+        cargarFotosBD().catch(e => console.warn('Fotos del popup desde los archivos del portal:', e.message));
+        function fotosDe(id, tipo) {
+            const r = mapaFotosBD && mapaFotosBD.get(String(id));
+            return r ? r[tipo] : null;
+        }
+        function aplicarFotosBDPopup(id) {
+            for (const tipo of ['antes', 'despues']) {
+                const lista = fotosDe(id, tipo);
+                const img = document.getElementById(`img-${tipo}-${id}`);
+                if (!lista || !lista.length || !img) continue;
+                const sel = img.parentElement && img.parentElement.parentElement ? img.parentElement.parentElement.querySelector('select') : null;
+                if (sel) sel.innerHTML = lista.map((f, i) => `<option value="${i + 1}">📸 Fotografía ${i + 1}</option>`).join('');
+                img.dataset.idx = '0';
+                if (img.getAttribute('src') !== lista[0].ruta) { img.style.opacity = '0'; img.src = lista[0].ruta; }
+            }
+        }
+        const cambiarFotoArchivo = window.cambiarFoto;
+        window.cambiarFoto = function(tipo, id, valor) {
+            const lista = fotosDe(id, tipo);
+            if (!lista || !lista.length) return cambiarFotoArchivo(tipo, id, valor);
+            const img = document.getElementById(`img-${tipo}-${id}`);
+            if (!img) return;
+            const i = Math.max(0, Math.min(lista.length - 1, (parseInt(valor, 10) || 1) - 1));
+            img.style.opacity = '0';
+            marcarFotoReferencial(tipo, id, img, false);
+            setTimeout(() => { img.dataset.idx = String(i); img.src = lista[i].ruta; }, 150);
+        };
+        const marcarReferencialArchivo = window.marcarFotoReferencial;
+        window.marcarFotoReferencial = function(tipo, id, img, visible) {
+            const lista = fotosDe(id, tipo);
+            if (!lista || !lista.length) return marcarReferencialArchivo(tipo, id, img, visible);
+            const tag = document.getElementById('tag-' + tipo + '-' + id);
+            if (!tag) return;
+            const f = lista[parseInt((img && img.dataset.idx) || '0', 10)];
+            tag.style.display = (visible && f && f.ref) ? 'block' : 'none';
+        };
+
+        // ---------- Subida de fotos (se reducen en el navegador antes de subir) ----------
+        async function reducirImagen(file, maxLado = 1280, calidad = 0.8) {
+            let fuente;
+            try { fuente = await createImageBitmap(file, { imageOrientation: 'from-image' }); }
+            catch (e) {
+                fuente = await new Promise((ok, mal) => {
+                    const im = new Image();
+                    im.onload = () => ok(im);
+                    im.onerror = () => mal(new Error('No se pudo leer la imagen ' + file.name));
+                    im.src = URL.createObjectURL(file);
+                });
+            }
+            const k = Math.min(1, maxLado / Math.max(fuente.width, fuente.height));
+            const c = document.createElement('canvas');
+            c.width = Math.round(fuente.width * k); c.height = Math.round(fuente.height * k);
+            c.getContext('2d').drawImage(fuente, 0, 0, c.width, c.height);
+            return await new Promise((ok, mal) => c.toBlob(b => b ? ok(b) : mal(new Error('No se pudo convertir la imagen')), 'image/jpeg', calidad));
+        }
+        async function subirFotoBD(blob, ruta) {
+            const cab = await cabecerasBD(true);
+            const control = new AbortController();
+            const reloj = setTimeout(() => control.abort(), 90000);
+            try {
+                const r = await fetch(`${BD.url}/storage/v1/object/fotos-campo/${ruta}`, {
+                    method: 'POST', signal: control.signal,
+                    headers: Object.assign(cab, { 'Content-Type': 'image/jpeg', 'x-upsert': 'false', 'cache-control': 'max-age=31536000' }),
+                    body: blob
+                });
+                if (!r.ok) {
+                    const t = await r.text().catch(() => '');
+                    throw new Error(r.status === 403 || r.status === 401 ? 'Tu usuario no tiene permiso para subir fotos.' : `No se pudo subir la foto (HTTP ${r.status}). ${t.slice(0, 100)}`);
+                }
+            } finally { clearTimeout(reloj); }
+            return `${BD.url}/storage/v1/object/public/fotos-campo/${ruta}`;
+        }
+
         async function registrarLimpiezaBD(id, boton) {
             const msg = document.getElementById(`bd-msg-${id}`);
             const fecha = document.getElementById(`bd-fecha-${id}`).value;
             const micro = document.getElementById(`bd-micro-${id}`).value;
             const obs = document.getElementById(`bd-obs-${id}`).value.trim();
-            if (!fecha || !micro) { msg.style.color = '#F87171'; msg.textContent = 'Indica la fecha y la microempresa.'; return; }
+            const fotosAntes = [...(document.getElementById(`bd-fa-${id}`).files || [])].slice(0, 2);
+            const fotosDespues = [...(document.getElementById(`bd-fd-${id}`).files || [])].slice(0, 2);
+            const totalFotos = fotosAntes.length + fotosDespues.length;
+            const yaLimpia = setAlcantarillasAtendidas.has(String(id));
+            const error = t => { msg.style.color = '#F87171'; msg.textContent = t; };
+            if (!fecha) return error('Indica la fecha.');
+            if (!micro && !totalFotos) return error('Elige la microempresa (nueva limpieza) o agrega fotos.');
+            if (!micro && !yaLimpia) return error('Esta alcantarilla aún no está registrada como limpia: indica la microempresa.');
             boton.disabled = true; msg.style.color = '#9CA3AF'; msg.textContent = 'Guardando…';
             try {
                 const cab = await cabecerasBD(true);
                 if (!cab.Authorization) throw new Error('Tu sesión terminó. Vuelve a ingresar.');
-                const r = await fetchConTiempo(`${BD.url}/rest/v1/reporte_diario`, {
-                    method: 'POST',
-                    headers: Object.assign(cab, { 'Content-Type': 'application/json', Prefer: 'return=minimal' }),
-                    body: JSON.stringify({
-                        microempresa: micro, fecha, codigo_alcantarilla: String(id), estado: 'LIMPIO', alcantarillas_limpiadas: 1,
-                        observaciones: (obs ? obs + ' | ' : '') + `Registrado en el geoportal por ${sesionBD.email}`
-                    })
-                });
-                if (!r.ok) throw new Error(r.status === 401 || r.status === 403 ? 'Tu usuario no tiene permiso para registrar.' : `No se pudo guardar (HTTP ${r.status}).`);
+                // 1. Fotos (primero, para no dejar un registro sin sus fotos si la subida falla)
+                const nuevas = [];
+                let hechas = 0;
+                for (const [tipo, archivos] of [['antes', fotosAntes], ['despues', fotosDespues]]) {
+                    let orden = (fotosDe(id, tipo) || []).length;
+                    for (const file of archivos) {
+                        orden++; hechas++;
+                        msg.textContent = `Subiendo foto ${hechas} de ${totalFotos}…`;
+                        const blob = await reducirImagen(file);
+                        const url = await subirFotoBD(blob, `${id}/${fecha}_${tipo}${orden}_${Date.now()}.jpg`);
+                        nuevas.push({ objectid: Number(id), tipo, orden, ruta: url, referencial: false, origen: 'PORTAL',
+                                      archivo_origen: String(file.name || '').slice(0, 200), fecha_toma: fecha });
+                    }
+                }
+                if (nuevas.length) {
+                    const rf = await fetchConTiempo(`${BD.url}/rest/v1/fotos_alcantarillas`, {
+                        method: 'POST',
+                        headers: Object.assign(await cabecerasBD(true), { 'Content-Type': 'application/json', Prefer: 'return=minimal' }),
+                        body: JSON.stringify(nuevas)
+                    });
+                    if (!rf.ok) throw new Error(`Las fotos se subieron, pero no se pudieron registrar (HTTP ${rf.status}).`);
+                }
+                // 2. Limpieza (solo si se eligió la microempresa)
+                if (micro) {
+                    const r = await fetchConTiempo(`${BD.url}/rest/v1/reporte_diario`, {
+                        method: 'POST',
+                        headers: Object.assign(await cabecerasBD(true), { 'Content-Type': 'application/json', Prefer: 'return=minimal' }),
+                        body: JSON.stringify({
+                            microempresa: micro, fecha, codigo_alcantarilla: String(id), estado: 'LIMPIO', alcantarillas_limpiadas: 1,
+                            registro_fotografico: nuevas.length ? `${nuevas.length} foto(s) subidas desde el geoportal` : null,
+                            observaciones: (obs ? obs + ' | ' : '') + `Registrado en el geoportal por ${sesionBD.email}`
+                        })
+                    });
+                    if (!r.ok) throw new Error(r.status === 401 || r.status === 403 ? 'Tu usuario no tiene permiso para registrar.' : `No se pudo guardar (HTTP ${r.status}).`);
+                }
                 msg.style.color = '#10B981'; msg.textContent = '✔ Guardado. Actualizando el mapa…';
                 await recargarDatosDesdeBD();
             } catch (e) {
-                msg.style.color = '#F87171';
-                msg.textContent = e.name === 'AbortError' ? 'La base de datos no respondió. Intenta de nuevo.' : e.message;
+                error(e.name === 'AbortError' ? 'La conexión tardó demasiado. Intenta de nuevo.' : e.message);
                 boton.disabled = false;
             }
         }
         async function recargarDatosDesdeBD() {
             const filas = await leerReporteDesdeBD();
             try { setAlcantarillasConFotos = await leerConFotosDesdeBD(); } catch (e) { }
+            try { await cargarFotosBD(); } catch (e) { }
             map.closePopup();
             procesarDatosExcel(filas);
         }
