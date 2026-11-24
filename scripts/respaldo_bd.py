@@ -24,7 +24,7 @@ def leer(tabla, orden):
     filas, desde = [], 0
     while True:
         url = f'{URL}/rest/v1/{tabla}?select=*&order={orden}.asc&limit=1000&offset={desde}'
-        req = urllib.request.Request(url, headers={'apikey': CLAVE, 'Accept': 'application/json'})
+        req = urllib.request.Request(url, headers={'apikey': CLAVE, 'Accept': 'application/json', 'User-Agent': 'geoportal-zonal7-respaldo/1.0'})
         with urllib.request.urlopen(req, timeout=60) as r:
             lote = json.load(r)
         filas += lote
@@ -39,6 +39,9 @@ def main():
     for tabla, orden in TABLAS.items():
         try:
             filas = leer(tabla, orden)
+        except urllib.error.HTTPError as e:
+            detalle = e.read().decode('utf-8', 'replace')[:300]
+            sys.exit(f'No se pudo leer {tabla}: HTTP {e.code} {detalle}')
         except urllib.error.URLError as e:
             sys.exit(f'No se pudo leer {tabla}: {e}. Revisa si el proyecto de Supabase está pausado.')
         with open(os.path.join(CARPETA, f'{tabla}.json'), 'w', encoding='utf-8') as f:

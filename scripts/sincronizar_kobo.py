@@ -43,7 +43,9 @@ SB_KEY = os.environ.get('SUPABASE_SECRET_KEY', '').strip()
 
 
 def pedir(url, metodo='GET', datos=None, cabeceras=None, crudo=False):
-    req = urllib.request.Request(url, data=datos, method=metodo, headers=cabeceras or {})
+    cab = {'User-Agent': 'geoportal-zonal7-ficha-campo/1.0'}
+    cab.update(cabeceras or {})
+    req = urllib.request.Request(url, data=datos, method=metodo, headers=cab)
     with urllib.request.urlopen(req, timeout=120) as r:
         cuerpo = r.read()
     return cuerpo if crudo else (json.loads(cuerpo) if cuerpo else None)
