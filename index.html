@@ -1991,6 +1991,7 @@
             const slot = el && el.querySelector('.bd-editor-slot');
             if (!slot) return;
             aplicarFotosBDPopup(slot.dataset.id);
+            mostrarAbscisaPopup(el);
             if (!puedeEditarBD()) { slot.innerHTML = ''; return; }
             const id = slot.dataset.id;
             const opciones = nombresMicroempresasEditor().map(n => `<option value="${escaparHTML(n)}">${escaparHTML(n)}</option>`).join('');
@@ -2016,6 +2017,33 @@
                 </div>`;
             // (sin popup.update(): Leaflet volvería a escribir el contenido original y borraría el formulario)
         }
+        // ---------- Abscisa de cada alcantarilla ----------
+        // Levantamiento MIT (campo ABSCISA de la capa) y abscisa estimada según el abscisado de cada microempresa
+        // (scripts/abscisas_alcantarillas.json, calibrado con las abscisas y fotos de las micros).
+        let promesaAbscisas = null;
+        function cargarAbscisas() {
+            if (!promesaAbscisas) {
+                promesaAbscisas = fetch('scripts/abscisas_alcantarillas.json', { cache: 'no-cache' })
+                    .then(r => r.ok ? r.json() : null).then(j => (j && j.alc) || {}).catch(() => ({}));
+            }
+            return promesaAbscisas;
+        }
+        function textoAbscisa(m) { const x = Math.round(m); return `${Math.floor(x / 1000)}+${String(x % 1000).padStart(3, '0')}`; }
+        async function mostrarAbscisaPopup(el) {
+            const linea = el && el.querySelector('.abs-linea');
+            if (!linea) return;
+            const inv = linea.dataset.inv;
+            const est = ((await cargarAbscisas())[linea.dataset.id] || [])[3];
+            const partes = [];
+            if (inv) partes.push(`<span style="color:#D1D5DB;">${escaparHTML(inv)}</span> <span style="color:#9CA3AF; font-size:0.76rem;">(levantamiento MIT)</span>`);
+            if (est !== null && est !== undefined) {
+                const t = textoAbscisa(est);
+                if (t !== inv) partes.push(`<span style="color:#D1D5DB;">≈ ${t}</span> <span style="color:#9CA3AF; font-size:0.76rem;">(abscisado de la microempresa)</span>`);
+            }
+            linea.innerHTML = `<b style="color: #ffffff;">📍 Abscisa:</b> ` + (partes.length ? partes.join(' · ') : '<span style="color:#9CA3AF;">sin abscisa registrada</span>');
+        }
+        cargarAbscisas();
+
         // ---------- Fotos: se leen de la base (fotos del portal y de campo) ----------
         let mapaFotosBD = null; // objectid -> { antes: [{ruta, ref}], despues: [...] }
         async function cargarFotosBD() {
@@ -3678,6 +3706,7 @@
                                 <h4 style="margin: 0 0 10px 0; padding-bottom: 6px; border-bottom: 1px solid #374151; color: #F59E0B; font-size: 1.12rem; font-weight: bold;">${tramoRaw}</h4>
                                 <div style="margin-bottom: 6px; font-size: 0.92rem;"><b style="color: #FBBF24;">🏛️ Cantón:</b> <span style="color: #FFFFFF; font-weight:bold;">${metaTerritorial.canton}</span></div>
                                 <div style="margin-bottom: 6px; font-size: 0.9rem;"><b style="color: #ffffff;">ID Único:</b> <span style="color: #D1D5DB;">${idUnico}</span> | <b style="color: #ffffff;">Código:</b> <span style="color: #D1D5DB;">${codigoD}</span></div>
+                                <div class="abs-linea" data-id="${idUnico}" data-inv="${String(feature.properties['ABSCISA'] || '').trim()}" style="margin-bottom: 8px; font-size: 0.88rem;"></div>
                                 ${esCritica ? `<div style="margin-bottom: 8px; font-size: 0.88rem;"><b style="color: #ffffff;">Prioridad:</b> <span style="color: #FBBF24; font-weight:bold;">${nivelRaw || 'N/A'}</span> (${estadoFisico})</div>` : ''}
                                 ${badgeEstado}
                                 ${(esAtendida || esCritica) ? `
