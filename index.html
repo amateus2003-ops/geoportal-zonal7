@@ -2008,8 +2008,8 @@
                 <div class="bd-editor">
                     <div class="titulo">✏️ REGISTRAR LIMPIEZA Y FOTOS</div>
                     <div class="fila"><input type="date" id="bd-fecha-${id}" value="${fechaHoyISO()}" max="${fechaHoyISO()}"><select id="bd-micro-${id}"><option value="">Microempresa…</option>${opciones}</select></div>
-                    <div class="fila"><label class="bd-archivo">📷 Fotos ANTES (máx. 2)<input type="file" id="bd-fa-${id}" accept="image/*" multiple></label></div>
-                    <div class="fila"><label class="bd-archivo">📷 Fotos DESPUÉS (máx. 2)<input type="file" id="bd-fd-${id}" accept="image/*" multiple></label></div>
+                    <div class="fila"><label class="bd-archivo">📷 Fotos ANTES (máx. ${MAX_FOTOS_POR_TIPO})<input type="file" id="bd-fa-${id}" accept="image/*" multiple></label></div>
+                    <div class="fila"><label class="bd-archivo">📷 Fotos DESPUÉS (máx. ${MAX_FOTOS_POR_TIPO})<input type="file" id="bd-fd-${id}" accept="image/*" multiple></label></div>
                     <div class="fila"><input type="text" id="bd-obs-${id}" placeholder="Observación (opcional)" maxlength="300"></div>
                     <div class="fila"><button class="btn-primario" onclick="registrarLimpiezaBD('${id}', this)">Guardar en la base de datos (alcantarilla ${escaparHTML(id)})</button></div>
                     <div class="msg-sesion" id="bd-msg-${id}"></div>
@@ -2101,13 +2101,14 @@
             return `${BD.url}/storage/v1/object/public/fotos-campo/${ruta}`;
         }
 
+        const MAX_FOTOS_POR_TIPO = 3;   // fotos de ANTES y de DESPUÉS que se pueden subir por registro
         async function registrarLimpiezaBD(id, boton) {
             const msg = document.getElementById(`bd-msg-${id}`);
             const fecha = document.getElementById(`bd-fecha-${id}`).value;
             const micro = document.getElementById(`bd-micro-${id}`).value;
             const obs = document.getElementById(`bd-obs-${id}`).value.trim();
-            const fotosAntes = [...(document.getElementById(`bd-fa-${id}`).files || [])].slice(0, 2);
-            const fotosDespues = [...(document.getElementById(`bd-fd-${id}`).files || [])].slice(0, 2);
+            const fotosAntes = [...(document.getElementById(`bd-fa-${id}`).files || [])].slice(0, MAX_FOTOS_POR_TIPO);
+            const fotosDespues = [...(document.getElementById(`bd-fd-${id}`).files || [])].slice(0, MAX_FOTOS_POR_TIPO);
             const totalFotos = fotosAntes.length + fotosDespues.length;
             const yaLimpia = setAlcantarillasAtendidas.has(String(id));
             const error = t => { msg.style.color = '#F87171'; msg.textContent = t; };
