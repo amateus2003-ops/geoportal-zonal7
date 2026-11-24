@@ -1,0 +1,107 @@
+[
+{
+"activa": true,
+"creado_en": "2026-11-24T18:10:55.391429+00:00",
+"id": 1,
+"nombre": "Tigres del camino",
+"tramo": "Calvas - Sozoranga"
+},
+{
+"activa": true,
+"creado_en": "2026-11-24T18:10:55.391429+00:00",
+"id": 2,
+"nombre": "Porvenir",
+"tramo": "Loja - Malacatos - Vilcabamba"
+},
+{
+"activa": true,
+"creado_en": "2026-11-24T18:10:55.391429+00:00",
+"id": 3,
+"nombre": "Paltenses",
+"tramo": "Macandamine - El Empalme"
+},
+{
+"activa": true,
+"creado_en": "2026-11-24T18:10:55.391429+00:00",
+"id": 4,
+"nombre": "Virgen del Cisne",
+"tramo": "Capulí - Redondel de Carigán"
+},
+{
+"activa": true,
+"creado_en": "2026-11-24T18:10:55.391429+00:00",
+"id": 5,
+"nombre": "Conservación Vial Buenavista",
+"tramo": "Río Pindo - Chaguarpamba"
+},
+{
+"activa": true,
+"creado_en": "2026-11-24T18:10:55.391429+00:00",
+"id": 6,
+"nombre": "Divino niño",
+"tramo": "Celica - El Empalme"
+},
+{
+"activa": true,
+"creado_en": "2026-11-24T18:10:55.391429+00:00",
+"id": 7,
+"nombre": "Llankay tantanakuy",
+"tramo": "Loja - Santiago"
+},
+{
+"activa": true,
+"creado_en": "2026-11-24T18:10:55.391429+00:00",
+"id": 8,
+"nombre": "Niño de Potrerillos",
+"tramo": "Saraguro - Oña"
+},
+{
+"activa": true,
+"creado_en": "2026-11-24T18:10:55.391429+00:00",
+"id": 9,
+"nombre": "Conservación Vial Puyango",
+"tramo": "Alamor - Pindal - Sabanilla"
+},
+{
+"activa": true,
+"creado_en": "2026-11-24T18:10:55.391429+00:00",
+"id": 10,
+"nombre": "Sabiango",
+"tramo": "Sozoranga - Macará"
+},
+{
+"activa": true,
+"creado_en": "2026-11-24T18:10:55.391429+00:00",
+"id": 11,
+"nombre": "Estoraques del Suro",
+"tramo": "Vilcabamba - Yangana - Límite Provincial Loja/Zamora Chinchipe"
+},
+{
+"activa": true,
+"creado_en": "2026-11-24T18:10:55.391429+00:00",
+"id": 12,
+"nombre": "América",
+"tramo": "Catamayo - Nambacola"
+},
+{
+"activa": true,
+"creado_en": "2026-11-24T18:10:55.391429+00:00",
+"id": 13,
+"nombre": "Larama",
+"tramo": "El Empalme - Macará"
+},
+{
+"activa": true,
+"creado_en": "2026-11-24T18:10:55.391429+00:00",
+"id": 14,
+"nombre": "Los Cañaverales",
+"tramo": "San Pedro - Velacruz"
+},
+{
+"activa": true,
+"creado_en": "2026-11-24T18:10:55.391429+00:00",
+"id": 15,
+"nombre": "Caminos del Sur",
+"tramo": "Loja - Catamayo"
+}
+]
