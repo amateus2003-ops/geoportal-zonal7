@@ -1968,7 +1968,15 @@
         }
         async function cargarMicroempresasBD() {
             try { listaMicroempresasBD = await consultarBD('microempresas?select=nombre,tramo&activa=eq.true&order=nombre.asc'); }
-            catch (e) { listaMicroempresasBD = []; }
+            catch (e) { console.warn('No se pudo leer la tabla microempresas:', e.message); }
+        }
+        // Nombres para el desplegable: tabla microempresas; si está vacía, las microempresas del reporte diario
+        function nombresMicroempresasEditor() {
+            let nombres = listaMicroempresasBD.map(m => String(m.nombre || '').trim());
+            if (!nombres.length && typeof ultimoResumenRegistroDiario === 'object') {
+                nombres = Object.values(ultimoResumenRegistroDiario).map(r => String((r && r.nombreReal) || '').trim());
+            }
+            return [...new Set(nombres.filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es'));
         }
 
         // ---------- Registro de limpiezas desde el popup (rol editor o admin) ----------
@@ -1982,7 +1990,17 @@
             if (!slot) return;
             if (!puedeEditarBD()) { slot.innerHTML = ''; return; }
             const id = slot.dataset.id;
-            const opciones = listaMicroempresasBD.map(m => `<option value="${escaparHTML(m.nombre)}">${escaparHTML(m.nombre)}</option>`).join('');
+            const opciones = nombresMicroempresasEditor().map(n => `<option value="${escaparHTML(n)}">${escaparHTML(n)}</option>`).join('');
+            if (!listaMicroempresasBD.length) {
+                // Si la lista no cargó al iniciar, se vuelve a pedir y se completa el desplegable
+                cargarMicroempresasBD().then(() => {
+                    const sel = document.getElementById(`bd-micro-${id}`);
+                    if (!sel || !listaMicroempresasBD.length) return;
+                    const elegido = sel.value;
+                    sel.innerHTML = '<option value="">Microempresa…</option>' + nombresMicroempresasEditor().map(n => `<option value="${escaparHTML(n)}">${escaparHTML(n)}</option>`).join('');
+                    sel.value = elegido;
+                });
+            }
             slot.innerHTML = `
                 <div class="bd-editor">
                     <div class="titulo">✏️ REGISTRAR LIMPIEZA EN LA BASE DE DATOS</div>
