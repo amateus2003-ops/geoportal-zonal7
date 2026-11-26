@@ -13596,5 +13596,83 @@
 "referencial": true,
 "ruta": "fotos/4760antes2.jpg",
 "tipo": "antes"
+},
+{
+"archivo_origen": "1271antes-18_9_11.jpg",
+"creado_en": "2026-11-24T23:23:30.035426+00:00",
+"creado_por": null,
+"fecha_toma": "2026-11-24",
+"id": 1047,
+"objectid": 3844,
+"orden": 1,
+"origen": "KOBO",
+"referencial": false,
+"ruta": "https://zuanqaymtjxmhtizlypj.supabase.co/storage/v1/object/public/fotos-campo/kobo/3844/3c980d41-c6d1-4944-a18c-92fabf1ac7ec_foto_antes_1.jpg",
+"tipo": "antes"
+},
+{
+"archivo_origen": "1449antes2-18_9_16.jpg",
+"creado_en": "2026-11-24T23:23:30.035426+00:00",
+"creado_por": null,
+"fecha_toma": "2026-11-24",
+"id": 1048,
+"objectid": 3844,
+"orden": 2,
+"origen": "KOBO",
+"referencial": false,
+"ruta": "https://zuanqaymtjxmhtizlypj.supabase.co/storage/v1/object/public/fotos-campo/kobo/3844/3c980d41-c6d1-4944-a18c-92fabf1ac7ec_foto_antes_2.jpg",
+"tipo": "antes"
+},
+{
+"archivo_origen": "1560antes-18_9_20.jpg",
+"creado_en": "2026-11-24T23:23:30.035426+00:00",
+"creado_por": null,
+"fecha_toma": "2026-11-24",
+"id": 1049,
+"objectid": 3844,
+"orden": 3,
+"origen": "KOBO",
+"referencial": false,
+"ruta": "https://zuanqaymtjxmhtizlypj.supabase.co/storage/v1/object/public/fotos-campo/kobo/3844/3c980d41-c6d1-4944-a18c-92fabf1ac7ec_foto_antes_3.jpg",
+"tipo": "antes"
+},
+{
+"archivo_origen": "IMG-20260804-WA0055-18_9_24.jpg",
+"creado_en": "2026-11-24T23:23:30.035426+00:00",
+"creado_por": null,
+"fecha_toma": "2026-11-24",
+"id": 1050,
+"objectid": 3844,
+"orden": 1,
+"origen": "KOBO",
+"referencial": false,
+"ruta": "https://zuanqaymtjxmhtizlypj.supabase.co/storage/v1/object/public/fotos-campo/kobo/3844/3c980d41-c6d1-4944-a18c-92fabf1ac7ec_foto_despues_1.jpg",
+"tipo": "despues"
+},
+{
+"archivo_origen": "IMG-20260729-WA0048-18_9_29.jpg",
+"creado_en": "2026-11-24T23:23:30.035426+00:00",
+"creado_por": null,
+"fecha_toma": "2026-11-24",
+"id": 1051,
+"objectid": 3844,
+"orden": 2,
+"origen": "KOBO",
+"referencial": false,
+"ruta": "https://zuanqaymtjxmhtizlypj.supabase.co/storage/v1/object/public/fotos-campo/kobo/3844/3c980d41-c6d1-4944-a18c-92fabf1ac7ec_foto_despues_2.jpg",
+"tipo": "despues"
+},
+{
+"archivo_origen": "1279antes3-18_9_33.jpg",
+"creado_en": "2026-11-24T23:23:30.035426+00:00",
+"creado_por": null,
+"fecha_toma": "2026-11-24",
+"id": 1052,
+"objectid": 3844,
+"orden": 3,
+"origen": "KOBO",
+"referencial": false,
+"ruta": "https://zuanqaymtjxmhtizlypj.supabase.co/storage/v1/object/public/fotos-campo/kobo/3844/3c980d41-c6d1-4944-a18c-92fabf1ac7ec_foto_despues_3.jpg",
+"tipo": "despues"
 }
 ]

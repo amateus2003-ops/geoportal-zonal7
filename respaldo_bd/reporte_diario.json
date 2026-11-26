@@ -10184,5 +10184,27 @@
 "observaciones": "Consolidado 23/11: 1 alcantarillas justificadas con foto que no estaban en el portal (0 con foto en sitio, 1 con foto del Google Sheets, 0 con foto aproximada o por secuencia).",
 "registro_fotografico": null,
 "tramo_ruta": "Sozoranga - Macará"
+},
+{
+"abscisa_final": null,
+"abscisa_inicial": "1+231",
+"actualizado_en": "2026-11-24T23:23:30.410845+00:00",
+"actualizado_por": null,
+"alcantarillas_limpiadas": 1,
+"alcantarillas_obstruidas_tramo": null,
+"codigo_alcantarilla": "3844",
+"coordenadas_utm": "GPS -3.984235, -79.201836",
+"creado_en": "2026-11-24T23:23:30.410845+00:00",
+"creado_por": null,
+"distancia_km": null,
+"estado": "LIMPIO",
+"fecha": "2026-11-24",
+"ficha_id": "kobo:3c980d41-c6d1-4944-a18c-92fabf1ac7ec",
+"fila_excel": null,
+"id": 464,
+"microempresa": "América",
+"observaciones": "Presencia de deslizamientos de ladera | abscisa 1+231, tramo Catamayo - Nambacola. Alcantarilla ubicada por abscisa (a 0 m) | Ficha de campo KoboToolbox (sin nombre)",
+"registro_fotografico": "6 foto(s) de la ficha de campo",
+"tramo_ruta": null
 }
 ]

@@ -1,6 +1,6 @@
-Último respaldo: 2026-11-24 17:57 (hora de Ecuador)
+Último respaldo: 2026-11-26 07:56 (hora de Ecuador)
 alcantarillas: 3473 filas
-reporte_diario: 463 filas
-fotos_alcantarillas: 1046 filas
+reporte_diario: 464 filas
+fotos_alcantarillas: 1052 filas
 galeria_fotos: 6165 filas
 microempresas: 15 filas
